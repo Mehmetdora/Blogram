@@ -25,8 +25,9 @@
     @livewireStyles
 
     <title>{{ $site_setting->site_name }}</title>
-    <link rel="shortcut icon" type="image/png"
-        href="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->favicon_url }}">
+    <link rel="icon" type="image/png"
+        href="{{ asset('site_settings/site_favicon/') }}/{{ $site_setting->favicon_url }}">
+
 
     @include('Normal_Kullanıcı.blogy_Layouts.header_style')
 
@@ -300,7 +301,8 @@
                                         <div class="post-slider slider-sm slick-initialized slick-slider">
                                             <div class="slick-list draggable">
                                                 <div class="post-slider slider-sm">
-                                                    <img src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
+                                                    <img style="border-radius: 5px"
+                                                        src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
                                                         class="card-img-top" alt="post-thumb">
                                                 </div>
                                             </div>
@@ -441,7 +443,7 @@
                         @foreach ($recent_blogs as $blog)
                             <article class="widget-card">
                                 <div class="d-flex">
-                                    <img style="width: 40%; height:40%"
+                                    <img style="width: 40%; height:40%; border-radius:5px;"
                                         src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
                                         class="trend-blog-image" alt="post-thumb">
                                     <div class="ml-3">

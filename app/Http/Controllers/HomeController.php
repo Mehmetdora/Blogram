@@ -39,7 +39,7 @@ class HomeController extends Controller
                 ->where('is_confirmed', 1)
                 ->orderBy('created_at', 'desc')
                 ->with('tags')
-                ->paginate(10);
+                ->paginate(8);
         });
 
 

@@ -31,7 +31,7 @@
                                     <option value="{{ $site_setting->logo_url }}" selected>{{ $site_setting->logo_url }}
                                     </option>
                                     <hr>
-                                    @foreach ($logo_photos as $name)
+                                    @foreach ($site_logos as $name)
                                         <option value="{{ $name }}">{{ $name }}
                                         </option>
                                     @endforeach
@@ -39,8 +39,17 @@
                             </div>
                             <div class="col-12">
                                 <label for="inputPassword4" class="form-label">Favicon Url</label>
-                                <input type="text" value="{{ $site_setting->favicon_url }}" name="favicon_url" required
-                                    class="form-control" id="inputPassword4">
+                                <select name="favicon_url" id="logo_url" aria-label="Default select example"
+                                    class="form-control " required>
+                                    <option value="{{ $site_setting->favicon_url }}" selected>{{ $site_setting->favicon_url }}
+                                    </option>
+                                    <hr>
+                                    @foreach ($favicons as $name)
+                                        <option value="{{ $name }}">{{ $name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                               
                             </div>
                             <div class="col-12">
                                 <label for="inputNanme4" class="form-label">Theme Color</label>

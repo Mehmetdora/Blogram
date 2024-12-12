@@ -106,7 +106,7 @@ class AdminController extends Controller
         // admin middleware dosyası oluşturuldu
         // önce tüm projeyi profil yerine user üzerinde yürütmeyi hallet
 
-        $data['page'] = 'change_password';
+        $data['page'] = 'tags';
         $data['user'] = Auth::user();
         $data['count'] = Tag::all()->count();
         $data['pending_blogs_count'] = Blog::where('status',1)
@@ -118,6 +118,15 @@ class AdminController extends Controller
     }
 
 
+    public function change_password(){
+
+        $data['page'] = 'change_password';
+        $data['user'] = Auth::user();
+        $data['pending_blogs_count'] = Blog::where('status',1)
+        ->where('is_confirmed',0)->count();
+
+        return view('Admin.change_password',$data);
+    }
 
     public function changed_password(Request $request){
 
@@ -159,14 +168,20 @@ class AdminController extends Controller
     public function site_settings(){
         $site_setting = SiteSetting::first();
         $data['site_setting'] = $site_setting;
-        $files = File::files('site_settings/site_logo/');
 
-        $fileNames = [];
-        foreach ($files as $file) {
-            $fileNames[] = $file->getFilename();
+        $site_logos = File::files('site_settings/site_logo/');
+        $site_favicons = File::files('site_settings/site_favicon/');
+        $logos = [];
+        foreach ($site_logos as $file) {
+            $logos[] = $file->getFilename();
+        }
+        $favicons = [];
+        foreach ($site_favicons as $file) {
+            $favicons[] = $file->getFilename();
         }
 
-        $data['logo_photos'] = $fileNames;
+        $data['site_logos'] = $logos;
+        $data['favicons'] = $favicons;
 
         $data['page'] = 'site_settings';
         $data['user'] = Auth::user();

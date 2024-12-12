@@ -72,7 +72,7 @@
 
                 @if (@isset($blogs))
                     @foreach ($blogs as $blog)
-                        <div class="col-lg-3 mb-3" style="background-color:whitesmoke; margin:5px; border-radius:7px; ">
+                        <div class="col-lg-3 mb-3" style=" background-color:whitesmoke; margin:5px; border-radius:7px; ">
                             <div class="post-entry-alt">
                                 <a href=" {{ route('detail-blog', $blog->id) }} " class="img-link">
                                     <div class="resim" >
