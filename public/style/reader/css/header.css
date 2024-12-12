@@ -1,0 +1,77 @@
+.user-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.header-top {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.nav-right {
+    margin-left: auto;
+}
+
+.nav-right ul {
+    list-style: none;
+    display: flex;
+    flex: 10px;
+    margin: 0;
+    padding: 0;
+}
+.nav-right ul li {
+    margin-right: 20px;
+    align-self: center;
+}
+
+.nav-right ul li img{
+    width: 35px;
+    height: 35px;
+}
+
+.nav-right ul li a {
+    text-decoration: none;
+    color: #000;
+}
+
+.profile-menu {
+    display: none;
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 250px;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1001;
+    padding: 10px 0;
+}
+
+.profile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-menu ul li {
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.profile-menu ul li:hover {
+    background: #f0f0f0;
+}
+
+.profile-menu ul li:last-child {
+    border-bottom: none;
+}
+
+.profile-menu .email {
+    font-size: 12px;
+    color: #888;
+}

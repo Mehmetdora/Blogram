@@ -1,0 +1,75 @@
+
+/*AÇILIR MENÜ KODLARI*/
+header {
+    background-color: #f2f2f2;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin-left: 50px;
+    float: left;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+.ara-butonu {
+    float: left;
+    height: 40px;
+    padding: 5px 15px;
+    border: 3px solid #ccc;
+
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.sol-taraf {
+    width: 1000px; /* Sol taraftaki yapıların genişliğini ayarlar */
+}
+
+
+.arama-cubugu {
+    horiz-align: center;
+    float: left;
+    margin-left: 100px;
+    width: 300px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.profil-resmi {
+    margin-right: 50px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.kalem-ikonu {
+    margin-right: 30px;
+    width: 30px;
+    height: 30px;
+}
+
+#profil-resmi-menusu {
+    display: none; /* Menü gizlenir */
+    position: absolute; /* Menünün konumunu tam olarak kontrol etmek için kullanılır */
+    top: 70px; /* Menünün üstten konumunu ayarlar */
+    right: 100px; /* Menünün soldan konumunu ayarlar */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+#profil-resmi-menusu.gorunur {
+    display: block; /* Menü gösterilir */
+}
+
+#profil-resmi-menusu, #profil-resmi-menusu li a {
+    z-index: 100; /* veya daha yüksek bir değer */
+}
+
+
