@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use App\Models\Profile;
 use App\Mail\RegisterMail;
@@ -33,9 +34,11 @@ class AuthController extends Controller
         $liked_blogs = $user->liked_blogs;
         $saved_blogs = $user->saved_blogs;
 
+        $oldUserPicture = $user->photo;
         if ($user->photo && file_exists(public_path('uploads/') . $user->photo)) {
-            unlink(public_path('uploads/') . $user->photo);
-        }
+            if($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg'){ // default resim kontrolü değilse sil
+                unlink(public_path('uploads/' . $oldUserPicture));  // unlink ile fotoğraf silinir
+            }        }
 
 
         if(isset($notifications)){
@@ -85,6 +88,9 @@ class AuthController extends Controller
 
 
         $user->status = 1;  //silindi
+        $user->photo = $user->gender ? 'Default_pfp_women.png' : 'Default_pfp.jpg';
+        $user->bio = '';
+        $user->skill = '';
         $user->save();
 
         Auth::logout();
@@ -130,16 +136,15 @@ class AuthController extends Controller
     {
         $remember = !empty($request->remember) ? true : false;
 
+
         if(Auth::attempt(['email' => $request->email , 'password' => $request->password,'status' => 0] , $remember)){
+            $user = Auth::user();
+            if (!empty($user->email_verified_at)) {
 
-            if (!empty(Auth::user()->email_verified_at)) {
-
-                if(Auth::user()->is_admin == 1){
+                if($user->is_admin == 1){
                     return redirect()->route('dashboard');
                 }else{
                     $blog_url = session()->get('url.intended');
-                    /* Auth::logout();
-                    dd($blog_url); */
                     session(['url.intended' => $blog_url]);
 
                     return redirect()->route('check_profile');
@@ -229,23 +234,56 @@ class AuthController extends Controller
     }
     public function create_user(Request $request)
     {
-
         request()->validate([
             'name' => 'required',
-            'email' => 'required|email|max:255|unique:users',
+            'email' => 'required|email|max:255',
             'password' => 'required|min:6|confirmed|unique:users,password',
         ]);
+
+        if(User::where('email',$request->email)->exists()){
+            // silinen hesabın tekrar kayıt olma işlemleri
+            $user = User::where('email',$request->email)->first();
+            $user->name = $request->name;
+            $user->password = Hash::make($request->password);
+            $user->remember_token = Str::random(40);
+            $user->save();
+
+            $data['user'] = $user;
+            $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınız ile yeni bir profil oluşturarak devam etmek istiyor musunuz?';
+            $data['site_setting'] = SiteSetting::first();
+
+            return view('Kayıtsız_Görüntülemeler.auth.register',$data);
+        }else{
+            request()->validate([
+                'email' => 'required|email|max:255|unique:users',
+            ]);
+        }
 
         $save = new User();
         $save->name = trim($request->name);
         $save->email = trim($request->email);
-        $save->gender = true;
+        $save->gender = false;
         $save->password = Hash::make($request->password);
         $save->remember_token = Str::random(40);
         $save->save();
 
         Mail::to($save->email)->send( new RegisterMail($save));
         return redirect('login')->with('success' , "Your account register successfully and verify your email address");
+
+    }
+
+    public function verify_old_user(Request $request){
+
+        try{
+            $user = User::find($request->user_id);
+            $user->status = 0;  // eski hesabı geri getirme 0 aktif demek
+            $user->save();
+            //Mail::to($user->email)->send( new RegisterMail($user));
+            return response()->json(['success' => true,'redirect_url'=>route('login')]);
+
+        }catch(Exception $e){
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
 
     }
 

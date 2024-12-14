@@ -16,6 +16,7 @@ use App\Models\SiteSetting;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Services\ProfanityService;
+use Illuminate\Support\Facades\Cache;
 use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
@@ -44,7 +45,15 @@ class BlogController extends Controller
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
-        $data['user_categories'] = $user->categories;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
+
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
         $tags = Tag::all();
@@ -65,7 +74,7 @@ class BlogController extends Controller
     public function store(Request $request)
     {
 
-      
+
         $validatedData = Validator::make($request->all(), [
             'summery' => 'required|max:255 ',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg',
@@ -206,17 +215,28 @@ class BlogController extends Controller
         if ($this->profanityService->containsProfanity($description_text)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('home')->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->summery)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('home')->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->title)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('home')->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+        }
+
+        // Eğer her şey doğru olursa cache blog verilerini sil
+
+        $total_blog_count = Blog::where('status',1)
+        ->where('is_confirmed',1)
+        ->count();
+        $page_count = ceil($total_blog_count/8); // Her sayfa 8 blog içerdiği için
+
+        for ($i=1; $i<=$page_count ; $i++) {
+            Cache::forget("blogs_page_{$i}");
         }
 
         return redirect()->route('home');
@@ -242,6 +262,15 @@ class BlogController extends Controller
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
+
         if ($user->liked_blogs->where('id', $blog_id)->first() == null) { // Eğer kullanıcını beğendiği bloğlar arasında bu id li bloğ yok ise
             $data['is_liked'] = 0;  // bunu kullanarak like butonunu değiştir
         } else {
@@ -254,7 +283,7 @@ class BlogController extends Controller
             $data['is_saved'] = 1;
         }
 
-        $data['user_categories'] = $user->categories;
+
 
         $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
         $data['comments'] = Comment::with('user')->where('blog_id', $blog_id)
@@ -283,7 +312,15 @@ class BlogController extends Controller
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
-        $data['user_categories'] = $user->categories;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
+
         $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
@@ -514,19 +551,27 @@ class BlogController extends Controller
         if ($this->profanityService->containsProfanity($description_text)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error' , ' description Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('profile.show')->with('error' , ' description Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->summery)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error' , 'summery Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('profile.show')->with('error' , 'summery Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->title)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error' , 'title Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('profile.show')->with('error' , 'title Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
 
+        $total_blog_count = Blog::where('status',1)
+        ->where('is_confirmed',1)
+        ->count();
+        $page_count = ceil($total_blog_count/8); // Her sayfa 8 blog içerdiği için
+
+        for ($i=1; $i<=$page_count ; $i++) {
+            Cache::forget("blogs_page_{$i}");
+        }
 
         if ($isSaved) {
             return redirect()->route('profile.show')->with('success', 'Blog updated successfully');

@@ -90,15 +90,21 @@ class HomeController extends Controller
             ->get();  // status 0 aktif
         });
 
-
-        $user_id = Auth::user()->id;
+        $user_id = Auth::id();
+        $user = User::with('categories')->find($user_id);
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
-        $user_categories = [];
-        foreach ($user->categories as $category){
-            $user_categories[]=$category;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
         }
+        $data['user_categories'] = $user_categories;
+
+
 
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
@@ -121,7 +127,7 @@ class HomeController extends Controller
         ->paginate(6);
 
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
-        $data['selectedCategory'] = Category::find($id);
+        $selected = Category::find($id);
 
         $data['recent_blogs'] = Blog::where('status',1)
         ->where('is_confirmed',1)
@@ -139,16 +145,18 @@ class HomeController extends Controller
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
-        $user_category_name = [];
-        foreach ($user->categories as $category){
-            $user_category_name[] = $category->name;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
         }
-
-        $data['user_categories'] = $user->categories;
-        $selected = $data['selectedCategory'];
-
+        $data['user_categories'] = $user_categories;
+        $data['selectedCategory'] = $selected;
+        $user_categories_ids[] = $user->categories->pluck('id')->toArray();
         $buttonText = "";
-        if (in_array($selected->name,$user_category_name)){
+        if (in_array($selected->id,$user_categories_ids[0])){
             $buttonText = '✓';
         }else{
             $buttonText  = 'ADD';
@@ -174,7 +182,7 @@ class HomeController extends Controller
         $validatedData = Validator::make($request->all(), [
             'profile_name'=>'required | max:20',
             'skills' => 'nullable | max:100',
-            'photo' => 'image|mimes:jpeg,png,JPEG,JPG,jpg,gif,svg|max:10000',
+            'photo' => 'image|mimes:jpeg,png,JPEG,JPG,jpg,gif,svg|max:10000|nullable',
             'gender'=>'required',
         ]);
 
@@ -191,11 +199,12 @@ class HomeController extends Controller
         }
 
 
-
+        $user = Auth::user();
         $profile = New Profile;
         $profile->profile_name = $request->profile_name;
+        $user->gender = $request->gender;
         $profile->status = true;
-        $profile->user_id = Auth::id();
+        $profile->user_id = $user->id;
 
         $user = Auth::user();
         $user->bio = $request->bio;
@@ -207,6 +216,8 @@ class HomeController extends Controller
             $filename = time() . '.' . $file->getClientOriginalName();
             $file->move($file_path, $filename);
             $user->photo = $filename;
+        }else{// gender 1 : kadın, 0:erkek
+            $user->photo = $request->gender ? 'Default_pfp_women.png':'Default_pfp.jpg';
         }
         $user->save();
         $profile->save();
@@ -263,15 +274,18 @@ class HomeController extends Controller
     public function add_more_categories(){
         $user = Auth::user();
         $user = User::with('categories')->find($user->id);
-        $user_categories = [];
-        foreach ($user->categories as $category){
-            $user_categories[]=$category;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
         }
+        $data['user_categories'] = $user_categories;
         $data['site_setting'] = SiteSetting::first();
 
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
-        $data['user_categories'] = $user_categories;
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
         return view('Normal_Kullanıcı.Add_category',$data);
     }
@@ -298,23 +312,20 @@ class HomeController extends Controller
 
         $user_id = Auth::user()->id;
         $user = User::with('categories')->find($user_id);
-        $user_categories = [];
-        foreach ($user->categories as $category){
-            $user_categories[]=$category;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
         }
+        $data['user_categories'] = $user_categories;
         $data['site_setting'] = SiteSetting::first();
 
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
-        $data['user_categories'] = $user_categories;
         $all_notifications = $user->notifications()->where('status',true)->orderBy('created_at','desc')->paginate(15);
-
-        $cover_images = [];
-        /* foreach($all_notifications as $notifi){
-            $blog = Blog::find($notifi->mentioned_id);
-            $cover_images[] = $blog->cover_photo;
-        } */
 
         $data['all_notifications'] = $all_notifications;
 

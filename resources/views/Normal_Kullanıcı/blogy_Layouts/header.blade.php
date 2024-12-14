@@ -18,7 +18,7 @@
                 @if (isset($user_categories))
                     @foreach ($user_categories as $category)
                         <a href="{{ route('show.blogs', $category->id) }}">
-                            {{ $category->name }}({{ \App\Models\Blog::where('category_id', $category->id)->where('status', 1)->count() }})
+                            {{ $category->name }}({{ $category->blogs_count }})
                         </a>
                     @endforeach
                     <hr class="custom-hr">

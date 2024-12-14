@@ -57,8 +57,8 @@
         }
     </style>
 
-     <!-- image cropper css -->
-     <style>
+    <!-- image cropper css -->
+    <style>
         .label {
             cursor: pointer;
         }
@@ -67,11 +67,12 @@
             max-width: 70%;
         }
 
-        #modal{
+        #modal {
             z-index: 1500;
         }
-        @media screen and (max-width: 700px){
-            #modal{
+
+        @media screen and (max-width: 700px) {
+            #modal {
                 width: 90%;
                 left: 5%;
             }
@@ -89,46 +90,55 @@
             margin: 0;
             padding: 0;
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f2f5;
             width: 100%;
         }
+
         .container {
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
         }
+
         .profile-form {
             background-color: #fff;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .profile-image {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .profile-image img {
             width: 100%;
             height: auto;
             object-fit: cover;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
+
         .form-control {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
         .btn {
             display: block;
             width: 100%;
@@ -139,22 +149,27 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
+
         .btn-primary {
             background-color: #1877f2;
             color: white;
         }
+
         .btn-warning {
             background-color: #f0ad4e;
             color: white;
         }
+
         .button-group {
             margin-top: 20px;
         }
+
         @media (min-width: 481px) {
             .button-group {
                 display: flex;
                 justify-content: space-between;
             }
+
             .btn {
                 width: 48%;
             }
@@ -237,16 +252,10 @@
             <div class="profile-image ">
                 <label class=" mb-4  label" data-toggle="tooltip" title=""
                     data-original-title="CHOOSE PROFILE IMAGE" aria-describedby="tooltip480018">
+                    <img class="rounded "
+                        style="width: 100%; height:100%; border-radius:50%; box-shadow: 0 8px 16px rgba(8, 69, 175, 0.5);"
+                        id="avatar" src="{{ asset('uploads/' . $user->photo) }}" alt="avatar">
 
-                    @if ($user->photo)
-                        <img class="rounded "
-                            style="width: 100%; height:100%; border-radius:50%; box-shadow: 0 8px 16px rgba(8, 69, 175, 0.5);"
-                            id="avatar" src="{{ asset('uploads/' . $user->photo) }}" alt="avatar">
-                    @else
-                        <img class="rounded "
-                            style="width: 100%; height:100%; border-radius:50%; box-shadow: 0 8px 16px rgba(8, 69, 175, 0.5);"
-                            id="avatar" src="{{ '/img/Default_pfp.jpg' }}" alt="avatar">
-                    @endif
                     <input type="file" class="sr-only" id="input" name="photo" accept="image/*">
                     <input type="hidden" id="cropped-image" name="photo">
                 </label>
@@ -291,8 +300,8 @@
             <div class="form-group">
                 <label for="gender">Gender</label>
                 <select name="gender" id="gender" class="form-control" required>
-                    <option value="1" {{ $user->gender == 1 ? 'selected' : '' }}>Male</option>
-                    <option value="0" {{ $user->gender == 0 ? 'selected' : '' }}>Female</option>
+                    <option value="0" {{ $user->gender == 0 ? 'selected' : '' }}>Male</option>
+                    <option value="1" {{ $user->gender == 1 ? 'selected' : '' }}>Female</option>
                 </select>
             </div>
 
@@ -446,6 +455,9 @@
         });
     </script>
 
+    
+
+    {{-- user delete alert --}}
     <script>
         function sweet_alert() {
             Swal.fire({

@@ -609,7 +609,6 @@
 
         textInput.addEventListener('input', () => {
             updateCharCount();
-            textInput.value = textInput.value.trim();
         });
         textInput.addEventListener('focus', () => {
             charCount.style.display = 'block';

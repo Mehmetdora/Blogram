@@ -245,6 +245,7 @@
         </svg>
     </div>
     @include('Normal_Kullanıcı.blogy_Layouts.spinner')
+    @include('Kayıtsız_Görüntülemeler.layouts._message')
 
 
 
@@ -259,7 +260,7 @@
 
                     <img class="rounded "
                         style="width: 100%; height:100%; border-radius:50%; box-shadow: 0 8px 16px rgba(8, 69, 175, 0.5);"
-                        id="avatar" src="{{ '/img/Default_pfp.jpg' }}" alt="avatar">
+                        id="avatar" src="{{ '/uploads/Default_pfp.jpg' }}" alt="avatar">
                     <input type="file" class="sr-only" id="input" name="photo" accept="image/*">
                     <input type="hidden" id="cropped-image" name="photo">
                 </label>
@@ -342,8 +343,8 @@
                 </div>
                 <div class="col-md-2 text-center mb-4">
                     <a href="#"> <img
-                            src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}"
-                            alt="Logo" class="logo-img">
+                            src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}" alt="Logo"
+                            class="logo-img">
                     </a>
                 </div>
                 {{-- <div class="col-md-5 text-md-right text-center mb-4">
@@ -547,6 +548,24 @@
                     }, 'image/jpeg');
                 }
             });
+        });
+    </script>
+
+    {{-- Default pfp --}}
+    <script>
+        const pfp = document.getElementById('avatar');
+        const gender_s = document.getElementById('gender');
+
+        gender_s.addEventListener('change', () => {
+            if (gender_s.value == 1 && pfp.src == 'http://127.0.0.1:8000/uploads/Default_pfp.jpg') {
+                console.log('erkek resmi varken kız seçildi');
+                pfp.src = "{{ asset('uploads/Default_pfp_women.png') }}";
+
+            }else if (gender_s.value == 0 && pfp.src == 'http://127.0.0.1:8000/uploads/Default_pfp_women.png') {
+                console.log('kız resmi varken erkek seçildi');
+                pfp.src = "{{ asset('uploads/Default_pfp.jpg') }}";
+
+            }
         });
     </script>
 

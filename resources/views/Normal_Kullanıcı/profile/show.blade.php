@@ -57,13 +57,7 @@
         <div class="container">
             <div class="row no-gutters justify-content-center">
                 <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
-
-                    @if ($user->photo)
-                        <img src="{{ asset('uploads/' . $user->photo) }}" class="author-image">
-                    @else
-                        <img class="author-image" src="/img/Default_pfp.jpg">
-                    @endif
-
+                    <img src="{{ asset('uploads/' . $user->photo) }}" class="author-image">
                 </div>
                 <div class="col-md-8 col-lg-6 text-center text-md-left">
 
@@ -115,11 +109,10 @@
                     stroke="#040306" stroke-miterlimit="10" />
             </g>
             <defs>
-                <filter id="filter0_d" x="0.905273" y="0" width="37.8663" height="38.1979"
-                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <filter id="filter0_d" x="0.905273" y="0" width="37.8663" height="38.1979" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
                     <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                    <feColorMatrix in="SourceAlpha" type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
                     <feOffset dy="4" />
                     <feGaussianBlur stdDeviation="2" />
                     <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
@@ -205,9 +198,8 @@
                                             class="btn btn-outline-primary">
                                             Read More
                                         </a>
-                                        <button
-                                            class="btn btn-outline-primary dropdown-toggle"
-                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
                                             More
                                         </button>
                                         <ul class="dropdown-menu">

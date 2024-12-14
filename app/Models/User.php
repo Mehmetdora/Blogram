@@ -84,6 +84,11 @@ class User extends Authenticatable
         $user = Auth::user();
         return $user->photo;
     }
+    public function getDefaultPhoto(){
+        return $this->gender
+            ? asset('img/Default_pfp_women.png')
+            : asset('img/Default_pfp.jpg');
+    }
 
 
 }

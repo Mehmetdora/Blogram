@@ -21,7 +21,7 @@ class ProfileController extends Controller
         $data['site_setting'] = Cache::remember('site_setting',now()->addSeconds(60*60*3), function() {
             return SiteSetting::first();
         });
-        
+
 
         $data['user'] = Auth::user();
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
@@ -31,11 +31,18 @@ class ProfileController extends Controller
         ->orderBy('created_at', 'desc')
         ->paginate(5);
 
-        $user_id = Auth::user()->id;
+        $user_id = Auth::id();
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
-        $data['user_categories'] = $user->categories;
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
 
@@ -46,10 +53,17 @@ class ProfileController extends Controller
         $user_id = Auth::user()->id;
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
-        $user = User::with('categories')->find($user_id);
         $data['site_setting'] = SiteSetting::first();
 
-        $data['user_categories'] = $user->categories;
+        $user = User::with('categories')->find($user_id);
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
         $data['user'] = Auth::user();
         $data['notifications'] = Auth::user()->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
@@ -88,7 +102,9 @@ class ProfileController extends Controller
             $file->move($file_path, $filename);
 
             if ($oldUserPicture && file_exists(public_path('uploads/' . $oldUserPicture))) {        // FOTOĞRAF DEĞİŞİNCE ESKİ FOTOĞRAFI SİLİYORUZ
-                unlink(public_path('uploads/' . $oldUserPicture));  // unlink ile fotoğraf silinir
+                if($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg'){ // default resim kontrolü değilse sil
+                    unlink(public_path('uploads/' . $oldUserPicture));  // unlink ile fotoğraf silinir
+                }
             }
 
             $user['photo'] = $filename;
@@ -115,7 +131,14 @@ class ProfileController extends Controller
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
-        $data['user_categories'] = $user->categories; // profilin takip ettiği kategoriler
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
 
         $blogs = Blog::with('liked_users')
         ->where('user_id', $id)
@@ -168,9 +191,15 @@ class ProfileController extends Controller
         // Önce profili bul ama user üzerinde bulmada id kullanarak bul
         //for içinde ilişkili olduğu categorileri dön ve işlemlerini yap
         $user = User::with('categories')->find($user_id);
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
 
-        $data['user_categories'] = $user->categories;
-        $user = Auth::user();
         $data['user'] = $user;
         $data['notifications'] = Auth::user()->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = $user->notifications->whereNull('read_at')->count();

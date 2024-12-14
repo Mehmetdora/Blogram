@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 
 class UnsignedPagesController extends Controller
@@ -12,6 +13,7 @@ class UnsignedPagesController extends Controller
     public function welcome()
     {
         $data['title'] = 'welcome';
+        $data['site_setting'] = SiteSetting::first();
 
         return view('Kayıtsız_Görüntülemeler.welcome',$data);
     }
@@ -19,6 +21,7 @@ class UnsignedPagesController extends Controller
     public function about()
     {
         $data['title'] = 'about';
+        $data['site_setting'] = SiteSetting::first();
 
         return view('Kayıtsız_Görüntülemeler.About', $data);
     }
@@ -26,6 +29,8 @@ class UnsignedPagesController extends Controller
     public function blogs()
     {
         $data['title'] = 'blogs';
+        $data['site_setting'] = SiteSetting::first();
+
         $data['blogs'] = Blog::where('status', 1)
         ->where('is_confirmed',1)
         ->orderBy('created_at', 'desc')
@@ -56,6 +61,7 @@ class UnsignedPagesController extends Controller
     public function contact()
     {
         $data['title'] = 'contact';
+        $data['site_setting'] = SiteSetting::first();
 
         return view('Kayıtsız_Görüntülemeler.Contact', $data);
     }

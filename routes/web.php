@@ -73,6 +73,8 @@ Route::controller(AuthController::class)
         Route::get('register', 'register')->name('register');
         Route::post('register', 'create_user')->name('create_user');
 
+        Route::post('verify-old-user','verify_old_user')->name('verify_old_user');
+
         Route::get('forgot-password', 'forgot')->name('forgot-password');
         Route::post('forgot-password', 'forgot_password')->name('forgot-password-btn');
         Route::get('reset/{token}', 'reset')->name('reset-password');

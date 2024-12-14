@@ -176,11 +176,11 @@ class PendingBlogsController extends Controller
         }
 
         $blog = Blog::find($request->blog_id);
+        $blog_user = $blog->user;
         $blog->status = 1;
         $blog->title = request('title');
         $blog->summery = request('summery');
         $blog->category_id = request('category_id');
-        $blog->user_id = Auth::user()->id;
 
 
         $description = $request->description;
@@ -301,8 +301,7 @@ class PendingBlogsController extends Controller
             $blog->cover_photo = $filename;
         }
 
-        $user = Auth::user();
-        $isSaved = $user->blogs()->save($blog);
+        $isSaved = $blog_user->blogs()->save($blog);
 
         if ($isSaved) {
             return redirect()->route('detail-pending_blog',$blog->id)->with('success', 'Blog updated successfully');
