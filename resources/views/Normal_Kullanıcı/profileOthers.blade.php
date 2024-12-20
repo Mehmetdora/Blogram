@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('style/') }}/reader/css/style.css" media="screen">
     <link rel="stylesheet" href="{{ asset('style/reader/css/blogStyle.css') }}">
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
 
 
     @include('Normal_Kullanıcı.blogy_Layouts.header_style')
@@ -45,8 +45,7 @@
     @include('Normal_Kullanıcı.blogy_Layouts.header')
 
 
-    <div id="searchResults" class="search-results"
-        style="display: none; width:50%; margin-left:25%; margin-top:80px">
+    <div id="searchResults" class="search-results" style="display: none; width:50%; margin-left:25%; margin-top:80px">
 
     </div>
 
@@ -64,7 +63,7 @@
                 </div>
                 <div class="col-md-8 col-lg-6 text-center text-md-left">
                     <h3 class="mb-2">{{ $user->name }}</h2>
-                        <strong class="mb-2 d-block">{{$user->skill}}</strong>
+                        <strong class="mb-2 d-block">{{ $user->skill }}</strong>
                         <div class="content">
                             <p>{{ $user->bio }}</p>
 
@@ -93,8 +92,8 @@
                 stroke="#040306" stroke-miterlimit="10" />
             <path class="path"
                 d="M10.4966 11.1283L10.4746 28.8792L28.2255 28.9012L28.2475 11.1503L10.4966 11.1283Z" />
-            <path d="M20.0078 1.62949L19.9858 19.3804L37.7367 19.4024L37.7587 1.65149L20.0078 1.62949Z"
-                stroke="#040306" stroke-miterlimit="10" />
+            <path d="M20.0078 1.62949L19.9858 19.3804L37.7367 19.4024L37.7587 1.65149L20.0078 1.62949Z" stroke="#040306"
+                stroke-miterlimit="10" />
         </svg>
 
 
@@ -108,11 +107,10 @@
                     stroke="#040306" stroke-miterlimit="10" />
             </g>
             <defs>
-                <filter id="filter0_d" x="0.905273" y="0" width="37.8663" height="38.1979"
-                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                <filter id="filter0_d" x="0.905273" y="0" width="37.8663" height="38.1979" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
                     <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                    <feColorMatrix in="SourceAlpha" type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
                     <feOffset dy="4" />
                     <feGaussianBlur stdDeviation="2" />
                     <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
@@ -163,7 +161,12 @@
                                     <ul class="card-meta list-inline">
 
                                         <li class="list-inline-item">
-                                            <i class="ti-timer"></i>2 Min To Read
+                                            <i class="ti-timer"></i>
+                                            @if ($blog->min_to_read < 1)
+                                                Less Then 1 Min To Read
+                                            @else
+                                                {{ $blog->min_to_read }} Min To Read
+                                            @endif
                                         </li>
                                         <li class="list-inline-item">
                                             <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}

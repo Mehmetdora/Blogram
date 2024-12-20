@@ -172,7 +172,7 @@
         }
     </style>
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
 
 </head>
 
@@ -343,8 +343,8 @@
                 </div>
                 <div class="col-md-2 text-center mb-4">
                     <a href="#"> <img
-                            src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}" alt="Logo"
-                            class="logo-img">
+                            src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}"
+                            alt="Logo" class="logo-img">
                     </a>
                 </div>
                 {{-- <div class="col-md-5 text-md-right text-center mb-4">
@@ -561,7 +561,7 @@
                 console.log('erkek resmi varken kız seçildi');
                 pfp.src = "{{ asset('uploads/Default_pfp_women.png') }}";
 
-            }else if (gender_s.value == 0 && pfp.src == 'http://127.0.0.1:8000/uploads/Default_pfp_women.png') {
+            } else if (gender_s.value == 0 && pfp.src == 'http://127.0.0.1:8000/uploads/Default_pfp_women.png') {
                 console.log('kız resmi varken erkek seçildi');
                 pfp.src = "{{ asset('uploads/Default_pfp.jpg') }}";
 

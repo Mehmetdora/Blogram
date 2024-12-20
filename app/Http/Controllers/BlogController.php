@@ -16,6 +16,7 @@ use App\Models\SiteSetting;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Services\ProfanityService;
+use App\Services\WordCounterService;
 use Illuminate\Support\Facades\Cache;
 use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Auth;
@@ -31,10 +32,12 @@ class BlogController extends Controller
 {
 
     protected $profanityService;
+    protected $total_word_count;
     // Controller yapıcısında ProfanityService'i enjekte etme
-    public function __construct(ProfanityService $profanityService)
+    public function __construct(ProfanityService $profanityService,WordCounterService $wordcounter)
     {
         $this->profanityService = $profanityService;
+        $this->total_word_count = $wordcounter;
     }
 
 
@@ -73,8 +76,6 @@ class BlogController extends Controller
 
     public function store(Request $request)
     {
-
-
         $validatedData = Validator::make($request->all(), [
             'summery' => 'required|max:255 ',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg',
@@ -92,8 +93,6 @@ class BlogController extends Controller
             // Hata mesajlarını kullanıcıya gösterin
             return redirect()->back()->with('error', $errors);
         }
-
-
 
 
         if($request->tags){
@@ -116,6 +115,13 @@ class BlogController extends Controller
             }
         }
 
+        // MİN_TO_READ CALCULATOR
+        $word_counter = new WordCounterService;
+        $total_word_count = $word_counter->countWordsInParagraphs($request->description);
+        $wordsPerMinute = 250; // Ortalama okuma hızı
+        $minToRead = ($total_word_count != 0) ? ($total_word_count/$wordsPerMinute) : 0 ;
+        $minToRead = ($minToRead<1) ? 0 : $minToRead; //eğer mintoread 0 dan az ise 0, büyükse kendi değeri
+
 
 
         $blog = new Blog();
@@ -127,6 +133,7 @@ class BlogController extends Controller
         $blog->like_count = 0;
         $blog->save_count = 0;
         $blog->comment_count = 0;
+        $blog->min_to_read = $minToRead;
 
 
 
@@ -195,6 +202,8 @@ class BlogController extends Controller
         $user->blogs()->save($blog);
         $request->tags && $blog->tags()->syncWithoutDetaching($saved_tags_id);// verilen array içindeki id'ler ile eğer ye
 
+
+        // gizli zararlı yazılımları bulma
         $domm = new DOMDocument();
         $sonuc = false;
         @$domm->loadHTML($description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -252,6 +261,8 @@ class BlogController extends Controller
         ->where('status', 1)
         ->where('is_confirmed',1)
         ->first();
+
+        //dd($blog->description);
 
         if (!$blog) {
             return redirect()->back()->with('error', 'Blog Bulunamadı!');
@@ -393,8 +404,14 @@ class BlogController extends Controller
                 }
             }
         }
+        $word_counter = new WordCounterService;
+        $total_word_count = $word_counter->countWordsInParagraphs($request->description);
+        $wordsPerMinute = 250; // Ortalama okuma hızı
+        $minToRead = ($total_word_count != 0) ? ($total_word_count/$wordsPerMinute) : 0 ;
+        $minToRead = ($minToRead<1) ? 0 : (int)$minToRead; //eğer mintoread 0 dan az ise 0, büyükse kendi değeri
 
 
+        $blog->min_to_read = $minToRead;
         $blog->status = 1;
         $blog->title = request('title');
         $blog->summery = request('summery');

@@ -25,7 +25,7 @@
 
     @livewireStyles
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
     @include('Normal_Kullanıcı.blogy_Layouts.header_style')
 
 </head>
@@ -126,7 +126,12 @@
                                                 <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
                                             </li>
                                             <li class="list-inline-item mb-0">
-                                                <i class="ti-timer"></i>2 Min To Read
+                                                <i class="ti-timer"></i>
+                                                @if ($blog->min_to_read < 1)
+                                                    Less Then 1 Min To Read
+                                                @else
+                                                    {{ $blog->min_to_read }} Min To Read
+                                                @endif
                                             </li>
                                         </ul>
                                     </div>

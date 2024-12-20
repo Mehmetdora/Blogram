@@ -26,7 +26,7 @@
 
 
 
-    <title>Blogy</title>
+    <title>{{ $site_setting->site_name }}</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -36,13 +36,14 @@
             overflow-y: auto;
 
         }
+
         .trend-blog-image {
             width: 85px;
             height: 85px;
         }
     </style>
 
-@include('Normal_Kullanıcı.blogy_Layouts.header_style')
+    @include('Normal_Kullanıcı.blogy_Layouts.header_style')
 
 </head>
 
@@ -153,7 +154,12 @@
                                             </a>
                                         </li>
                                         <li class="list-inline-item">
-                                            <i class="ti-timer"></i>3 Min To Read
+                                            <i class="ti-timer"></i>
+                                            @if ($blog->min_to_read < 1)
+                                                Less Then 1 Min To Read
+                                            @else
+                                                {{ $blog->min_to_read }} Min To Read
+                                            @endif
                                         </li>
                                         <li class="list-inline-item">
                                             <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}

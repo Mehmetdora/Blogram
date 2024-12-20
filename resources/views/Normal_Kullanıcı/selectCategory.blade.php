@@ -252,7 +252,7 @@
     </style>
 
 </head>
-<title>Blog Sayfası</title>
+<title>{{ $site_setting->site_name }}</title>
 
 <body>
     <header>

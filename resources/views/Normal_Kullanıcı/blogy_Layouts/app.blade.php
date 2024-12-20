@@ -69,7 +69,7 @@
                     @if (isset($user_categories))
                         @foreach ($user_categories as $category)
                             <a href="{{ route('show.blogs', $category->id) }}">
-                                {{$category->name}}({{$category->blogs_count}})
+                                {{ $category->name }}({{ $category->blogs_count }})
                             </a>
                         @endforeach
                         <hr class="custom-hr">
@@ -222,7 +222,12 @@
                                                 <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
                                             </li>
                                             <li class="list-inline-item mb-0">
-                                                <i class="ti-timer"></i>2 Min To Read
+                                                <i class="ti-timer"></i>
+                                                @if ($blog->min_to_read < 1)
+                                                    Less Then 1 Min To Read
+                                                @else
+                                                    {{ $blog->min_to_read }} Min To Read
+                                                @endif
                                             </li>
                                         </ul>
                                     </div>
@@ -257,7 +262,12 @@
                                         </a>
                                     </li>
                                     <li class="list-inline-item">
-                                        <i class="ti-timer"></i>2 Min To Read
+                                        <i class="ti-timer"></i>
+                                        @if ($blog->min_to_read < 1)
+                                            Less Then 1 Min To Read
+                                        @else
+                                            {{ $blog->min_to_read }} Min To Read
+                                        @endif
                                     </li>
                                     <li class="list-inline-item">
                                         <i class="ti-calendar"></i>{{ $populer_post->created_at->format('d-m-Y') }}
@@ -326,7 +336,12 @@
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <i class="ti-timer"></i>3 Min To Read
+                                                <i class="ti-timer"></i>
+                                                @if ($blog->min_to_read < 1)
+                                                    Less Then 1 Min To Read
+                                                @else
+                                                    {{ $blog->min_to_read }} Min To Read
+                                                @endif
                                             </li>
                                             <li class="list-inline-item">
                                                 <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
@@ -495,7 +510,12 @@
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <i class="ti-timer"></i>2 Min To Read
+                                                <i class="ti-timer"></i>
+                                                @if ($editors_blog->min_to_read < 1)
+                                                    Less Then 1 Min To Read
+                                                @else
+                                                    {{ $editors_blog->min_to_read }} Min To Read
+                                                @endif
                                             </li>
                                             <li class="list-inline-item">
                                                 <i

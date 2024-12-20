@@ -26,7 +26,7 @@
 
 
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
     @include('Normal_Kullanıcı.blogy_Layouts.header_style')
 
     {{-- Tags Badge --}}
@@ -679,7 +679,12 @@
                                 </a>
                             </li>
                             <li class="list-inline-item">
-                                <i class="ti-timer"></i>2 Min To Read
+                                <i class="ti-timer"></i>
+                                @if ($blog->min_to_read < 1)
+                                    Less Then 1 Min To Read
+                                @else
+                                    {{ $blog->min_to_read }} Min To Read
+                                @endif
                             </li>
                             <li class="list-inline-item">
                                 <i
@@ -820,7 +825,9 @@
                                                             src="/img/Default_pfp.jpg" alt="Author Image">
                                                     @endif
                                                     <div class="comment-meta">
-                                                        <a href="{{route('profile.other.show',$comment->user->id)}}" style="color: black" class="comment-author">{{ $comment->user->name }}</a>
+                                                        <a href="{{ route('profile.other.show', $comment->user->id) }}"
+                                                            style="color: black"
+                                                            class="comment-author">{{ $comment->user->name }}</a>
                                                         <div class="comment-time">
                                                             {{ $comment->created_at->diffForHumans() }}</div>
                                                     </div>
@@ -860,7 +867,9 @@
                                                                             alt="Author Image">
                                                                     @endif
                                                                     <div class="comment-meta">
-                                                                        <a href="{{route('profile.other.show',$reply->user->id)}}" style="color: black" class="comment-author">
+                                                                        <a href="{{ route('profile.other.show', $reply->user->id) }}"
+                                                                            style="color: black"
+                                                                            class="comment-author">
                                                                             {{ $reply->user->name }}</a>
                                                                         <div class="comment-time">
                                                                             {{ $reply->created_at->diffForHumans() }}

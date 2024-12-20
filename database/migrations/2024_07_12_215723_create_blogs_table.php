@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('cover_photo')->nullable(false);
             $table->string('summery')->nullable(false);
             $table->text('description')->nullable(false);
+            $table->integer('min_to_read')->default(0)->comment('blogun ortalama okunma süresi');
             $table->unsignedInteger('like_count');
             $table->unsignedInteger('comment_count');
             $table->unsignedInteger('save_count');

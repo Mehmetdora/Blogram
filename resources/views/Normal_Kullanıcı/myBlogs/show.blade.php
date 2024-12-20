@@ -37,7 +37,7 @@
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css" />
 
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
 
     <style>
         .notification-dropdown {

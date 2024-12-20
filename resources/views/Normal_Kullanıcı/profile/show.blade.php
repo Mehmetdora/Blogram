@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('style/') }}/reader/css/style.css" media="screen">
     <link rel="stylesheet" href="{{ asset('style/reader/css/blogStyle.css') }}">
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
 
 
 
@@ -167,7 +167,12 @@
                                     <ul class="card-meta list-inline">
 
                                         <li class="list-inline-item">
-                                            <i class="ti-timer"></i>2 Min To Read
+                                            <i class="ti-timer"></i>
+                                            @if ($blog->min_to_read < 1)
+                                                Less Then 1 Min To Read
+                                            @else
+                                                {{ $blog->min_to_read }} Min To Read
+                                            @endif
                                         </li>
                                         <li class="list-inline-item">
                                             <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}

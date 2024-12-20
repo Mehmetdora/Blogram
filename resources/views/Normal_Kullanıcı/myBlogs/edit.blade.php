@@ -29,13 +29,9 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-    <script type="text/javascript" src="/Jodit/jodit.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
-
-
-    <title>Blogy</title>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -441,8 +437,8 @@
         }
     </style>
 
-
-    @include('Normal_Kullanıcı.blogy_Layouts.header_style')
+<title>{{ $site_setting->site_name }}</title>
+@include('Normal_Kullanıcı.blogy_Layouts.header_style')
 
 </head>
 
@@ -562,7 +558,8 @@
             <div class="form-group">
                 <label for="summery" text-center">Summery</label>
                 <textarea name="summery" maxlength="255" rows="3" required id="summery">{{ $blog->summery }}</textarea>
-                <label id="charCount" style="display:none">{{ 255 - strlen($blog->summery) }} characters remaining</label>
+                <label id="charCount" style="display:none">{{ 255 - strlen($blog->summery) }} characters
+                    remaining</label>
             </div>
 
             <div class="category-select form-group">
@@ -745,7 +742,7 @@
         });
     </script>
 
-
+    <script type="text/javascript" src="/Jodit/jodit.min.js"></script>
     <script>
         const editor = Jodit.make('#editor', {
             "uploader": {

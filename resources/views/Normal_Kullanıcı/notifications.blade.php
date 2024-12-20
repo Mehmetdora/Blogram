@@ -25,7 +25,7 @@
 
     @livewireStyles
 
-    <title>Blogram</title>
+    <title>{{ $site_setting->site_name }}</title>
     @include('Normal_Kullanıcı.blogy_Layouts.header_style')
 
 </head>

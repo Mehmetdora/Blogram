@@ -17,12 +17,14 @@ class SearchComponent extends Component
 
         // Blog arama
         $resultsBlog = Blog::where('status', 1)
+        ->where('is_confirmed',1)
         ->where('title', 'like', '%' . $this->search . '%')
         ->take(3)  // Max 3 blog göster
         ->get();
 
         // User arama
         $resultsUser = User::where('status', 0)
+        ->where('is_delete',0)
         ->where('name', 'like', '%' . $this->search . '%')
         ->take(3)  // Max 3 kullanıcı göster
         ->get();
