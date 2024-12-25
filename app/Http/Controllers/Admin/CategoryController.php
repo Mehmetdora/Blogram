@@ -22,7 +22,7 @@ class CategoryController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.category.add', $data);
+        return view('Management_pages.category.add', $data);
     }
 
     public function insert_category(Request $request)
@@ -50,7 +50,7 @@ class CategoryController extends Controller
         ->where('is_confirmed',0)->count();
 
         $data['getRecord'] = Category::find($id);
-        return view('Admin.category.edit', $data);
+        return view('Management_pages.category.edit', $data);
     }
 
     public function update_category(Request $request, $id)

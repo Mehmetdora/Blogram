@@ -39,7 +39,7 @@ class RegisterMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'Normal_Kullanıcı.emails.register',
+            markdown: 'Authenticated_pages.emails.register',
         );
     }
 

@@ -23,7 +23,7 @@ class UserController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.user.add', $data);
+        return view('Management_pages.user.add', $data);
     }
 
     public function insert_user(Request $request)
@@ -67,7 +67,7 @@ class UserController extends Controller
         ->where('is_confirmed',0)->count();
 
         $data['getRecord'] = User::getSingle($id);
-        return view('Admin.user.edit', $data);
+        return view('Management_pages.user.edit', $data);
     }
 
     public function update_user(Request $request, $id)
@@ -125,7 +125,7 @@ class UserController extends Controller
         ->where('is_confirmed',0)->count();
 
         $data['getUser'] = User::getSingle(Auth::user()->id);
-        return view('Admin.profile.account_settings', $data);
+        return view('Management_pages.profile.account_settings', $data);
     }
 
     public function UpdateAccountSetting(Request $request)

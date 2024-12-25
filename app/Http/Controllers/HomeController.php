@@ -31,6 +31,8 @@ class HomeController extends Controller
             return SiteSetting::first();
         });
 
+
+
         // VERİLERİ PAGİNATE İLE GÖSTERDİĞİMİZ İÇİN AYNI ŞEKİLDE CACHE'E DE HER SAYFA İÇİN AYRI OLARAK KAYDETMELİYİZ
         //VERİLER REMEMBER İLE VARSA CACHE'DEN GETİRİLİYOR YOKSA DB'DEN GELİR
         $page = request()->get('page', 1); // Varsayılan olarak 1. sayfa
@@ -113,7 +115,7 @@ class HomeController extends Controller
         $data['user_categories'] = $user_categories;
 
 
-        return view('Normal_Kullanıcı.home',$data);
+        return view('Authenticated_pages.home',$data);
     }
 
     public function show_blogs($id)
@@ -166,14 +168,14 @@ class HomeController extends Controller
         $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
 
 
-        return view('Normal_Kullanıcı.blogs_of_category',$data);
+        return view('Authenticated_pages.blogs_of_category',$data);
     }
 
     public function create_profile()
     {
         $data['site_setting'] = SiteSetting::first();
 
-        return view('Normal_Kullanıcı.createProfile',$data);
+        return view('Authenticated_pages.createProfile',$data);
     }
 
     public function store_profile(Request $request)
@@ -232,7 +234,7 @@ class HomeController extends Controller
     public function select_category(){
         $data['site_setting'] = SiteSetting::first();
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
-        return view('Normal_Kullanıcı.selectCategory',$data);
+        return view('Authenticated_pages.selectCategory',$data);
     }
     public function selected_category(Request $request)
     {
@@ -287,7 +289,7 @@ class HomeController extends Controller
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
-        return view('Normal_Kullanıcı.Add_category',$data);
+        return view('Authenticated_pages.Add_category',$data);
     }
 
     public function added_more_categories(Request $request){
@@ -329,7 +331,7 @@ class HomeController extends Controller
 
         $data['all_notifications'] = $all_notifications;
 
-        return view('Normal_Kullanıcı.notifications',$data);
+        return view('Authenticated_pages.notifications',$data);
     }
 
 

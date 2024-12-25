@@ -15,7 +15,7 @@ class UnsignedPagesController extends Controller
         $data['title'] = 'welcome';
         $data['site_setting'] = SiteSetting::first();
 
-        return view('Kayıtsız_Görüntülemeler.welcome',$data);
+        return view('Public_pages.welcome',$data);
     }
 
     public function about()
@@ -23,7 +23,7 @@ class UnsignedPagesController extends Controller
         $data['title'] = 'about';
         $data['site_setting'] = SiteSetting::first();
 
-        return view('Kayıtsız_Görüntülemeler.About', $data);
+        return view('Public_pages.About', $data);
     }
 
     public function blogs()
@@ -38,14 +38,14 @@ class UnsignedPagesController extends Controller
 
 
 
-        return view('Kayıtsız_Görüntülemeler.Blogs', $data);
+        return view('Public_pages.Blogs', $data);
     }
 
     public function teams()
     {
         $data['title'] = 'teams';
 
-        return view('Kayıtsız_Görüntülemeler.Teams', $data);
+        return view('Public_pages.Teams', $data);
     }
 
     public function gallery()
@@ -55,7 +55,7 @@ class UnsignedPagesController extends Controller
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
 
 
-        return view('Kayıtsız_Görüntülemeler.Gallery', $data);
+        return view('Public_pages.Gallery', $data);
     }
 
     public function contact()
@@ -63,6 +63,6 @@ class UnsignedPagesController extends Controller
         $data['title'] = 'contact';
         $data['site_setting'] = SiteSetting::first();
 
-        return view('Kayıtsız_Görüntülemeler.Contact', $data);
+        return view('Public_pages.Contact', $data);
     }
 }

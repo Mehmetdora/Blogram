@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TermsConditionsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
@@ -19,6 +20,9 @@ use App\Http\Controllers\Admin\TagController;
 // profil photo kare
 // Cropper.js paketi
 // Jodit Texteditor
+
+
+
 
 
 
@@ -120,7 +124,7 @@ Route::controller(CommentController::class)
 
 Route::group(['middleware' => 'auth_admin'], function () {
 
-    // Admin işlemleri
+    // Management_pages işlemleri
     Route::controller(AdminController::class)->group(function () {
         Route::get('panel/dashboard', 'dashboard')->name('dashboard');
         Route::get('panel/users', 'users')->name('users');
@@ -134,7 +138,7 @@ Route::group(['middleware' => 'auth_admin'], function () {
         Route::post('panel/website/settings/saved','save_site_settings')->name('save_site_settings');
     });
 
-    // Admin User işlemleri
+    // Management_pages User işlemleri
     Route::controller(UserController::class)->group(function () {
         Route::get('panel/user/add', 'add_user')->name('add-user');
         Route::post('panel/user/added', 'insert_user')->name('added-user');
@@ -145,7 +149,7 @@ Route::group(['middleware' => 'auth_admin'], function () {
         Route::post('panel/user/UpdateAccount-Setting', 'UpdateAccountSetting')->name('UpdateAccountSetting');
     });
 
-    // Admin Category işlemleri
+    // Management_pages Category işlemleri
     Route::controller(CategoryController::class)->group(function () {
         Route::get('panel/category/add', 'add_category')->name('add-category');
         Route::post('panel/category/added', 'insert_category')->name('added-category');
@@ -154,7 +158,7 @@ Route::group(['middleware' => 'auth_admin'], function () {
         Route::post('panel/category/delete', 'delete_category')->name('delete-category');
     });
 
-    // Admin Blog işlemleri
+    // Management_pages Blog işlemleri
     Route::controller(BlogCommentController::class)->group(function () {
         Route::get('panel/blog/user/{id}', 'list_user_blog')->name('list-user-blog');
         Route::get('panel/blog/search', 'search_blog')->name('search_blog');
@@ -167,7 +171,7 @@ Route::group(['middleware' => 'auth_admin'], function () {
         Route::post('panel/blog/comment/delete', 'delete_comment')->name('delete-comment');
     });
 
-     // Admin Onaylanmamış bloglar işlemleri
+     // Management_pages Onaylanmamış bloglar işlemleri
      Route::controller(PendingBlogsController::class)->group(function () {
         Route::get('panel/pending-blogs/search', 'search_blog')->name('search_pending_blog');
         Route::get('panel/pending-blogs/detail/{id}', 'detail_blog')->name('detail-pending_blog');
@@ -195,3 +199,9 @@ Route::get('blogs', [UnsignedPagesController::class, 'blogs'])->name('blogs');
 //Route::get('teams', [UnsignedPagesController::class, 'teams'])->name('teams');
 //Route::get('gallery', [UnsignedPagesController::class, 'gallery'])->name('gallery');
 Route::get('contact', [UnsignedPagesController::class, 'contact'])->name('contact');
+
+
+Route::controller(TermsConditionsController::class)->group(function () {
+     Route::get('terms-conditions', 'terms')->name('terms-conditions');
+     Route::get('privacy-policy', 'privacy')->name('privacy-policy');
+});

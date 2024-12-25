@@ -102,7 +102,7 @@ class AuthController extends Controller
     {
         $data['site_setting'] = SiteSetting::first();
 
-        return view( 'Kayıtsız_Görüntülemeler.auth.login',$data);
+        return view( 'Public_pages.auth.login',$data);
 
     }
 
@@ -174,12 +174,12 @@ class AuthController extends Controller
     public function register()
     {
         $data['site_setting'] = SiteSetting::first();
-        return view('Kayıtsız_Görüntülemeler.auth.register',$data);
+        return view('Public_pages.auth.register',$data);
 
     }
     public function forgot()
     {
-        return view('Kayıtsız_Görüntülemeler.auth.forgot');
+        return view('Public_pages.auth.forgot');
 
     }
 
@@ -201,7 +201,7 @@ class AuthController extends Controller
         $user = User::where('remember_token' , '=' , $token)->first();
         if(!empty($user)){
             $data['user'] = $user;
-            return view('Kayıtsız_Görüntülemeler.auth.reset');
+            return view('Public_pages.auth.reset');
         }
         else{
             abort(404);
@@ -252,7 +252,7 @@ class AuthController extends Controller
             $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınız ile yeni bir profil oluşturarak devam etmek istiyor musunuz?';
             $data['site_setting'] = SiteSetting::first();
 
-            return view('Kayıtsız_Görüntülemeler.auth.register',$data);
+            return view('Public_pages.auth.register',$data);
         }else{
             request()->validate([
                 'email' => 'required|email|max:255|unique:users',

@@ -24,7 +24,7 @@ class BlogCommentController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view("Admin.blog.add",$data);
+        return view("Management_pages.blog.add",$data);
     }
     public function added_blog(Request $request){
 
@@ -129,7 +129,7 @@ class BlogCommentController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.blog.edit', $data);
+        return view('Management_pages.blog.edit', $data);
     }
     public function edited_blog(Request $request){
         $validatedData = Validator::make($request->all(), [
@@ -318,7 +318,7 @@ class BlogCommentController extends Controller
             ->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
-        return view('Admin.blog.detail_blog', $data);
+        return view('Management_pages.blog.detail_blog', $data);
     }
 
     public function delete_comment(Request $request){
@@ -348,7 +348,7 @@ class BlogCommentController extends Controller
         ->where('is_confirmed',1)
         ->orderBy('created_at','desc')->paginate(12);
 
-        return view('Admin.blog.list_user_blog', $data);
+        return view('Management_pages.blog.list_user_blog', $data);
     }
 
 

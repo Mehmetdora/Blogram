@@ -99,7 +99,7 @@ class PendingBlogsController extends Controller
             ->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
-        return view('Admin.pending_blogs.detail_blog', $data);
+        return view('Management_pages.pending_blogs.detail_blog', $data);
     }
 
     public function list_user_blog($id){
@@ -114,7 +114,7 @@ class PendingBlogsController extends Controller
         ->where('status', 1)
         ->orderBy('created_at','desc')->paginate(12);
 
-        return view('Admin.pending_blogs.list_user_blogs', $data);
+        return view('Management_pages.pending_blogs.list_user_blogs', $data);
     }
 
     public function confirm_blog(Request $request){
@@ -158,7 +158,7 @@ class PendingBlogsController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.pending_blogs.edit', $data);
+        return view('Management_pages.pending_blogs.edit', $data);
     }
     public function edited_blog(Request $request){
 

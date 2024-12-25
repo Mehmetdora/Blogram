@@ -29,7 +29,7 @@ class AdminController extends Controller
         $data['user_count'] = count(User::where('is_admin',0)->where('is_delete',0)->get());
         $data['blog_count_approved'] = count(Blog::where('status',1)->get());
 
-        return view('Admin.dashboard',$data);
+        return view('Management_pages.dashboard',$data);
     }
 
     public function users(){
@@ -47,7 +47,7 @@ class AdminController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.user.list' , $data);
+        return view('Management_pages.user.list' , $data);
     }
 
     public function category(){
@@ -58,7 +58,7 @@ class AdminController extends Controller
         ->where('is_confirmed',0)->count();
 
         $data['getRecord'] = Category::getRecord();     // eğer self ile erişim sağlıyorsan fonksiyon static olarak oluşturulmalı
-        return view('Admin.category.list' , $data);
+        return view('Management_pages.category.list' , $data);
     }
 
     public function blogs_comments(){
@@ -80,7 +80,7 @@ class AdminController extends Controller
 
 
 
-        return view('Admin.blog.list',$data);
+        return view('Management_pages.blog.list',$data);
     }
 
     public function pending_blogs(){
@@ -96,7 +96,7 @@ class AdminController extends Controller
         ->paginate(12);
 
 
-        return view('Admin.pending_blogs.list', $data);
+        return view('Management_pages.pending_blogs.list', $data);
 
     }
 
@@ -114,7 +114,7 @@ class AdminController extends Controller
 
         $data['tags'] = Tag::paginate(15);
 
-        return view('Admin.tag.list',$data);
+        return view('Management_pages.tag.list',$data);
     }
 
 
@@ -125,7 +125,7 @@ class AdminController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.change_password',$data);
+        return view('Management_pages.change_password',$data);
     }
 
     public function changed_password(Request $request){
@@ -162,7 +162,7 @@ class AdminController extends Controller
         $data['page'] = 'change_password';
         $data['user'] = Auth::user();
 
-        return view('Admin.change_password',$data);
+        return view('Management_pages.change_password',$data);
     }
 
     public function site_settings(){
@@ -188,7 +188,7 @@ class AdminController extends Controller
         $data['pending_blogs_count'] = Blog::where('status',1)
         ->where('is_confirmed',0)->count();
 
-        return view('Admin.site_settings',$data);
+        return view('Management_pages.site_settings',$data);
     }
 
     public function save_site_settings(Request $request){

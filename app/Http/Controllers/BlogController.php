@@ -68,7 +68,7 @@ class BlogController extends Controller
         $data['site_setting'] = SiteSetting::first();
 
 
-        return view('Normal_Kullanıcı.createBlog', $data);
+        return view('Authenticated_pages.createBlog', $data);
     }
 
 
@@ -307,7 +307,7 @@ class BlogController extends Controller
 
 
 
-        return view('Normal_Kullanıcı.blogs.show', $data);
+        return view('Authenticated_pages.blogs.show', $data);
     }
 
 
@@ -351,7 +351,7 @@ class BlogController extends Controller
         $data['tags'] = $tag_names;
         $data['site_setting'] = SiteSetting::first();
 
-        return view('Normal_Kullanıcı.myBlogs.edit', $data);
+        return view('Authenticated_pages.myBlogs.edit', $data);
     }
 
     public function edited(Request $request)

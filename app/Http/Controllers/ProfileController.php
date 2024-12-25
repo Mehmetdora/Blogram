@@ -46,7 +46,7 @@ class ProfileController extends Controller
         $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
 
-        return view('Normal_Kullanıcı.profile.show', $data);
+        return view('Authenticated_pages.profile.show', $data);
     }
     public function edit()
     {
@@ -68,7 +68,7 @@ class ProfileController extends Controller
         $data['notifications'] = Auth::user()->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
 
-        return view('Normal_Kullanıcı.profile.edit', $data);
+        return view('Authenticated_pages.profile.edit', $data);
     }
 
     public function edited(Request $request)
@@ -164,7 +164,7 @@ class ProfileController extends Controller
         if ($id == $user_id) {
             return redirect()->route('profile.show', $data);
         } else {
-            return view('Normal_Kullanıcı.profileOthers', $data);
+            return view('Authenticated_pages.profileOthers', $data);
         }
     }
 
@@ -207,7 +207,7 @@ class ProfileController extends Controller
 
         $data['saved_blogs'] = $user->saved_blogs()->where('status',1)->orderBy('created_at','desc')->paginate(10);
 
-        return view('Normal_Kullanıcı.myBlogs.saved',$data);
+        return view('Authenticated_pages.myBlogs.saved',$data);
     }
 
 }
