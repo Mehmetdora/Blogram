@@ -15,7 +15,9 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="{{ url('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -44,7 +46,7 @@
 
                         <div class="d-flex justify-content-center py-4">
                             <a href="#" class="logo d-flex align-items-center w-auto">
-                                <img  src="{{asset('site_settings/site_logo/')}}/{{$site_setting->logo_url}}" >
+                                <img src="{{asset('site_settings/site_logo/')}}/{{$site_setting->logo_url}}">
                                 <span class="d-none d-lg-block">Blog</span>
                             </a>
                         </div><!-- End Logo -->
@@ -58,6 +60,11 @@
                                     <p class="text-center small">Enter your email and password to login</p>
                                 </div>
                                 @include('Public_pages.layouts._message')
+                                @if (!empty(request('success')))
+                                    <div class="alert alert-success " role="alert">
+                                        {{ request('success') }}
+                                    </div>
+                                @endif
                                 <form class="row g-3 needs-validation" action="" method="post">
                                     {{ csrf_field() }}
                                     <div class="col-12">
@@ -67,12 +74,14 @@
 
                                     <div class="col-12">
                                         <label for="yourPassword" class="form-label">Password</label>
-                                        <input type="password" name="password" class="form-control" id="yourPassword" required>
+                                        <input type="password" name="password" class="form-control" id="yourPassword"
+                                               required>
                                     </div>
 
                                     <div class="col-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
+                                            <input class="form-check-input" type="checkbox" name="remember" value="true"
+                                                   id="rememberMe">
                                             <label class="form-check-label" for="rememberMe">Remember me</label>
                                         </div>
                                     </div>
@@ -80,7 +89,23 @@
                                         <button class="btn btn-primary w-100" type="submit">Login</button>
                                     </div>
                                     <div class="col-12">
-                                        <p class="small mb-0">Don't have account? <a href="{{ url ('register') }}">Create an account</a></p>
+                                        <a href="{{route('auth_google_redirect')}}">
+                                            <button
+                                                class="btn bg-primary-subtle border border-primary-subtle w-100"
+                                                type="button">With Google
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        <a href="{{route('auth_github_redirect')}}">
+                                            <button class="btn bg-primary-subtle border border-primary-subtle w-100"
+                                                    type="button">With Github
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="col-12">
+                                        <p class="small mb-0">Don't have account? <a href="{{ url ('register') }}">Create
+                                                an account</a></p>
                                     </div>
 
                                     <div class="col-12">
@@ -102,7 +127,8 @@
     </div>
 </main><!-- End #main -->
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
 <script src="{{ url('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>

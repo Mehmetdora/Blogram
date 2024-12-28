@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'gender',
         'password',
     ];
 
@@ -52,39 +53,49 @@ class User extends Authenticatable
 
     }
 
-    public function profile(){
+    public function profile()
+    {
         return $this->hasOne('App\Models\Profile');
     }
 
-    public function categories(){
-        return $this->belongsToMany('App\Models\Category','profile_category')->withTimestamps();
+    public function categories()
+    {
+        return $this->belongsToMany('App\Models\Category', 'profile_category')->withTimestamps();
     }
 
-    public function blogs(){
+    public function blogs()
+    {
         return $this->hasMany('App\Models\Blog');
     }
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-    public function liked_blogs(){
-        return $this->belongsToMany('App\Models\Blog','profile_blog')->withTimestamps();
+    public function liked_blogs()
+    {
+        return $this->belongsToMany('App\Models\Blog', 'profile_blog')->withTimestamps();
     }
 
-    public function saved_blogs(){
-        return $this->belongsToMany('App\Models\Blog','saved_blogs')->withTimestamps();
+    public function saved_blogs()
+    {
+        return $this->belongsToMany('App\Models\Blog', 'saved_blogs')->withTimestamps();
     }
 
-    public function notifications(){
+    public function notifications()
+    {
         return $this->hasMany(Notification::class, 'receiver_id');
     }
 
-    public function getProfilePhoto(){
+    public function getProfilePhoto()
+    {
         $user = Auth::user();
         return $user->photo;
     }
-    public function getDefaultPhoto(){
+
+    public function getDefaultPhoto()
+    {
         return $this->gender
             ? asset('img/Default_pfp_women.png')
             : asset('img/Default_pfp.jpg');

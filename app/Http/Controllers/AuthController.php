@@ -14,11 +14,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
 
-    public function delete_user(){
+    public function delete_user()
+    {
 
         $user = auth()->user();
         // Kullanıcı oturum açmamışsa veya kimlik doğrulama başarısızsa işlem yapılmaz
@@ -36,25 +38,26 @@ class AuthController extends Controller
 
         $oldUserPicture = $user->photo;
         if ($user->photo && file_exists(public_path('uploads/') . $user->photo)) {
-            if($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg'){ // default resim kontrolü değilse sil
+            if ($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg') { // default resim kontrolü değilse sil
                 unlink(public_path('uploads/' . $oldUserPicture));  // unlink ile fotoğraf silinir
-            }        }
+            }
+        }
 
 
-        if(isset($notifications)){
-            foreach($notifications as $notification){
+        if (isset($notifications)) {
+            foreach ($notifications as $notification) {
                 $notification->delete();
             }
         }
 
         foreach ($blogs as $blog) {
 
-            if(isset($blog->tags)){
+            if (isset($blog->tags)) {
                 $blog->tags()->detach();
             }
 
-            if(isset($blog->images)){
-                foreach($blog->images as $image) {
+            if (isset($blog->images)) {
+                foreach ($blog->images as $image) {
                     unlink(public_path('blog_images/description_photos/') . $image->image_name);
                     $image->delete();
                 }
@@ -66,23 +69,23 @@ class AuthController extends Controller
             $blog->save();
         }
 
-        if(isset($comments)){
+        if (isset($comments)) {
             foreach ($comments as $comment) {
                 $comment->delete();
             }
         }
 
-        if(isset($categories)){
+        if (isset($categories)) {
             $user->categories()->detach();
         }
 
         $profile->delete();
 
-        if(isset($liked_blogs)){
+        if (isset($liked_blogs)) {
             $user->liked_blogs()->detach();
         }
 
-        if(isset($saved_blogs)){
+        if (isset($saved_blogs)) {
             $user->saved_blogs()->detach();
         }
 
@@ -91,10 +94,22 @@ class AuthController extends Controller
         $user->photo = $user->gender ? 'Default_pfp_women.png' : 'Default_pfp.jpg';
         $user->bio = '';
         $user->skill = '';
+        $user->email_verified_at = null;
+        $user->password = null;
+        $user->remember_token = null;
+
+        $user->github_id = null;
+        $user->github_token = null;
+        $user->github_refresh_token = null;
+
+        $user->google_id = null;
+        $user->google_token = null;
+        $user->google_refresh_token = null;
+
         $user->save();
 
         Auth::logout();
-        return redirect()->route("welcome")->with("success","Hesabınız ve tüm verileriniz silinmiştir. Öneri ve şikayetlerinizi lütfen bildiriniz. İyi günler...");
+        return redirect()->route("welcome")->with("success", "Hesabınız ve tüm verileriniz silinmiştir. Öneri ve şikayetlerinizi lütfen bildiriniz. İyi günler...");
     }
 
 
@@ -102,15 +117,16 @@ class AuthController extends Controller
     {
         $data['site_setting'] = SiteSetting::first();
 
-        return view( 'Public_pages.auth.login',$data);
+        return view('Public_pages.auth.login', $data);
 
     }
 
-    public function check_profile(){
+    public function check_profile()
+    {
 
-        if(Auth::user()->profile){
+        if (Auth::user()->profile) {
 
-            if(session()->get('url.intended')){
+            if (session()->get('url.intended')) {
                 $url = session()->get('url.intended');
 
                 $path = parse_url($url, PHP_URL_PATH);
@@ -119,8 +135,8 @@ class AuthController extends Controller
                 $segments = explode('/', rtrim($path, '/'));
                 $id = end($segments);
 
-                if(is_numeric($id)){
-                    return redirect()->route('blogs.show',$id);
+                if (is_numeric($id)) {
+                    return redirect()->route('blogs.show', $id);
                 }
             }
 
@@ -137,35 +153,33 @@ class AuthController extends Controller
         $remember = !empty($request->remember) ? true : false;
 
 
-        if(Auth::attempt(['email' => $request->email , 'password' => $request->password,'status' => 0] , $remember)){
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'status' => 0], $remember)) {
             $user = Auth::user();
             if (!empty($user->email_verified_at)) {
 
-                if($user->is_admin == 1){
+                if ($user->is_admin == 1) {
                     return redirect()->route('dashboard');
-                }else{
+                } else {
                     $blog_url = session()->get('url.intended');
                     session(['url.intended' => $blog_url]);
 
                     return redirect()->route('check_profile');
                 }
-            }
-            else{
+            } else {
                 $user_id = Auth::user()->id;
                 Auth::logout();
                 $save = User::getSingle($user_id);
                 $save->remember_token = Str::random(40);
                 $save->save();
 
-                Mail::to($save->email)->send( new RegisterMail($save));
+                Mail::to($save->email)->send(new RegisterMail($save));
 
-                return redirect()->back()->with('error' , "Please verify your email address");
+                return redirect()->back()->with('error', "Please verify your email address");
 
             }
 
-        }
-        else{
-            return redirect()->back()->with('error' , 'Please enter correct email and password ');
+        } else {
+            return redirect()->back()->with('error', 'Please enter correct email and password ');
 
         }
 
@@ -174,65 +188,66 @@ class AuthController extends Controller
     public function register()
     {
         $data['site_setting'] = SiteSetting::first();
-        return view('Public_pages.auth.register',$data);
+        return view('Public_pages.auth.register', $data);
 
     }
+
     public function forgot()
     {
         return view('Public_pages.auth.forgot');
 
     }
 
-    public function forgot_password(Request $request){
-        $user = User::where('email' , '=' , $request->email)->first();
-        if(!empty($user)){
+    public function forgot_password(Request $request)
+    {
+        $user = User::where('email', '=', $request->email)->first();
+        if (!empty($user)) {
             $user->remember_token = Str::random(40);
             $user->save();
 
-            Mail::to($user->email)->send( new ForgotPasswordMail($user));
-            return redirect()->back()->with('success' , 'Please check your email to reset your password.');
-        }
-        else{
-            return redirect()->back()->with('error' , 'This email is not registered.');
+            Mail::to($user->email)->send(new ForgotPasswordMail($user));
+            return redirect()->back()->with('success', 'Please check your email to reset your password.');
+        } else {
+            return redirect()->back()->with('error', 'This email is not registered.');
         }
     }
 
-    public function reset($token){
-        $user = User::where('remember_token' , '=' , $token)->first();
-        if(!empty($user)){
+    public function reset($token)
+    {
+        $user = User::where('remember_token', '=', $token)->first();
+        if (!empty($user)) {
             $data['user'] = $user;
             return view('Public_pages.auth.reset');
-        }
-        else{
-            abort(404);
+        } else {
+            return redirect()->route('error_404');
         }
     }
 
-    public function reset_post($token , Request $request){
-        $user = User::where('remember_token' , '=' , $token)->first();
-        if(!empty($user)){
-            if($request->password == $request->cpassword){
+    public function reset_post($token, Request $request)
+    {
+        $user = User::where('remember_token', '=', $token)->first();
+        if (!empty($user)) {
+            if ($request->password == $request->cpassword) {
                 $user->password = Hash::make($request->password);
-                if(empty($user->email_verified_at)){
+                if (empty($user->email_verified_at)) {
                     $user->email_verified_at = date('Y-m-d H:i:s');
                 }
                 $user->remember_token = Str::random(40);
                 $user->save();
 
-                return redirect('login')->with('success' , 'Password changed successfully');
+                return redirect('login')->with('success', 'Password changed successfully');
 
+            } else {
+                return redirect()->back()->with('error', 'Password and Confirm Password did not match');
             }
-            else{
-                return redirect()->back()->with('error' , 'Password and Confirm Password did not match');
-            }
-        }
-        else{
-            abort(404);
+        } else {
+            return redirect()->route('error_404');
         }
 
 
     }
-    public function create_user(Request $request)
+
+    public function create_user(Request $request)   // kullanıcı email ile hesap oluşturmak isterse
     {
         request()->validate([
             'name' => 'required',
@@ -240,48 +255,92 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed|unique:users,password',
         ]);
 
-        if(User::where('email',$request->email)->exists()){
+        if (User::where('email', $request->email)->where('status', 1)->exists()) {
             // silinen hesabın tekrar kayıt olma işlemleri
-            $user = User::where('email',$request->email)->first();
+            $user = User::where('email', $request->email)->first();
             $user->name = $request->name;
             $user->password = Hash::make($request->password);
             $user->remember_token = Str::random(40);
             $user->save();
+            // kullanıcı bilgileri güncellendi , kullanıcı onay verirse hesabı aktif edilecek
 
             $data['user'] = $user;
-            $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınız ile yeni bir profil oluşturarak devam etmek istiyor musunuz?';
+            $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınıza bu bilgileri kullanarak ve yeni bir profil oluşturarak devam etmek istiyor musunuz?';
             $data['site_setting'] = SiteSetting::first();
 
-            return view('Public_pages.auth.register',$data);
-        }else{
+            return view('Public_pages.auth.register', $data);
+        } elseif (User::where('email', $request->email)->where('status', 0)->exists()) {
+
+            $user = User::where('email', $request->email)->where('status', 0)->first();
+            $user->name = $request->name;
+            $user->password = Hash::make(request()->password);
+            $user->remember_token = Str::random(40);
+            $user->save();
+
+            Mail::to($user->email)->send(new RegisterMail($user));
+            return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
+
+        } else {
             request()->validate([
                 'email' => 'required|email|max:255|unique:users',
             ]);
+
+            $save = new User();
+            $save->name = trim($request->name);
+            $save->email = trim($request->email);
+            $save->gender = false;
+            $save->password = Hash::make($request->password);
+            $save->remember_token = Str::random(40);
+            $save->save();
+
+            Mail::to($save->email)->send(new RegisterMail($save));
+            return redirect('login')->with('success', "Your account register successfully and verify your email address");
+
         }
-
-        $save = new User();
-        $save->name = trim($request->name);
-        $save->email = trim($request->email);
-        $save->gender = false;
-        $save->password = Hash::make($request->password);
-        $save->remember_token = Str::random(40);
-        $save->save();
-
-        Mail::to($save->email)->send( new RegisterMail($save));
-        return redirect('login')->with('success' , "Your account register successfully and verify your email address");
 
     }
 
-    public function verify_old_user(Request $request){
+    public function verify_old_user_email(Request $request)
+    {
 
-        try{
+        try {
             $user = User::find($request->user_id);
             $user->status = 0;  // eski hesabı geri getirme 0 aktif demek
             $user->save();
-            //Mail::to($user->email)->send( new RegisterMail($user));
-            return response()->json(['success' => true,'redirect_url'=>route('login')]);
+            Mail::to($user->email)->send(new RegisterMail($user));
+            return response()->json(['success' => true, 'redirect_url' => route('login') . '?success=Your registration with email is done successfully , now verify your email address and start learning']);
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+
+    }
+
+    public function verify_old_user_oauth(Request $request)
+    {
+
+        try {
+
+            $user_oauth = Socialite::driver($request->oauth_type)->user();
+
+            $user = User::find($request->user_id);
+            $user->status = 0;  // eski hesabı geri getirme 0 aktif demek
+
+            if ($request->oauth_type == 'google') {
+                $user->google_id = $user->id;
+                $user->google_token = $user->token;
+                $user->google_refresh_token = $user->refreshToken;
+            } elseif ($request->oauth_type == 'github') {
+                $user->github_id = $user->id;
+                $user->github_token = $user->token;
+                $user->github_refresh_token = $user->refreshToken;
+            }
+
+            $user->save();
+            //Mail::to($user->email)->send( new RegisterMail($user));
+            return response()->json(['success' => true, 'redirect_url' => route('check_profile')]);
+
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
 
@@ -289,20 +348,20 @@ class AuthController extends Controller
 
     public function verify($token)
     {
-        $user = User::where('remember_token', '=' , $token)->first();
-        if(!empty($user)){
+        $user = User::where('remember_token', '=', $token)->first();
+        if (!empty($user)) {
             $user->email_verified_at = date('Y-m-d H:i:s');
             $user->remember_token = Str::random(40);
             $user->save();
 
-            return redirect('login')->with('success' , "Your account successfully verified");
+            return redirect('login')->with('success', "Your account successfully verified");
 
-        }
-        else{
-            abort('404');
+        } else {
+            return redirect()->route('error_404');
         }
 
     }
+
     public function logout()
     {
         Auth::logout();

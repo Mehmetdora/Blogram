@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ErrorController;
+use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\TermsConditionsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -22,11 +24,6 @@ use App\Http\Controllers\Admin\TagController;
 // Jodit Texteditor
 
 
-
-
-
-
-
 Route::controller(ProfileController::class)
     ->middleware('auth_user')
     ->group(function () {
@@ -35,7 +32,7 @@ Route::controller(ProfileController::class)
         Route::post('/user/edited', 'edited')->name('profile.edited');
         Route::get('/user/{id}', 'show_others')->name('profile.other.show');
         Route::get('/user/delete/user-image', 'deleteImage')->name('profile.image.deleted');
-        Route::get('notifications/{id}/read','notification_read_redirect')->name('notification_read_redirect');
+        Route::get('notifications/{id}/read', 'notification_read_redirect')->name('notification_read_redirect');
 
         Route::get('user/saved/blogs', 'saved_blogs')->name('saved_blogs');
 
@@ -46,13 +43,13 @@ Route::controller(HomeController::class)
     ->group(function () {
 
         Route::get('/home', 'home')->name('home');
-        Route::get('notifications/all','show_notifications')->name('show_notifications');
+        Route::get('notifications/all', 'show_notifications')->name('show_notifications');
 
         Route::post('myCategory/deleted', 'myCategory_deleted')->name('myCategory.deleted');
         Route::post('myCategory/added', 'myCategory_added')->name('myCategory.added');
 
-        Route::get('category/add/more','add_more_categories')->name('add_more_categories');
-        Route::post('category/added/more','added_more_categories')->name('added_more_categories');
+        Route::get('category/add/more', 'add_more_categories')->name('add_more_categories');
+        Route::post('category/added/more', 'added_more_categories')->name('added_more_categories');
 
         Route::get('category/select', 'select_category')->name('category.select');
         Route::post('category/selected', 'selected_category')->name('category.selected');
@@ -64,20 +61,31 @@ Route::controller(HomeController::class)
     });
 
 
+Route::controller(OAuthController::class)->group(function () {
+
+    Route::get('auth/github/redirect', 'github_redirect')->name('auth_github_redirect');
+    Route::get('auth/github/callback', 'github_callback')->name('auth_github_callback');
+
+    Route::get('auth/google/redirect', 'google_redirect')->name('auth_google_redirect');
+    Route::get('auth/google/callback', 'google_callback')->name('auth_google_callback');
+
+});
+
 Route::controller(AuthController::class)
     ->group(function () {
 
-        Route::get('delete/user/all','delete_user')->name('delete_user_all');
+        Route::get('delete/user/all', 'delete_user')->name('delete_user_all');
         Route::get('logout', 'logout')->name('logout');
 
         Route::get('login', 'login')->name('login');
-        Route::get('check_profile','check_profile')->name('check_profile')->middleware('auth');
+        Route::get('check_profile', 'check_profile')->name('check_profile')->middleware('auth');
         Route::post('login', 'auth_login')->name('auth_login');
 
         Route::get('register', 'register')->name('register');
         Route::post('register', 'create_user')->name('create_user');
 
-        Route::post('verify-old-user','verify_old_user')->name('verify_old_user');
+        Route::post('verify-old-user-email', 'verify_old_user_email')->name('verify_old_user_email');
+        Route::post('verify-old-user-oauth', 'verify_old_user_oauth')->name('verify_old_user_oauth');
 
         Route::get('forgot-password', 'forgot')->name('forgot-password');
         Route::post('forgot-password', 'forgot_password')->name('forgot-password-btn');
@@ -101,7 +109,7 @@ Route::controller(BlogController::class)
         Route::post('blogs/edited', 'edited')->name('myBlogs.edited');
 
         Route::post('blogs/deleted', 'delete')->name('myBlogs.deleted');
-        Route::post('blog/saved','saved')->name('blog.saved');
+        Route::post('blog/saved', 'saved')->name('blog.saved');
         Route::post('blog/liked', 'liked')->name('blog.liked');
 
         Route::post('upload/image', 'upload')->name('upload');
@@ -121,7 +129,6 @@ Route::controller(CommentController::class)
     });
 
 
-
 Route::group(['middleware' => 'auth_admin'], function () {
 
     // Management_pages işlemleri
@@ -130,12 +137,12 @@ Route::group(['middleware' => 'auth_admin'], function () {
         Route::get('panel/users', 'users')->name('users');
         Route::get('panel/categories', 'category')->name('categories');
         Route::get('panel/blogs_comments', 'blogs_comments')->name('blogs_comments');
-        Route::get('panel/pending-blogs','pending_blogs')->name('pending_blogs');
-        Route::get('panel/tags','tags_list')->name('tags_list');
+        Route::get('panel/pending-blogs', 'pending_blogs')->name('pending_blogs');
+        Route::get('panel/tags', 'tags_list')->name('tags_list');
         Route::get('panel/change_password', 'change_password')->name('change_password');
         Route::post('panel/changed_password', 'changed_password')->name('changed_password');
-        Route::get('panel/website/settings','site_settings')->name('site_settings');
-        Route::post('panel/website/settings/saved','save_site_settings')->name('save_site_settings');
+        Route::get('panel/website/settings', 'site_settings')->name('site_settings');
+        Route::post('panel/website/settings/saved', 'save_site_settings')->name('save_site_settings');
     });
 
     // Management_pages User işlemleri
@@ -171,21 +178,21 @@ Route::group(['middleware' => 'auth_admin'], function () {
         Route::post('panel/blog/comment/delete', 'delete_comment')->name('delete-comment');
     });
 
-     // Management_pages Onaylanmamış bloglar işlemleri
-     Route::controller(PendingBlogsController::class)->group(function () {
+    // Management_pages Onaylanmamış bloglar işlemleri
+    Route::controller(PendingBlogsController::class)->group(function () {
         Route::get('panel/pending-blogs/search', 'search_blog')->name('search_pending_blog');
         Route::get('panel/pending-blogs/detail/{id}', 'detail_blog')->name('detail-pending_blog');
         Route::get('panel/pending-blogs/user/{id}', 'list_user_blog')->name('list-user-pending_blogs');
         Route::post('panel/pending-blogs/confirm', 'confirm_blog')->name('confirm-blog');
         Route::get('panel/pending-blogs/edit/{id}', 'edit_blog')->name('edit-pending_blog');
         Route::post('panel/pending-blogs/edited', 'edited_blog')->name('edited-pending_blog');
-        Route::post('panel/pending-blogs/delete','delete_blog')->name('delete-pending-blog');
+        Route::post('panel/pending-blogs/delete', 'delete_blog')->name('delete-pending-blog');
     });
 
     // TAG İŞLEMLERİ
     Route::controller(TagController::class)->group(function () {
-        Route::post('panel/tags/deleted','tag_deleted')->name('tag_deleted');
-        Route::post('panel/tags/added','tag_added')->name('tag_added');
+        Route::post('panel/tags/deleted', 'tag_deleted')->name('tag_deleted');
+        Route::post('panel/tags/added', 'tag_added')->name('tag_added');
     });
 
 });
@@ -193,7 +200,7 @@ Route::group(['middleware' => 'auth_admin'], function () {
 
 // GİRİŞ YAPILMADAN ERİŞİME AÇIK ROUTES
 
-Route::get('/', [UnsignedPagesController::class,'welcome'])->name('welcome');
+Route::get('/', [UnsignedPagesController::class, 'welcome'])->name('welcome');
 Route::get('about', [UnsignedPagesController::class, 'about'])->name('about');
 Route::get('blogs', [UnsignedPagesController::class, 'blogs'])->name('blogs');
 //Route::get('teams', [UnsignedPagesController::class, 'teams'])->name('teams');
@@ -202,6 +209,10 @@ Route::get('contact', [UnsignedPagesController::class, 'contact'])->name('contac
 
 
 Route::controller(TermsConditionsController::class)->group(function () {
-     Route::get('terms-conditions', 'terms')->name('terms-conditions');
-     Route::get('privacy-policy', 'privacy')->name('privacy-policy');
+    Route::get('terms-conditions', 'terms')->name('terms-conditions');
+    Route::get('privacy-policy', 'privacy')->name('privacy-policy');
+});
+
+Route::controller(ErrorController::class)->group(function () {
+    Route::get('errors/404', 'error_404')->name('error_404');
 });
