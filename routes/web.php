@@ -43,7 +43,9 @@ Route::controller(HomeController::class)
     ->group(function () {
 
         Route::get('/home', 'home')->name('home');
+
         Route::get('notifications/all', 'show_notifications')->name('show_notifications');
+        Route::get('users/search-all','users_all')->name('users_all');
 
         Route::post('myCategory/deleted', 'myCategory_deleted')->name('myCategory.deleted');
         Route::post('myCategory/added', 'myCategory_added')->name('myCategory.added');

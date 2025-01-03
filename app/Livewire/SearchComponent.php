@@ -25,6 +25,8 @@ class SearchComponent extends Component
         // User arama
         $resultsUser = User::where('status', 0)
         ->where('is_delete',0)
+        ->where('is_admin',0)
+        ->whereHas('profile')
         ->where('name', 'like', '%' . $this->search . '%')
         ->take(3)  // Max 3 kullanıcı göster
         ->get();

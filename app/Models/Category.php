@@ -29,8 +29,7 @@ class Category extends Model
 
     static function getRecord(){    // eğer self ile erişim sağlıyorsan static olarak oluşturulmalı
 
-        $categories = self::where('status',1)
-        ->where('is_delete',0)->orderBy('created_at','desc')->paginate(10);
+        $categories = self::where('is_delete',0)->orderBy('created_at','desc')->paginate(10);
         return $categories;
 
     }

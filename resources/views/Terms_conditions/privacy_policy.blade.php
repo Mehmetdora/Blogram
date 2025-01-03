@@ -85,7 +85,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-9 mx-auto">
-                    <h1 class="mb-4">Our Terms & Consditions</h1>
+                    <h1 class="mb-4">Our Privacy & Policy</h1>
                 </div>
             </div>
         </div>

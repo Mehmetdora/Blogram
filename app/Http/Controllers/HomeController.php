@@ -27,10 +27,10 @@ class HomeController extends Controller
         // 10 SANİYEDEN SONRA BİR İSTEK GELİRSE TEKRAR DB DEN VERİYİ ÇEKİP CACHE KAYDEDİP 10 SANİYE BOYUNCA TUTUYOR
         // !!! BU 10 SANİYE İÇİNDE YAPILAN HER SORGU İÇİN CACHE VERİSİ KULLANILIR(ASIL VERİ DEĞİŞSE BİLE)
 
-        $data['site_setting'] = Cache::remember('site_setting',now()->addSeconds(60*60*3), function() {
-            return SiteSetting::first();
-        });
 
+
+        $site_set = SiteSetting::first();
+        $data['site_setting'] = $site_set;
 
 
         // VERİLERİ PAGİNATE İLE GÖSTERDİĞİMİZ İÇİN AYNI ŞEKİLDE CACHE'E DE HER SAYFA İÇİN AYRI OLARAK KAYDETMELİYİZ
@@ -51,21 +51,19 @@ class HomeController extends Controller
             return Category::where('is_delete',0)->where('status',1)->get();
         });
 
-        $data['recent_blogs'] = Cache::remember('recent_blogs',now()->addSeconds(30), function() {
-            return Blog::where('status',1)
-            ->where('is_confirmed',1)
-            ->orderBy('created_at','desc')
-            ->take(5)
-            ->get();
-        });
 
-
-        $data['editors_blog'] = Cache::remember('editors_blog',now()->addSeconds(30), function() {
-            return Blog::where('status',1)
+        if($site_set->editors_pick_blog_id){
+            $data['editors_blog'] = Blog::where('status',1)
             ->where('is_confirmed',1)
-            ->inRandomOrder()
+            ->where('id',$site_set->editors_pick_blog_id)
             ->first();
-        });
+        }else{
+            $data['editors_blog'] = Blog::where('status',1)
+        ->where('is_confirmed',1)
+        ->inRandomOrder()
+        ->first();
+        }
+
 
 
         $data['trend_blogs'] = Cache::remember('trend_blogs',now()->addSeconds(30), function() {
@@ -131,11 +129,7 @@ class HomeController extends Controller
         $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
         $selected = Category::find($id);
 
-        $data['recent_blogs'] = Blog::where('status',1)
-        ->where('is_confirmed',1)
-        ->orderBy('created_at','desc')
-        ->take(5)
-        ->get();
+
 
         $data['populer_users'] = User::where('status',0)
         ->inRandomOrder()
@@ -332,6 +326,35 @@ class HomeController extends Controller
         $data['all_notifications'] = $all_notifications;
 
         return view('Authenticated_pages.notifications',$data);
+    }
+
+    public function users_all(){
+        $user_id = Auth::user()->id;
+        $user = User::with('categories')->find($user_id);
+        $user_categories = $user->categories;
+        foreach ($user_categories as $category) {
+            $category->blogs_count = Blog::where('category_id', $category->id)
+                ->where('status', 1) // Sadece aktif olanlar
+                ->where('is_confirmed',1)
+                ->count();
+        }
+        $data['user_categories'] = $user_categories;
+        $data['site_setting'] = SiteSetting::first();
+
+        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
+        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
+        $data['users_all'] = User::where('is_admin',false)
+        ->where('status',false)
+        ->where('is_delete',false)
+        ->whereHas('profile')   // profil oluşturmuş kullanıcıları listele
+        ->orderBy('created_at','desc')
+        ->take(12)
+        ->get();
+
+
+        return view('Authenticated_pages.users_all',$data);
+
+
     }
 
 

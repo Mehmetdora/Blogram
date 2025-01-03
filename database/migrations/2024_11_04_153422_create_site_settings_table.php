@@ -28,9 +28,11 @@ return new class extends Migration
             $table->boolean('maintenance_mode')->default(false);
             $table->text('maintenance_message')->nullable();
 
+            $table->unsignedBigInteger('editors_pick_blog_id')->nullable();
+
             // JSON formatında sosyal medya bağlantıları için:
             $table->json('social_links')->nullable();
-            
+
             $table->timestamps();
         });
     }

@@ -12,7 +12,16 @@ class SiteSetting extends Model
     protected $table = 'site_settings';
 
 
-    
+
+    public function editors_blog($editors_pick_blog_id){
+
+        $blog = Blog::find($editors_pick_blog_id);
+        return $blog->title;
+
+    }
+
+
+
 
 
 }

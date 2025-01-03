@@ -289,7 +289,7 @@
 @include('Authenticated_pages.layouts.spinner')
 
 
-<div class="container-categories">
+<div class="container-categories" style="flex:1">
     <h1>CATEGORIES</h1>
     <div class="categories">
         @if (isset($categories))

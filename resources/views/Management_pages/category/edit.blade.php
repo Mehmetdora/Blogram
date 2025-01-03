@@ -23,17 +23,22 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Title *</label>
-                                <input type="text" class="form-control" name="title" value="{{ $getRecord->title }}"
-                                       required>
-                                <div style="color: red"> {{ $errors->first('title') }}</div>
+                                <label for="inputPassword4" class="form-label">Status *</label>
+                                <select class="form-control" name="status">
+                                    <option {{ $getRecord->status == 1 ? 'selected' : '' }} value="1">Active
+                                    </option>
+                                    <option {{ $getRecord->status == 0 ? 'selected' : '' }} value="0">Inactive
+                                    </option>
+                                </select>
+
                             </div>
 
                             <hr>
+
                             <div class="col-12">
                                 <label class="form-label">Meta Title *</label>
                                 <input type="text" class="form-control" name="meta_title"
-                                       value="{{ $getRecord->meta_title }}" required>
+                                       value="{{ $getRecord->meta_title }}" >
                                 <div style="color: red"> {{ $errors->first('meta_title') }}</div>
                             </div>
 
@@ -62,16 +67,7 @@
 
                             </div>
 
-                            <div class="col-12">
-                                <label for="inputPassword4" class="form-label">Status *</label>
-                                <select class="form-control" name="status">
-                                    <option {{ $getRecord->status == 1 ? 'selected' : '' }} value="1">Active
-                                    </option>
-                                    <option {{ $getRecord->status == 0 ? 'selected' : '' }} value="0">Inactive
-                                    </option>
-                                </select>
 
-                            </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>

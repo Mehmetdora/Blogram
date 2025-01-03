@@ -29,7 +29,7 @@
         left: 0;
     }
 
-    .notification-item div p{
+    .notification-item div p {
         text-align: left;
     }
 
@@ -319,11 +319,19 @@
     }
 
     .search-input {
-        padding: 0.5rem;
-        font-size: 1rem;
-        border: 1px solid #ccc;
+        padding: 10px 40px 10px 15px;
+        border: 2px solid #ccc;
+        border-radius: 25px;
+        outline: none;
+        font-size: 16px;
+        transition: all 0.3s ease;
         width: 300px;
         max-width: 100%;
+    }
+
+    .search-input:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
     }
 
     .search-icon {
@@ -402,8 +410,8 @@
         cursor: pointer;
     }
 
-    #notificationDropdown{
-        position:absolute;
+    #notificationDropdown {
+        position: absolute;
         left: -50px;
         width: 300px;
         height: 600px;
@@ -443,9 +451,10 @@
 
 
 
-        .input-livewire{
+        .input-livewire {
             width: 130%;
         }
+
         .header {
             flex-wrap: wrap;
             justify-content: center;
@@ -532,16 +541,26 @@
         }
     }
 
-    #all-notis{
+    #all-notis {
         background-color: #eee;
     }
-    #all-notis:hover{
+
+    #all-notis:hover {
         background-color: #ccc;
     }
 
-    .notification-title{
+    .notification-title {
         left: 0;
     }
+</style>
 
 
+{{-- footer sabitleme body css , main'de flex:1 yap--}}
+<style>
+    body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Tam sayfa yüksekliği */
+        }
 </style>

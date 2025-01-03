@@ -299,52 +299,10 @@
                                         </li>
                                     </ul>
                                     <p>{{ $blog->summery }}</p>
-                                    <a href="{{ route('blogs.show', $blog->id) }}"
-                                       class="btn btn-outline-primary">Read More</a>
+
                                 </div>
                             </div>
                         </article>
-                        {{-- <article class="card mb-4">
-                            <div class="post-slider">
-                                <img style="max-height: 500px"
-                                    src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                    class="card-img-top" alt="post-thumb">
-                            </div>
-                            <div class="card-body">
-                                <h3 class="mb-3"><a class="post-title"
-                                        href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a></h3>
-                                <ul class="card-meta list-inline">
-                                    <li class="list-inline-item">
-                                        <a href="{{ route('profile.other.show', $blog->user_id) }}"
-                                            class="card-meta-author">
-                                            @if ($blog->user->photo)
-                                                <img src="{{ asset('uploads/' . $blog->user->photo) }}"
-                                                    alt="Author Image">
-                                            @else
-                                                <img src="/img/Default_pfp.jpg" alt="Author Image">
-                                            @endif
-                                            <span>{{ $blog->user->name }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <i class="ti-timer"></i>3 Min To Read
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <ul class="card-meta-tag list-inline">
-                                            <li class="list-inline-item"><a
-                                                    href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                                <p>{{ $blog->summery }}</p>
-                                <a href="{{ route('blogs.show', $blog->id) }}"
-                                    class="btn btn-outline-primary">Read More</a>
-                            </div>
-                        </article> --}}
                     @endforeach
                 @endif
                 <ul class="pagination justify-content-center">
@@ -385,42 +343,20 @@
                                     <h5 class="mb-1"><a class="post-title"
                                                         href="{{ route('profile.other.show', $p_user->id) }}">{{ $p_user->name }}</a>
                                     </h5>
-                                    <span>User Bio Here</span>
+                                    <span>{{$p_user->skill}}</span>
                                 </div>
                             </div>
                         @endforeach
-                    @else
                     @endif
+                    <a href="{{route('users_all')}}">
+                        <h6 class="widget-title ">All Users</h6>
+                    </a>
 
 
                 </div>
 
 
-                <div class="widget">
-                    <h4 class="widget-title">Recent Posts</h4>
 
-                    @foreach ($recent_blogs as $blog)
-                        <article class="widget-card">
-                            <div class="d-flex">
-                                <img style="width: 40%; height:40%; border-radius:5px;"
-                                     src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                     class="trend-blog-image" alt="post-thumb">
-                                <div class="ml-3">
-                                    <h5><a class="post-title"
-                                           href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
-                                    </h5>
-                                    <ul class="card-meta list-inline mb-0">
-                                        <li class="list-inline-item mb-0">
-                                            <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </article>
-                    @endforeach
-
-
-                </div>
 
                 {{-- editor seçimi --}}
                 <div class="widget">

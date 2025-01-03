@@ -36,8 +36,8 @@
                             <div class="col-12">
                                 <label for="inputPassword4" class="form-label">Status</label>
                                 <select class="form-control" name="status">
-                                    <option {{ ($getRecord->status ==1) ? 'selected' : '' }} value="1">Active</option>
-                                    <option {{ ($getRecord->status ==0) ? 'selected' : '' }} value="0">Inactive</option>
+                                    <option {{ ($getRecord->status ==0) ? 'selected' : '' }} value="1">Active</option>
+                                    <option {{ ($getRecord->status ==1) ? 'selected' : '' }} value="0">Inactive</option>
                                 </select>
 
                             </div>
