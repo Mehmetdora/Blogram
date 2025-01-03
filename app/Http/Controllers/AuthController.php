@@ -65,8 +65,7 @@ class AuthController extends Controller
 
             unlink(public_path('blog_images/cover_photos/') . $blog->cover_photo);
 
-            $blog->status = 0;
-            $blog->save();
+            $blog->delete();
         }
 
         if (isset($comments)) {
@@ -90,25 +89,11 @@ class AuthController extends Controller
         }
 
 
-        $user->status = 1;  //silindi
-        $user->photo = $user->gender ? 'Default_pfp_women.png' : 'Default_pfp.jpg';
-        $user->bio = '';
-        $user->skill = '';
-        $user->email_verified_at = null;
-        $user->password = null;
-        $user->remember_token = null;
-
-        $user->github_id = null;
-        $user->github_token = null;
-        $user->github_refresh_token = null;
-
-        $user->google_id = null;
-        $user->google_token = null;
-        $user->google_refresh_token = null;
-
-        $user->save();
 
         Auth::logout();
+        $user->delete();
+
+
         return redirect()->route("welcome")->with("success", "Hesabınız ve tüm verileriniz silinmiştir. Öneri ve şikayetlerinizi lütfen bildiriniz. İyi günler...");
     }
 
@@ -255,21 +240,9 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed|unique:users,password',
         ]);
 
-        if (User::where('email', $request->email)->where('status', 1)->exists()) {
-            // silinen hesabın tekrar kayıt olma işlemleri
-            $user = User::where('email', $request->email)->first();
-            $user->name = $request->name;
-            $user->password = Hash::make($request->password);
-            $user->remember_token = Str::random(40);
-            $user->save();
-            // kullanıcı bilgileri güncellendi , kullanıcı onay verirse hesabı aktif edilecek
 
-            $data['user'] = $user;
-            $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınıza bu bilgileri kullanarak ve yeni bir profil oluşturarak devam etmek istiyor musunuz?';
-            $data['site_setting'] = SiteSetting::first();
-
-            return view('Public_pages.auth.register', $data);
-        } elseif (User::where('email', $request->email)->where('status', 0)->exists()) {
+        if (User::where('email', $request->email)->where('status', 0)->exists()) {
+            // Kullanıcı google ile kayıtlı iken email ile kayıt olmak isterse
 
             $user = User::where('email', $request->email)->where('status', 0)->first();
             $user->name = $request->name;
@@ -280,7 +253,7 @@ class AuthController extends Controller
             Mail::to($user->email)->send(new RegisterMail($user));
             return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
 
-        } else {
+        } else {    // YENİ EMAİL KULLANIXI KAYDI
             request()->validate([
                 'email' => 'required|email|max:255|unique:users',
             ]);
@@ -300,51 +273,9 @@ class AuthController extends Controller
 
     }
 
-    public function verify_old_user_email(Request $request)
-    {
 
-        try {
-            $user = User::find($request->user_id);
-            $user->status = 0;  // eski hesabı geri getirme 0 aktif demek
-            $user->save();
-            Mail::to($user->email)->send(new RegisterMail($user));
-            return response()->json(['success' => true, 'redirect_url' => route('login') . '?success=Your registration with email is done successfully , now verify your email address and start learning']);
 
-        } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
 
-    }
-
-    public function verify_old_user_oauth(Request $request)
-    {
-
-        try {
-
-            $user_oauth = Socialite::driver($request->oauth_type)->user();
-
-            $user = User::find($request->user_id);
-            $user->status = 0;  // eski hesabı geri getirme 0 aktif demek
-
-            if ($request->oauth_type == 'google') {
-                $user->google_id = $user->id;
-                $user->google_token = $user->token;
-                $user->google_refresh_token = $user->refreshToken;
-            } elseif ($request->oauth_type == 'github') {
-                $user->github_id = $user->id;
-                $user->github_token = $user->token;
-                $user->github_refresh_token = $user->refreshToken;
-            }
-
-            $user->save();
-            //Mail::to($user->email)->send( new RegisterMail($user));
-            return response()->json(['success' => true, 'redirect_url' => route('check_profile')]);
-
-        } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-
-    }
 
     public function verify($token)
     {

@@ -13,13 +13,14 @@ use App\Models\Profile;
 use App\Models\Category;
 use App\Models\BlogPhoto;
 use App\Models\SiteSetting;
+use Illuminate\Support\Str;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Services\ProfanityService;
-use App\Services\WordCounterService;
-use Illuminate\Support\Facades\Cache;
 use Mews\Purifier\Facades\Purifier;
+use App\Services\WordCounterService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Intervention\Image\Facades\Image;
 use function Symfony\Component\String\b;
@@ -76,6 +77,7 @@ class BlogController extends Controller
 
     public function store(Request $request)
     {
+
         $validatedData = Validator::make($request->all(), [
             'summery' => 'required|max:255 ',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg',
@@ -203,11 +205,13 @@ class BlogController extends Controller
         $request->tags && $blog->tags()->syncWithoutDetaching($saved_tags_id);// verilen array içindeki id'ler ile eğer ye
 
 
+
+
         // gizli zararlı yazılımları bulma
         $domm = new DOMDocument();
         $sonuc = false;
         @$domm->loadHTML($description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $forbiddenTags = ['script', 'iframe'];
+        $forbiddenTags = ['script'];
         foreach ($forbiddenTags as $tag) {
             $elements = $domm->getElementsByTagName($tag);
             if ($elements->length > 0) {

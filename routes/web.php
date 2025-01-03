@@ -86,9 +86,6 @@ Route::controller(AuthController::class)
         Route::get('register', 'register')->name('register');
         Route::post('register', 'create_user')->name('create_user');
 
-        Route::post('verify-old-user-email', 'verify_old_user_email')->name('verify_old_user_email');
-        Route::post('verify-old-user-oauth', 'verify_old_user_oauth')->name('verify_old_user_oauth');
-
         Route::get('forgot-password', 'forgot')->name('forgot-password');
         Route::post('forgot-password', 'forgot_password')->name('forgot-password-btn');
         Route::get('reset/{token}', 'reset')->name('reset-password');

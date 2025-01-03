@@ -95,7 +95,7 @@
                                             <input class="form-check-input" name="terms" type="checkbox"
                                                    id="acceptTerms" required>
                                             <label class="form-check-label" for="acceptTerms">I agree and accept the
-                                                <a href="#">terms and conditions</a></label>
+                                                <a href="{{route('terms-conditions')}}">terms and conditions</a></label>
                                             <div class="invalid-feedback">You must agree before submitting.</div>
                                         </div>
                                     </div>
@@ -142,79 +142,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.3/dist/sweetalert2.all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
-@if(!empty($user) && empty($oauth_user_type))
-    <script>
-        Swal.fire({
-            title: "You have an old account!",
-            text: "{{ $question }}",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, continue with my old account"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Eski user ile yeni bir profil oluşturma
 
-                $.ajax({
-                    url: "{{ route('verify_old_user_email') }}",
-                    method: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        user_id: {{ $user->id }}
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            window.location.href = response.redirect_url; // login sayfasına yönlendirme
-                        } else {
-                            alert('AJAX HATASI');
-                        }
-                    },
-                    error: function (xhr) {
-                        alert(xhr.responseText)
-                    }
-                });
-            }
-        });
-    </script>
-@endif
-@isset($oauth_user_type)
-    <script>
-        Swal.fire({
-            title: "You have an old account!",
-            text: "{{ $question }}",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, continue with my old account"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Eski user ile yeni bir profil oluşturma
-
-                $.ajax({
-                    url: "{{ route('verify_old_user_oauth') }}",
-                    method: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        oauth_type: "{{$oauth_user_type}}",
-                        user_id: {{ $user->id }}
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            window.location.href = response.redirect_url; // login sayfasına yönlendirme
-                        } else {
-                            alert('AJAX HATASI');
-                        }
-                    },
-                    error: function (xhr) {
-                        alert(xhr.responseText)
-                    }
-                });
-            }
-        });
-    </script>
-@endisset
 
 <!-- Vendor JS Files -->
 <script src="{{ url('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>

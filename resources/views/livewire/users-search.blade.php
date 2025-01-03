@@ -5,9 +5,9 @@
     </div>
 
     @if (strlen($search) > 0)
-        @if ($users->count() > 0)
-            <div class="container">
-                <div class="row no-gutters">
+        <div class="container">
+            <div class="row no-gutters">
+                @if ($users->count() > 0)
                     @foreach ($users as $user)
                         <div class="col-lg-4 col-sm-6 author-block">
                             <div class="author-card text-center">
@@ -39,9 +39,9 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
+                @endif
             </div>
-        @endif
+        </div>
     @else
         <div class="row no-gutters">
             @if (isset($users_all))
@@ -86,5 +86,3 @@
     @endif
 
 </div>
-
-

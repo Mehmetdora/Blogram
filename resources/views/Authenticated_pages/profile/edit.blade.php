@@ -460,7 +460,8 @@
 <script>
     function sweet_alert() {
         Swal.fire({
-            title: "Are You SURE?",
+            title: "Are You Sure?",
+            text:"Bu işlem ile birlikte bu siteye ilk girişinizden itibaren tüm kullanıcı bilgileriniz, yazılarınız, yorumlarınız... silinmiş olacaktır ve bu işlem geri alınamayacaktır.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
