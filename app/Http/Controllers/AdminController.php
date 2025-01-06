@@ -210,7 +210,8 @@ class AdminController extends Controller
             'default_language' => 'required',
             'maintenance_mode' => 'required',
             'maintenance_message' => 'required',
-            'editors_pick' => 'required'
+            'editors_pick' => 'required',
+            'contact_email' => 'required'
         ]);
         if ($validatedData->fails()) {
             // Hata mesajlarını alın
@@ -236,6 +237,7 @@ class AdminController extends Controller
         $site_setting->maintenance_mode = $request->input('maintenance_mode');
         $site_setting->maintenance_message = $request->input('maintenance_message');
         $site_setting->editors_pick_blog_id = $request->input('editors_pick');
+        $site_setting->contact_email = $request->input('contact_email');
 
         $is_saved = $site_setting->save();
 

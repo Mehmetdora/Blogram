@@ -25,6 +25,11 @@
                                     name="site_name" required id="inputNanme4">
                             </div>
                             <div class="col-12">
+                                <label for="inputNanme4" class="form-label">Site Contact Email</label>
+                                <input type="text" value="{{ $site_setting->contact_email }}" class="form-control"
+                                    name="contact_email" required id="inputNanme4">
+                            </div>
+                            <div class="col-12">
                                 <label for="inputEmail4" class="form-label">Logo Name</label>
                                 <select name="logo_url" id="logo_url" aria-label="Default select example"
                                     class="form-control " required>

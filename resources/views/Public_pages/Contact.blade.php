@@ -75,7 +75,7 @@
                             style="width: 45px; height: 45px"></i>
                         <div class="pl-3">
                             <h5>Email</h5>
-                            <p>Blogram@example.com</p>
+                            <p>{{$site_setting->contact_email}}</p>
                         </div>
                     </div>
 

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('default_language')->default('en');
             $table->boolean('maintenance_mode')->default(false);
             $table->text('maintenance_message')->nullable();
+            $table->string('contact_email')->default('Blogram@gmail.com');
 
             $table->unsignedBigInteger('editors_pick_blog_id')->nullable();
 

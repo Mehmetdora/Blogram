@@ -168,7 +168,11 @@ class BlogController extends Controller
             $data = base64_decode($base64_str);
             $image_name = time() . '_' . uniqid() . '.png';
 
-            // Yüklenen resimlerin isimlerini bir array a kaydet
+            // Dosyayı Kaydetme
+            $directory = public_path($file_path);
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true); // Eksik klasörleri oluşturur.
+            }
             $image_names[] = $image_name;
             file_put_contents(public_path($file_path) . $image_name, $data);
 
@@ -461,6 +465,11 @@ class BlogController extends Controller
                     // Yüklenen resimlerin isimlerini bir array a kaydet
                     $image_names[] = $image_name;
 
+                    // Dosyayı Kaydetme
+                    $directory = public_path($file_path);
+                    if (!file_exists($directory)) {
+                        mkdir($directory, 0755, true); // Eksik klasörleri oluşturur.
+                    }
                     file_put_contents(public_path('blog_images/description_photos/' . $image_name), $data);
 
                     $img->removeAttribute('src');

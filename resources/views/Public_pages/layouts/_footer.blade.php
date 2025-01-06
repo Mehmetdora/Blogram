@@ -27,7 +27,7 @@
                 <h4 class="fa fa-envelope text-primary"></h4>
                 <div class="pl-3">
                     <h5 class="text-white">Email</h5>
-                    <p>Blogram@example.com</p>
+                    <p>{{$site_setting->contact_email}}</p>
                 </div>
             </div>
 
