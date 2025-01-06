@@ -39,7 +39,11 @@ class AuthController extends Controller
         $oldUserPicture = $user->photo;
         if ($user->photo && file_exists(public_path('uploads/') . $user->photo)) {
             if ($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg') { // default resim kontrolü değilse sil
-                unlink(public_path('uploads/' . $oldUserPicture));  // unlink ile fotoğraf silinir
+
+                $directory = public_path('uploads/') . $oldUserPicture;
+                if (file_exists($directory)) {
+                    unlink(public_path('uploads/') . $oldUserPicture);  // unlink ile fotoğraf silinir
+                }
             }
         }
 
@@ -58,12 +62,19 @@ class AuthController extends Controller
 
             if (isset($blog->images)) {
                 foreach ($blog->images as $image) {
-                    unlink(public_path('blog_images/description_photos/') . $image->image_name);
+
+                    $directory = public_path('blog_images/description_photos/').$image->image_name;
+                    if (file_exists($directory)) {
+                        unlink(public_path('blog_images/description_photos/').$image->image_name);
+                    }
                     $image->delete();
                 }
             }
 
-            unlink(public_path('blog_images/cover_photos/') . $blog->cover_photo);
+            $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
+            if (file_exists($directory)) {
+                unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+            }
 
             $blog->delete();
         }

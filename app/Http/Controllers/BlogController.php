@@ -475,7 +475,7 @@ class BlogController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    dd(' base64 işlemleri sırasında hatalı');
+                    return redirect()->back()->with('error','This images are not suitable! Please try with another photos!');
                 }
             } // URL olup olmadığını kontrol et
             elseif (dirname($src) == '/blog_images/description_photos') {
@@ -489,7 +489,7 @@ class BlogController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    dd('Resim URL\'si geçersiz veya indirilemedi.');
+                    return redirect()->back()->with('error','This images are not suitable! Please try with another photos!');
                 }
                 continue;
             }
@@ -498,10 +498,10 @@ class BlogController extends Controller
                 // Dosya varsa, işleme gerek yok, olduğu gibi bırak
 
                 $image_names[] = basename($src);
-                dd(basename($src));
+                //dd(basename($src));
                 continue;
             } else {
-                return redirect()->back()->with('error','This images are not suitable! Please try with another photos :)');
+                return redirect()->back()->with('error','This images are not suitable! Please try with another photos!');
             }
         }
 
@@ -514,8 +514,6 @@ class BlogController extends Controller
             } else {
                 if (file_exists(public_path('blog_images/description_photos/') . $image->image_name)) {
                     unlink(public_path('blog_images/description_photos/') . $image->image_name);
-                } else {
-                    dd("yolu --" . public_path('blog_images/description_photos/' . $image->image_name) . "-- olan dosya veritabanında yokkk");
                 }
                 $image->delete();
             }
@@ -524,7 +522,7 @@ class BlogController extends Controller
         $description = $dom->saveHTML();
         $blog->description = $description;
 
-                    if (count($image_names) == 0) {   // hiç foto yüklenmemişse
+        if (count($image_names) == 0) {   // hiç foto yüklenmemişse
             if (isset($blog->images)) {
                 foreach ($blog->images as $kayıtlı_image) {
                     $kayıtlı_image->delete();
@@ -550,7 +548,11 @@ class BlogController extends Controller
             $file->move($file_path, $filename);
 
             if ($old_cover_photo && file_exists(public_path('blog_images/cover_photos/' . $old_cover_photo))) {        // FOTOĞRAF DEĞİŞİNCE ESKİ FOTOĞRAFI SİLİYORUZ
-                unlink(public_path('blog_images/cover_photos/' . $old_cover_photo));  // unlink ile fotoğraf silinir
+
+                $directory = public_path('blog_images/cover_photos/').$old_cover_photo;
+                if (file_exists($directory)) {
+                    unlink(public_path('blog_images/cover_photos/') . $old_cover_photo);  // unlink ile fotoğraf silinir
+                }
             }
             $blog->cover_photo = $filename;
         }
@@ -617,10 +619,19 @@ class BlogController extends Controller
         try {
             $blog = Blog::find($request->blog_id);
             $blog->status = 0;
-            unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+
+            $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
+            if (file_exists($directory)) {
+                unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+            }
+
             if (isset($blog->images)) {
                 foreach ($blog->images as $image) {
-                    unlink(public_path('blog_images/description_photos/') . $image->image_name);
+
+                    $directory = public_path('blog_images/description_photos/').$image->image_name;
+                    if (file_exists($directory)) {
+                        unlink(public_path('blog_images/description_photos/').$image->image_name);
+                    }
                     $image->delete();
                 }
             }

@@ -103,7 +103,11 @@ class ProfileController extends Controller
 
             if ($oldUserPicture && file_exists(public_path('uploads/' . $oldUserPicture))) {        // FOTOĞRAF DEĞİŞİNCE ESKİ FOTOĞRAFI SİLİYORUZ
                 if($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg'){ // default resim kontrolü değilse sil
-                    unlink(public_path('uploads/' . $oldUserPicture));  // unlink ile fotoğraf silinir
+
+                    $directory = public_path('uploads/') . $oldUserPicture;
+                    if (file_exists($directory)) {
+                        unlink(public_path('uploads/') . $oldUserPicture);  // unlink ile fotoğraf silinir
+                    }
                 }
             }
 
