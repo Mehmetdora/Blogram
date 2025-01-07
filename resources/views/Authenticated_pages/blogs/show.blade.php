@@ -30,6 +30,8 @@
 
     {{-- Tags Badge --}}
     <style>
+
+
         .tag {
             position: relative;
             margin: 10px;
@@ -59,20 +61,12 @@
             transform-origin: center top;
         }
 
-        .tag:hover::before {
-            transform-origin: center bottom;
-            transform: scaleY(1);
-        }
-
         .tag::after {
             right: -8px;
             transform-origin: center bottom;
         }
 
-        .tag:hover::after {
-            transform-origin: center top;
-            transform: scaleY(1);
-        }
+
     </style>
 
     <style>
