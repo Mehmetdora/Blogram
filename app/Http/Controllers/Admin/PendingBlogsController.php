@@ -308,7 +308,7 @@ class PendingBlogsController extends Controller
             // NEW NOTIFICATION
             $notification = new Notification();
             $notification->receiver_id = $blog->user->id;
-            $notification->sender_id = $admin->id;
+            $notification->sender_id = Auth::user()->id;
             $notification->type = 'edited';
             $notification->title = 'YOUR BLOG IS EDITED';
             $notification->mentioned_id = $blog->id;
