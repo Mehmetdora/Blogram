@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\Category;
 use App\Models\BlogPhoto;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,11 @@ class BlogCommentController extends Controller
 
             // Yüklenen resimlerin isimlerini bir array a kaydet
             $image_names[] = $image_name;
+            // Dosyayı Kaydetme
+            $directory = public_path($file_path);
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true); // Eksik klasörleri oluşturur.
+            }
             file_put_contents(public_path($file_path) . $image_name, $data);
 
             $img->removeAttribute('src');
@@ -150,7 +156,6 @@ class BlogCommentController extends Controller
         $blog->title = request('title');
         $blog->summery = request('summery');
         $blog->category_id = request('category_id');
-        $blog->user_id = Auth::user()->id;
 
 
         $description = $request->description;
@@ -165,7 +170,6 @@ class BlogCommentController extends Controller
 
         foreach ($images as $key => $img) {
             $src = $img->getAttribute('src');
-            echo $src;
 
             if (strpos($src, 'base64') !== false) {
                 // base64 formatında olup olmadığını kontrol et
@@ -192,7 +196,7 @@ class BlogCommentController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    dd(' base64 işlemleri sırasında hatalı');
+                    return redirect()->back()->with('error', 'Error while updating the blog!');
                 }
             } // URL olup olmadığını kontrol et
             elseif (dirname($src) == '/blog_images/description_photos') {
@@ -206,7 +210,7 @@ class BlogCommentController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    dd('Resim URL\'si geçersiz veya indirilemedi.');
+                    return redirect()->back()->with('error', 'Error while updating the blog!');
                 }
                 continue;
             }
@@ -215,7 +219,6 @@ class BlogCommentController extends Controller
                 // Dosya varsa, işleme gerek yok, olduğu gibi bırak
 
                 $image_names[] = basename($src);
-                dd(basename($src));
                 continue;
             } else {
                 return redirect()->back()->with('error','This images are not suitable! Please try with another photos :)');
@@ -230,8 +233,6 @@ class BlogCommentController extends Controller
             } else {
                 if (file_exists(public_path('blog_images/description_photos/') . $image->image_name)) {
                     unlink(public_path('blog_images/description_photos/') . $image->image_name);
-                } else {
-                    dd("yolu --" . public_path('blog_images/description_photos/' . $image->image_name) . "-- olan dosya veritabanında yokkk");
                 }
                 $image->delete();
             }
@@ -275,6 +276,18 @@ class BlogCommentController extends Controller
         $isSaved = $user->blogs()->save($blog);
 
         if ($isSaved) {
+
+            // NEW NOTIFICATION
+            $notification = new Notification();
+            $notification->receiver_id = $blog->user->id;
+            $notification->sender_id = $admin->id;
+            $notification->type = 'edited';
+            $notification->title = 'YOUR BLOG IS EDITED';
+            $notification->mentioned_id = $blog->id;
+            $notification->content = ' is edited your blog: '.$blog->title;
+            $notification->url = route('blogs.show', $blog->id);
+            $blog->user->notifications()->save($notification);
+
             return redirect()->route('detail-blog',$blog->id)->with('success', 'Blog updated successfully');
         } else {
             return redirect()->back()->with('error', 'Error while updating the blog!');
@@ -289,6 +302,18 @@ class BlogCommentController extends Controller
                 if(isset($blog->comments)){
                     foreach ($blog->comments as $comment) {
                         $comment->status = 0;
+
+                        // NEW NOTIFICATION
+                        $notification = new Notification();
+                        $notification->receiver_id = $blog->user->id;
+                        $notification->sender_id = $admin->id;
+                        $notification->type = 'deleted';
+                        $notification->title = 'YOUR BLOG IS DELETED';
+                        $notification->mentioned_id = $blog->id;
+                        $notification->content = ' deleted your blog: '.$blog->title;
+                        $notification->url = route('blogs.show', $blog->id);
+                        $blog->user->notifications()->save($notification);
+
                         $comment->save();
                     }
                 }

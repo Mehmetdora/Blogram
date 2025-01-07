@@ -304,6 +304,18 @@ class PendingBlogsController extends Controller
         $isSaved = $blog_user->blogs()->save($blog);
 
         if ($isSaved) {
+
+            // NEW NOTIFICATION
+            $notification = new Notification();
+            $notification->receiver_id = $blog->user->id;
+            $notification->sender_id = $admin->id;
+            $notification->type = 'edited';
+            $notification->title = 'YOUR BLOG IS EDITED';
+            $notification->mentioned_id = $blog->id;
+            $notification->content = ' is edited your blog: '.$blog->title;
+            $notification->url = route('blogs.show', $blog->id);
+            $blog->user->notifications()->save($notification);
+
             return redirect()->route('detail-pending_blog',$blog->id)->with('success', 'Blog updated successfully');
         } else {
             return redirect()->back()->with('error', 'Error while updating the blog!');
