@@ -190,7 +190,11 @@ class BlogCommentController extends Controller
 
                     // Yüklenen resimlerin isimlerini bir array a kaydet
                     $image_names[] = $image_name;
-
+                    // Dosyayı Kaydetme
+                    $directory = public_path($file_path);
+                    if (!file_exists($directory)) {
+                        mkdir($directory, 0755, true); // Eksik klasörleri oluşturur.
+                    }
                     file_put_contents(public_path('blog_images/description_photos/' . $image_name), $data);
 
                     $img->removeAttribute('src');
@@ -272,7 +276,7 @@ class BlogCommentController extends Controller
             $blog->cover_photo = $filename;
         }
 
-        $user = Auth::user();
+        $user = User::where('id',$blog->user_id)->first();
         $isSaved = $user->blogs()->save($blog);
 
         if ($isSaved) {

@@ -195,7 +195,6 @@ class PendingBlogsController extends Controller
 
         foreach ($images as $key => $img) {
             $src = $img->getAttribute('src');
-            echo $src;
 
             if (strpos($src, 'base64') !== false) {
                 // base64 formatında olup olmadığını kontrol et
@@ -216,13 +215,17 @@ class PendingBlogsController extends Controller
 
                     // Yüklenen resimlerin isimlerini bir array a kaydet
                     $image_names[] = $image_name;
-
+                    // Dosyayı Kaydetme
+                    $directory = public_path($file_path);
+                    if (!file_exists($directory)) {
+                        mkdir($directory, 0755, true); // Eksik klasörleri oluşturur.
+                    }
                     file_put_contents(public_path('blog_images/description_photos/' . $image_name), $data);
 
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    dd(' base64 işlemleri sırasında hatalı');
+                    return redirect()->back()->with('error','This images are not suitable! Please try with another photos :)');
                 }
             } // URL olup olmadığını kontrol et
             elseif (dirname($src) == '/blog_images/description_photos') {
@@ -236,7 +239,7 @@ class PendingBlogsController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    dd('Resim URL\'si geçersiz veya indirilemedi.');
+                    return redirect()->back()->with('error','This images are not suitable! Please try with another photos :)');
                 }
                 continue;
             }
@@ -245,7 +248,6 @@ class PendingBlogsController extends Controller
                 // Dosya varsa, işleme gerek yok, olduğu gibi bırak
 
                 $image_names[] = basename($src);
-                dd(basename($src));
                 continue;
             } else {
                 return redirect()->back()->with('error','This images are not suitable! Please try with another photos :)');
