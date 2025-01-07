@@ -430,13 +430,13 @@
 
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" id="title" name="title" required placeholder="Enter your blog title">
+            <input type="text" id="title" name="title" value="{{old('title')}}" required placeholder="Enter your blog title">
         </div>
 
         <div class="form-group">
             <label for="summery">Summary</label>
             <textarea id="summery" maxlength="255" name="summery" rows="3" required
-                      placeholder="Write a brief summary of your blog post"></textarea>
+                      placeholder="Write a brief summary of your blog post">{{old('summery')}}</textarea>
             <label id="charCount" style="display:none">255 characters remaining</label>
         </div>
 
@@ -467,7 +467,7 @@
         <div class="form-group">
             <label for="editor">Content</label>
             <textarea id="editor" name="description" required
-                      placeholder="Write your blog post content here"></textarea>
+                      placeholder="Write your blog post content here">{{old('description')}}</textarea>
         </div>
 
         <div class="form-group">

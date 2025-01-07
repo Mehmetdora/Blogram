@@ -93,7 +93,7 @@ class BlogController extends Controller
             // E-posta veya şifrenin hatalı olduğunu belirten özel bir hata mesajı oluşturun
             $errorMessage = 'Girilen email veya şifre formatı hatalı!';
             // Hata mesajlarını kullanıcıya gösterin
-            return redirect()->back()->with('error', $errors);
+            return redirect()->back()->with('error', $errors)->withInput();
         }
 
 
