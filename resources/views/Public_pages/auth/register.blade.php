@@ -47,7 +47,6 @@
                         <div class="d-flex justify-content-center py-4">
                             <a href="#" class="logo d-flex align-items-center w-auto">
                                 <img src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}">
-                                <span id="blogram" class="d-none d-lg-block">Blog</span>
                             </a>
                         </div><!-- End Logo -->
                         <div class="card mb-3">

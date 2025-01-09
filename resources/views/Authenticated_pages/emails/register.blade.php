@@ -1,11 +1,89 @@
 @component('mail::message')
+    <!DOCTYPE html>
+    <html lang="en">
 
-    <p>Hello {{ $user->name }}</p>
-    @component('mail::button' , ['url' => url('verify/'.$user->remember_token)])
-        Verify
-    @endcomponent
-    <p>In case you have issue please contact our contact us.</p>
-    Thanks <br />
-    {{config('app.name')}}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Your Email</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333333;
+                margin: 0;
+                padding: 0;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f9f9f9;
+            }
+
+            .header {
+                background-color: #4CAF50;
+                color: white;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .content {
+                background-color: white;
+                padding: 20px;
+                border-radius: 5px;
+            }
+
+            .button {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-top: 20px;
+            }
+
+            .footer {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 12px;
+                color: #666666;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Email Verification</h1>
+            </div>
+            <div class="content">
+                <p>Dear User,</p>
+                <p>Thank you for signing up! To complete your registration, please verify your email address by clicking the
+                    button below:</p>
+                <p style="text-align: center;">
+                    <a href="{{ route('verify', $user->remember_token) }}" class="button">
+                        @component('mail::button', ['url' => route('verify', $user->remember_token)])
+                            Verify Email
+                        @endcomponent
+                    </a>
+                </p>
+                <p>If you didn't create an account, you can safely ignore this email.</p>
+                <p>This link will expire in 24 hours.</p>
+                <p>If you're having trouble clicking the button, copy and paste the following URL into your web browser:</p>
+                <p><a href="{{ url('verify/' . $user->remember_token) }}">url('verify/'.$user->remember_token)</a></p>
+            </div>
+            <div class="footer">
+                <p>This is an automated message, please do not reply to this email.</p>
+                <p>&copy; 2025 {{ config('app.name') }}. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+
+    </html>
 
 @endcomponent

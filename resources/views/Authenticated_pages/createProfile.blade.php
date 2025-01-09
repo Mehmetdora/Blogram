@@ -304,11 +304,22 @@
 
         <div class="form-group">
             <label for="gender">Gender</label>
-            <select name="gender" id="gender" class="form-control" required>
-                <option value="">Gender</option>
-                <option value="1">Female</option>
-                <option value="0">Male</option>
-            </select>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="gridRadios1"
+                        value="0" checked="">
+                    <label class="form-check-label" for="gridRadios1">
+                        Male
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="gridRadios2"
+                        value="1" >
+                    <label class="form-check-label" for="gridRadios2">
+                        Female
+                    </label>
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
