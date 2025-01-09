@@ -256,13 +256,20 @@ class AuthController extends Controller
             // Kullanıcı google ile kayıtlı iken email ile kayıt olmak isterse
 
             $user = User::where('email', $request->email)->where('status', 0)->first();
-            $user->name = $request->name;
-            $user->password = Hash::make(request()->password);
-            $user->remember_token = Str::random(40);
-            $user->save();
 
-            Mail::to($user->email)->send(new RegisterMail($user));
-            return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
+            if($user->email_verified_at == null){
+                $user->name = $request->name;
+                $user->password = Hash::make(request()->password);
+                $user->remember_token = Str::random(40);
+                $user->save();
+
+                Mail::to($user->email)->send(new RegisterMail($user));
+                return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
+
+            }else{
+                return redirect('login')->with('error', "There is a registered user with this email address. Please try another email address that is not registered.");
+            }
+
 
         } else {    // YENİ EMAİL KULLANIXI KAYDI
             request()->validate([
