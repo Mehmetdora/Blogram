@@ -36,7 +36,7 @@
                                     <td> {{ $value->name }}</td>
                                     <td> {{ $value->email }}</td>
                                     <td> {{ !empty($value->email_verified_at) ? 'Yes' : 'No' }}</td>
-                                    <td style="color: red"> {{ !empty($value->is_admin) ? 'ADMİN' : 'Non-Management_pages' }}</td>
+                                    <td style="color: red"> {{ !empty($value->is_admin) ? 'ADMİN' : 'Non-Admin' }}</td>
                                     <td> {{ !empty($value->status) ? 'Deleted' : 'Active' }}</td>
                                     <td> {{ $value->created_at }}</td>
                                     <td>

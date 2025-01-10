@@ -106,9 +106,85 @@ class UserController extends Controller
     {
 
         try {
-            $save = User::find($request->user_id);
-            $save->is_delete = 1;
-            $save->save();
+            $user = User::find($request->user_id);
+
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'Kullanıcı Bulunamadı!'], 500);
+            }
+
+            $blogs = $user->blogs;
+            $comments = $user->comments;
+            $notifications = $user->notifications;
+            $categories = $user->categories;
+            $profile = $user->profile;
+            $liked_blogs = $user->liked_blogs;
+            $saved_blogs = $user->saved_blogs;
+
+            $oldUserPicture = $user->photo;
+            if ($user->photo && file_exists(public_path('uploads/') . $user->photo)) {
+                if ($oldUserPicture != 'Default_pfp_women.png' && $oldUserPicture != 'Default_pfp.jpg') { // default resim kontrolü değilse sil
+
+                    $directory = public_path('uploads/') . $oldUserPicture;
+                    if (file_exists($directory)) {
+                        unlink(public_path('uploads/') . $oldUserPicture);  // unlink ile fotoğraf silinir
+                    }
+                }
+            }
+
+
+            if (isset($notifications)) {
+                foreach ($notifications as $notification) {
+                    $notification->delete();
+                }
+            }
+
+            foreach ($blogs as $blog) {
+
+                if (isset($blog->tags)) {
+                    $blog->tags()->detach();
+                }
+
+                if (isset($blog->images)) {
+                    foreach ($blog->images as $image) {
+
+                        $directory = public_path('blog_images/description_photos/').$image->image_name;
+                        if (file_exists($directory)) {
+                            unlink(public_path('blog_images/description_photos/').$image->image_name);
+                        }
+                        $image->delete();
+                    }
+                }
+
+                $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
+                if (file_exists($directory)) {
+                    unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+                }
+
+                $blog->delete();
+            }
+
+            if (isset($comments)) {
+                foreach ($comments as $comment) {
+                    $comment->delete();
+                }
+            }
+
+            if (isset($categories)) {
+                $user->categories()->detach();
+            }
+
+            $profile->delete();
+
+            if (isset($liked_blogs)) {
+                $user->liked_blogs()->detach();
+            }
+
+            if (isset($saved_blogs)) {
+                $user->saved_blogs()->detach();
+            }
+
+            $user->delete();
+
             return response()->json(['success' => true]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
