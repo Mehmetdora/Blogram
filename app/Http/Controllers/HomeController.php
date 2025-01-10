@@ -85,6 +85,7 @@ class HomeController extends Controller
 
         $data['populer_users'] = Cache::remember('populer_users',now()->addSeconds(30), function() {
             return User::where('status',0)
+            ->where('is_delete',0)
             ->inRandomOrder()
             ->take(3)
             ->get();  // status 0 aktif

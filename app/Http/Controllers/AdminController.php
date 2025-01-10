@@ -38,7 +38,7 @@ class AdminController extends Controller
         // admin middleware dosyası oluşturuldu
         // önce tüm projeyi profil yerine user üzerinde yürütmeyi hallet
 
-        $data['users'] = User::where('is_delete',0)
+        $data['users'] = User::all()
         ->orderBy('id','asc')
         ->paginate(20);
 
