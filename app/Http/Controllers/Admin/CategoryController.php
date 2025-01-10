@@ -73,8 +73,7 @@ class CategoryController extends Controller
     {
         try {
             $save = Category::find($request->category_id);
-            $save->is_delete = 1;
-            $save->save();
+            $save->delete();
             return response()->json(['success' => true]);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);

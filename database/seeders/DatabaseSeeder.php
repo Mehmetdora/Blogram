@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         ]); */
 
         $this->call([
-            SiteSettingsSeeder::class, // SiteSettingsSeeder burada çağrılmalı
+            //SiteSettingsSeeder::class, // SiteSettingsSeeder burada çağrılmalı
             CategorySeeder::class
         ]);
 
