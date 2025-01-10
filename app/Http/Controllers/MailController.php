@@ -23,7 +23,7 @@ class MailController extends Controller
 
         try {
             // E-posta Gönderimi
-            Mail::raw($request->message, function ($message) use ($request) {
+            Mail::raw($request->message, function ($message) use ($request , $site_setting) {
                 $message->to($site_setting->contact_email ?? 'mehmetdora333@gmail.com')
                     ->subject('İletişim Formu: ' . $request->name . ' | '.$request->subject)
                     ->replyTo($request->email);
