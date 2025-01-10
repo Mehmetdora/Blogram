@@ -379,6 +379,8 @@
     }
 
     .dropdown-content {
+        max-height: 400px; /* Maksimum yükseklik */
+        overflow-y: auto; /* Dikey kaydırma çubuğunu etkinleştir */
         display: none;
         background-color: white;
         min-width: 200px;
