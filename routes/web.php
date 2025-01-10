@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BlogCommentController;
 use App\Http\Controllers\Admin\PendingBlogsController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\MailController;
 
 // cover photo en boy 2:1
 // profil photo kare
@@ -214,4 +215,9 @@ Route::controller(TermsConditionsController::class)->group(function () {
 
 Route::controller(ErrorController::class)->group(function () {
     Route::get('errors/404', 'error_404')->name('error_404');
+});
+
+
+Route::controller(MailController::class)->group(function(){
+    Route::post('email/contact-support','contact')->name('contact-email');
 });
