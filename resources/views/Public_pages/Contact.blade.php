@@ -23,6 +23,7 @@
                     <span class="px-2">Get In Touch</span>
                 </p>
                 <h1 class="mb-4">Contact Us For Any Query</h1>
+                @include('Public_pages.layouts._message')
             </div>
             <div class="row">
                 <div class="col-lg-7 mb-5">
