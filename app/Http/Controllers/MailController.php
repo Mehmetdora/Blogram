@@ -29,11 +29,12 @@ class MailController extends Controller
                     ->replyTo($request->email);
             });
 
+            return back()->with('success', 'Your message has been sent successfully!');
+
         } catch (\Exception $err) {
             return redirect()->back()->with('error',$err);
         }
 
 
-        return back()->with('success', 'Mesajınız başarıyla gönderildi!');
     }
 }
