@@ -18,7 +18,9 @@ PHP(8.x)
 Laravel(11.x)<br/>
 Mysql<br/>
 Livewire<br/>
+Bootstrap<br/>
 Jodit Texteditor<br/>
+
 
 ## License
 
