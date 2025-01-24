@@ -188,21 +188,20 @@
                                 </div>
                             </div>
 
-
+                            <label>Title(*)</label>
                             <div class="col-12 mb-3">
                                 <input type="text" class="form-control" id="title" name="title"
                                        placeholder="Blog Title" required>
                             </div>
 
-                            <label>Summery for your blog</label>
-
+                            <label>Summery(*)</label>
                             <div class="col-12 mb-3">
                                 <textarea class="col-12" name="summery" rows="3" required id="summery"></textarea>
                             </div>
 
-                            <label>Kategori Seçiniz</label>
+                            <label>Category(*)</label>
                             <select name="category_id" id="category_id" class=" col-12 form-control select2" required>
-                                <option selected value="">Kategori Seciniz</option>
+                                <option selected value="">Choose a topic</option>
                                 @if (isset($categories))
                                     @foreach ($categories as $kategori)
                                         <option value="{{ $kategori->id }}">{{ $kategori->name }}</option>
@@ -211,6 +210,7 @@
 
                             </select>
 
+                            <label>Content(*)</label>
                             <div class="col-12 mb-3">
                                 <textarea name="description" required id="editor"></textarea>
                             </div>

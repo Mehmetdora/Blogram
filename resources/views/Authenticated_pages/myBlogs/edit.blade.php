@@ -517,7 +517,11 @@
                title="" data-original-title="CHOOSE COVER IMAGE" aria-describedby="tooltip480018">
 
             <img class="rounded " style="width: 100%; height:100%; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);"
-                 id="avatar" src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
+                 id="avatar" src="@if (isset($blog->cover_photo))
+                    {{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}
+                 @else
+                    {{ asset('img/cover.png') }}
+                 @endif"
                  alt="avatar">
             <input type="file" class="sr-only" id="input" name="photo" accept="image/*">
             <input type="hidden" id="cropped-image" name="photo">
@@ -547,21 +551,21 @@
         <input type="hidden" name="mevcut_cover_photo" value="{{ $blog->cover_photo }}">
 
         <div class="form-group">
-            <label for="title">Title</label>
+            <label for="title">Title(*)</label>
             <input type="text" class="  form-control" value="{{ $blog->title }}" id="title"
                    name="title" placeholder="Blog Title" required>
             <input name="blog_id" type="hidden" value="{{ $blog->id }}">
         </div>
 
         <div class="form-group">
-            <label for="summery text-center">Summery</label>
+            <label for="summery text-center">Summery(*)</label>
             <textarea name="summery" maxlength="255" rows="3" required id="summery">{{ $blog->summery }}</textarea>
             <label id="charCount" style="display:none">{{ 255 - strlen($blog->summery) }} characters
                 remaining</label>
         </div>
 
         <div class="category-select form-group">
-            <label for="category">Kategori Seçiniz</label>
+            <label for="category">Category(*)</label>
             <div class="select-box">
                 <div class="select-box__current " tabindex="1">
                     <input type="hidden" name="category_id" id="category_name">
@@ -587,7 +591,7 @@
         </div>
 
         <div class="form-group">
-            <label for="editor">Content</label>
+            <label for="editor">Content(*)</label>
             <textarea name="description" required id="editor">{{ $blog->description }}</textarea>
         </div>
 
@@ -979,24 +983,32 @@
     console.log(textInput.maxLength);
 
     function updateCharCount() {
+        // Kalan karakter sayısını doğru hesaplamak için, mevcut metnin uzunluğunu al
         const remainingChars = maxLength - textInput.value.length;
         charCount.textContent = `${remainingChars} character${remainingChars !== 1 ? 's' : ''} remaining`;
     }
 
+    // Sayfa yüklendiğinde input alanındaki veriyi kontrol et ve charCount'ı güncelle
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCharCount();
+    });
+
     textInput.addEventListener('input', () => {
         updateCharCount();
-        textInput.value = textInput.value.trim();
     });
+
     textInput.addEventListener('focus', () => {
         charCount.style.display = 'block';
     });
+
     textInput.addEventListener('blur', () => {
         charCount.style.display = 'none';
     });
 
-    // Sayfa yüklendiğinde başlangıç değerini güncelle
+    // Sayfa yüklendiğinde input kutusuna girilen veriyi de dikkate alarak başlat
     updateCharCount();
 </script>
+
 
 
 </body>

@@ -149,14 +149,16 @@
 
             @if (isset($blogs))
                 @foreach ($blogs as $blog)
-                    <div class="col-lg-8 mx-auto">
+                    <div class="col-lg-10 mx-auto">
                         <article class="card mb-4">
 
+                            @if (isset($blog->cover_photo))
                             <div class="post-slider">
                                 <img style="max-height: 400px"
-                                     src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                     class="card-img-top" alt="post-thumb">
+                                    src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
+                                    class="card-img-top" alt="post-thumb">
                             </div>
+                            @endif
 
                             <div class="card-body">
                                 <h3 class="mb-3"><a class="post-title"
@@ -197,7 +199,7 @@
 
                                 <div class="dropup-center  dropup">
                                     <a href="{{ route('blogs.show', $blog->id) }}"
-                                       class="btn btn-outline-primary">
+                                    class="btn btn-outline-primary">
                                         Read More
                                     </a>
                                     <button class="btn btn-outline-primary dropdown-toggle" type="button"
@@ -206,10 +208,10 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item btn-outline-primary"
-                                               href="{{ route('myBlogs.edit', $blog->id) }}">Edit</a></li>
+                                            href="{{ route('myBlogs.edit', $blog->id) }}">Edit</a></li>
                                         <li><a class="dropdown-item btn-outline-primary"
-                                               style="color:red; background-color:white;"
-                                               onclick="clickedDelete({{ $blog->id }})">Delete</a></li>
+                                            style="color:red; background-color:white;"
+                                            onclick="clickedDelete({{ $blog->id }})">Delete</a></li>
                                     </ul>
                                 </div>
                             </div>

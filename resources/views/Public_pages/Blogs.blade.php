@@ -6,7 +6,7 @@
     <div class="container-fluid bg-primary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
             <h3 class="display-3 font-weight-bold text-white">Users Blogs</h3>
-            
+
         </div>
     </div>
     <!-- Header End -->
@@ -24,7 +24,9 @@
                 @foreach ($blogs as $blog)
                     <div class="col-lg-4 mb-4">
                         <div class="card border-0 shadow-sm mb-2">
-                            <img class="card-img-top mb-2"  src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}" alt="" />
+                            @if (isset($blog->cover_photo))
+                                <img class="card-img-top mb-2"  src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}" alt="" />
+                            @endif
                             <div class="card-body bg-light text-center p-4">
                                 <h4 class="">{{$blog->title}}</h4>
                                 <div class="d-flex justify-content-center mb-3">

@@ -651,11 +651,13 @@
         <div class="row justify-content-center">
             <div class=" col-lg-9 mb-lg-0">
                 <article>
-                    <div class="post-slider mb-4">
-                        <img style="max-height: 600px"
-                             src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                             class="card-img-top" alt="post-thumb">
-                    </div>
+                    @if (isset($blog->cover_photo))
+                        <div class="post-slider mb-4">
+                            <img style="max-height: 600px"
+                                src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
+                                class="card-img-top" alt="post-thumb">
+                        </div>
+                    @endif
 
                     <h1 class="h2">{{ $blog->title }}</h1>
                     <ul class="card-meta my-3 list-inline">

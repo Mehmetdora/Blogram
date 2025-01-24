@@ -430,24 +430,24 @@
         </div>
 
         <div class="form-group">
-            <label for="title">Title</label>
+            <label for="title">Title(*)</label>
             <input type="text" id="title" name="title" value="{{ old('title') }}" required
                    placeholder="Enter your blog title">
         </div>
 
         <div class="form-group">
-            <label for="summery">Summary</label>
+            <label for="summery">Summary(*)</label>
             <textarea id="summery" maxlength="255" name="summery" rows="3" required
                       placeholder="Write a brief summary of your blog post">{{ old('summery') }}</textarea>
             <label id="charCount" style="display:none">255 characters remaining</label>
         </div>
 
         <div class=" form-group category-select">
-            <label for="category">Kategori Seçiniz</label>
+            <label for="category">Category(*)</label>
             <div class="select-box">
                 <div class="select-box__current " tabindex="1">
                     <input type="hidden" name="category_id" id="category_name">
-                    <span class="select-box__value">Select an option</span>
+                    <span class="select-box__value">Choose a topic</span>
                     <span class="select-box__arrow">▼</span>
                 </div>
                 <ul class="select-box__list ">
@@ -468,7 +468,7 @@
         </div>
 
         <div class="form-group">
-            <label for="editor">Content</label>
+            <label for="editor">Content(*)</label>
             <textarea id="editor" name="description" required
                       placeholder="Write your blog post content here">{{ old('description') }}</textarea>
         </div>

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->boolean('status')->default(true)->comment('1 ise myBlogs yayında,0 ise değil');
             $table->boolean('is_confirmed')->default(true)->comment('true ise onaylanmıştır, false ise admin tarafından onaylanmayı bekliyordur');
             $table->string('title',100)->nullable(false);
-            $table->string('cover_photo')->nullable(false);
+            $table->string('cover_photo')->nullable();
             $table->string('summery')->nullable(false);
             $table->text('description')->nullable(false);
             $table->integer('min_to_read')->default(0)->comment('blogun ortalama okunma süresi');

@@ -49,14 +49,18 @@ class PendingBlogsController extends Controller
             if(count($data) > 0) {
                 foreach($data as $blog) {
 
+                    $image = isset($blog->cover_photo);
+                    $code = $image ? '<div class="resim">
+                                            <img style=" margin-top:5px;   border-radius:5px "
+                                                src="'. asset('blog_images/cover_photos/' . $blog->cover_photo) .'"
+                                                alt="Image" class="img-fluid">
+                                        </div>' : '';
 
                     $output .= '
                         <div class="col-lg-3 mb-3" style="background-color:whitesmoke; margin:5px; border-radius:7px;">
                             <div class="post-entry-alt">
                                 <a href="' . route('detail-blog', $blog->id) . '" class="img-link">
-                                    <div class="resim" >
-                                        <img style=" margin-top:5px;   border-radius:5px " src="' . asset('blog_images/cover_photos/' . $blog->cover_photo) . '" alt="Image" class="img-fluid">
-                                    </div>
+                                    '. $code .'
                                 </a>
                                 <div class="excerpt">
                                     <h2><a href="' . route('detail-blog', $blog->id) . '">' . $blog->title . '</a></h2>
@@ -298,7 +302,14 @@ class PendingBlogsController extends Controller
             $file->move($file_path, $filename);
 
             if ($old_cover_photo && file_exists(public_path('blog_images/cover_photos/' . $old_cover_photo))) {        // FOTOĞRAF DEĞİŞİNCE ESKİ FOTOĞRAFI SİLİYORUZ
-                unlink(public_path('blog_images/cover_photos/' . $old_cover_photo));  // unlink ile fotoğraf silinir
+                $directory = public_path('blog_images/cover_photos/').$old_cover_photo;
+                if (is_file($directory)) {
+                    if (file_exists($directory)) {
+                        unlink($directory);
+                    } else {
+                        return redirect()->back()->with('error', 'Cover image cannot find, please contact with us!');
+                    }
+                }
             }
             $blog->cover_photo = $filename;
         }
@@ -330,7 +341,16 @@ class PendingBlogsController extends Controller
             $admin = User::where('is_admin',1)->first();
             $blog = Blog::find($request->blog_id);
             $blog->status = 0;
-            unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+            
+            $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
+            if (is_file($directory)) {
+                if (file_exists($directory)) {
+                    unlink($directory);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Cover image cannot find, please contact with us!']);
+                }
+            }
+
             if (isset($blog->images)) {
                 foreach ($blog->images as $image) {
                     unlink(public_path('blog_images/description_photos/') . $image->image_name);

@@ -146,14 +146,16 @@
 
             @if (isset($blogs))
                 @foreach ($blogs as $blog)
-                    <div class="col-lg-8 mx-auto">
+                    <div class="col-lg-10 mx-auto">
                         <article class="card mb-4">
 
-                            <div class="post-slider">
-                                <img style="max-height: 400px"
-                                     src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                     class="card-img-top" alt="post-thumb">
-                            </div>
+                            @if (isset($blog->cover_photo))
+                                <div class="post-slider">
+                                    <img style="max-height: 400px"
+                                        src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
+                                        class="card-img-top" alt="post-thumb">
+                                </div>
+                            @endif
 
                             <div class="card-body">
                                 <h3 class="mb-3"><a class="post-title"

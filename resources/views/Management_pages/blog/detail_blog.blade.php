@@ -107,10 +107,12 @@
 
         <div class="post-container">
             @if (isset($blog))
+                @if (isset($blog->cover_photo))
                 <div class="cover">
                     <img class="cover-image" src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
                          alt="">
                 </div>
+                @endif
 
                 <div class="baslık">
                     <div class="post-title">{{ $blog->title }}</div>
@@ -124,7 +126,7 @@
                     <div class="author-info">
                         <a class="author-name"
                            href="{{ route('list-user-blog', $blog->user->id) }}">{{ $blog->user->name }}</a>
-                        <div class="post-date">3 min read • {{ $blog->created_at->diffForHumans() }}</div>
+                        <div class="post-date">{{$blog->min_to_read}} min to read • {{ $blog->created_at->diffForHumans() }}</div>
                     </div>
                 </div>
                 <div class="post-interactions">

@@ -126,34 +126,72 @@
 
                     @if (isset($blogs))
                         @foreach ($blogs as $blog)
-                            <article class="card mb-4">
-                                <div class="row card-body">
-                                    <div class="col-md-4 mb-md-0 justify-content-center">
-                                        <div class="post-slider slider-sm slick-initialized slick-slider">
-                                            <div class="slick-list draggable">
-                                                <div class="post-slider slider-sm">
-                                                    <img style="border-radius: 5px"
-                                                        src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                                        class="card-img-top" alt="post-thumb">
+                            @if (isset($blog->cover_photo))
+                                <article class="card mb-4">
+                                    <div class="row card-body">
+                                        <div class="col-md-4 mb-md-0 justify-content-center">
+                                            <div class="post-slider slider-sm slick-initialized slick-slider">
+                                                <div class="slick-list draggable">
+                                                    <div class="post-slider slider-sm">
+                                                        <img style="border-radius: 5px"
+                                                            src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
+                                                            class="card-img-top" alt="post-thumb">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <h3 class="h4 mb-3"><a class="post-title"
-                                                href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
-                                        </h3>
-                                        <ul class="card-meta list-inline">
-                                            <li class="list-inline-item">
-                                                <a href="{{ route('profile.other.show', $blog->user_id) }}"
+                                        <div class="col-md-8">
+                                            <h3 class="h4 mb-3"><a class="post-title"
+                                                                href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
+                                            </h3>
+                                            <ul class="card-meta list-inline">
+                                                <li class="list-inline-item">
+                                                    <a href="{{ route('profile.other.show', $blog->user_id) }}"
                                                     class="card-meta-author">
-                                                    @if ($blog->user->photo)
-                                                        <img src="{{ asset('uploads/' . $blog->user->photo) }}"
-                                                            alt="Author Image">
+                                                        @if ($blog->user->photo)
+                                                            <img src="{{ asset('uploads/' . $blog->user->photo) }}"
+                                                                alt="Author Image">
+                                                        @else
+                                                            <img src="/img/Default_pfp.jpg" alt="Author Image">
+                                                        @endif
+                                                        <span>{{ $blog->user->name }}</span>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <i class="ti-timer"></i>
+                                                    @if ($blog->min_to_read < 1)
+                                                        Less Then 1 Min To Read
                                                     @else
-                                                        <img src="/img/Default_pfp.jpg" alt="Author Image">
+                                                        {{ $blog->min_to_read }} Min To Read
                                                     @endif
-                                                    <span>{{ $blog->user->name }}</span>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <ul class="card-meta-tag list-inline">
+                                                        <li class="list-inline-item"><a
+                                                                href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                            <p>{{ $blog->summery }}</p>
+
+                                        </div>
+                                    </div>
+                                </article>
+                            @else
+                                <article class="card mb-4">
+                                    <div class="row card-body">
+                                        <div class="col-12">
+                                            <h3 class="h4 mb-3"><a class="post-title" href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a></h3>
+                                            <ul class="card-meta list-inline">
+                                            <li class="list-inline-item">
+                                                <a href="{{ route('profile.other.show', $blog->user_id) }}" class="card-meta-author">
+                                                    <img src="{{ asset('uploads/' . $blog->user->photo) }}"
+                                                    alt="Author Image">
+                                                    <span>{{$blog->user->name}}</span>
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
@@ -170,65 +208,17 @@
                                             <li class="list-inline-item">
                                                 <ul class="card-meta-tag list-inline">
                                                     <li class="list-inline-item"><a
-                                                            href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
+                                                        href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
                                                     </li>
                                                 </ul>
                                             </li>
-                                        </ul>
-                                        <p>{{ $blog->summery }}</p>
-
+                                            </ul>
+                                            <p>{{ $blog->summery }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
-                            {{-- büyük fotoğralı blog --}}
-                            {{--  <article class="card mb-4">
-                            <div class="post-slider">
-                                <img style="max-height: 500px"
-                                     src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                     class="card-img-top" alt="post-thumb">
-                            </div>
-                            <div class="card-body">
-                                <h3 class="mb-3"><a class="post-title"
-                                                    href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
-                                </h3>
-                                <ul class="card-meta list-inline">
-                                    <li class="list-inline-item">
-                                        <a href="{{ route('profile.other.show', $blog->user_id) }}"
-                                           class="card-meta-author">
-                                            @if ($blog->user->photo)
-                                                <img src="{{ asset('uploads/' . $blog->user->photo) }}"
-                                                     alt="Author Image">
-                                            @else
-                                                <img src="/img/Default_pfp.jpg" alt="Author Image">
-                                            @endif
-                                            <span>{{ $blog->user->name }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <i class="ti-timer"></i>
-                                        @if ($blog->min_to_read < 1)
-                                            Less Then 1 Min To Read
-                                        @else
-                                            {{ $blog->min_to_read }} Min To Read
-                                        @endif
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <ul class="card-meta-tag list-inline">
-                                            <li class="list-inline-item"><a
-                                                    href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                                <p>{{ $blog->summery }}</p>
-                                <a href="{{ route('blogs.show', $blog->id) }}"
-                                   class="btn btn-outline-primary">Read More</a>
-                            </div>
-                        </article> --}}
-                        @endforeach
+                                </article>
+                            @endif
+                         @endforeach
                     @endif
 
                     <ul class="pagination justify-content-center">

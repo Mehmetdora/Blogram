@@ -56,12 +56,15 @@
                     @foreach ($blogs as $blog)
                         <div class="col-lg-3 mb-3" style="background-color:whitesmoke; margin:5px; border-radius:7px; ">
                             <div class="post-entry-alt">
-                                <a href=" {{ route('detail-blog', $blog->id) }} " class="img-link"><img
-                                            style="height: 200px; margin-top:10px;"
-                                            src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
-                                            alt="Image"
-                                            class="img-fluid"></a>
-                                <div class="excerpt">
+                                <a href=" {{ route('detail-blog', $blog->id) }} " class="img-link">
+                                    @if (isset($blog->cover_photo))
+                                        <img style="height: 200px; margin-top:10px;"
+                                        src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
+                                        alt="Image"
+                                        class="img-fluid">
+                                    @endif
+                                </a>
+                            <div class="excerpt">
 
 
                                     <h2><a href="{{ route('detail-blog', $blog->id) }}"> {{ $blog->title }} </a></h2>

@@ -157,10 +157,13 @@
                                    data-toggle="tooltip"
                                    title="" data-original-title="CHOOSE COVER IMAGE" aria-describedby="tooltip480018">
 
-                                <img class="rounded "
-                                     style="width: 100%; height:100%; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);"
-                                     id="avatar" src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
-                                     alt="avatar">
+                                   <img class="rounded " style="width: 100%; height:100%; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);"
+                                   id="avatar" src="@if (isset($blog->cover_photo))
+                                      {{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}
+                                   @else
+                                      {{ asset('img/cover.png') }}
+                                   @endif"
+                                   alt="avatar">
                                 <input type="file" class="sr-only" id="input" name="photo" accept="image/*">
                                 <input type="hidden" id="cropped-image" name="photo">
                             </label>
@@ -192,23 +195,22 @@
 
 
                             <input type="hidden" name="mevcut_cover_photo" value="{{ $blog->cover_photo }}">
-
+                            <label>Title(*)</label>
                             <div class="col-12 mb-3">
                                 <input type="text" class="form-control" value="{{ $blog->title }}" id="title"
                                        name="title" placeholder="Blog Title" required>
                                 <input name="blog_id" type="hidden" value="{{ $blog->id }}">
                             </div>
 
-                            <label>Summery for your blog</label>
-
+                            <label>Summery(*)</label>
                             <div class="col-12 mb-3">
                                 <textarea class="col-12" name="summery" rows="3" required
                                           id="summery">{{ $blog->summery }}</textarea>
                             </div>
 
-                            <label>Kategori Seçiniz</label>
+                            <label>Category(*)</label>
                             <select name="category_id" id="category_id" class=" col-12 form-control select2" required>
-                                <option value="">Kategori Seciniz</option>
+                                <option value="">Choose a topic</option>
                                 @if (isset($categories))
                                     @foreach ($categories as $kategori)
                                         @if ($kategori->id == $blog->category_id)
@@ -223,6 +225,7 @@
                             </select>
 
 
+                            <label>Content(*)</label>
                             <div class="col-12 mb-3">
                                 <textarea id="editor" name="description" required>{{ $blog->description }}</textarea>
                             </div>

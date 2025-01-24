@@ -77,11 +77,13 @@
                              style=" background-color:whitesmoke; margin:5px; border-radius:7px; ">
                             <div class="post-entry-alt">
                                 <a href=" {{ route('detail-blog', $blog->id) }} " class="img-link">
-                                    <div class="resim">
-                                        <img style=" margin-top:5px;   border-radius:5px "
-                                             src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
-                                             alt="Image" class="img-fluid">
-                                    </div>
+                                    @if (isset($blog->cover_photo))
+                                        <div class="resim">
+                                            <img style=" margin-top:5px;   border-radius:5px "
+                                                src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
+                                                alt="Image" class="img-fluid">
+                                        </div>
+                                    @endif
                                 </a>
                                 <div class="excerpt">
 

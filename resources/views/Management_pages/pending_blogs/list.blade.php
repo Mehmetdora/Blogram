@@ -58,11 +58,13 @@
                         <div class="col-lg-3 mb-3" style="background-color:whitesmoke; margin:5px; border-radius:7px; ">
                             <div class="post-entry-alt">
                                 <a href=" {{ route('detail-pending_blog', $blog->id) }} " class="img-link">
+                                    @if (isset($blog->cover_photo))
                                     <div class="resim">
                                         <img style=" margin-top:5px;   border-radius:5px "
                                              src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
                                              alt="Image" class="img-fluid">
                                     </div>
+                                    @endif
                                 </a>
                                 <div class="excerpt">
 

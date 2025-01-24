@@ -82,7 +82,7 @@ class BlogController extends Controller
 
         $validatedData = Validator::make($request->all(), [
             'summery' => 'required|max:255 ',
-            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
             'title' => 'required | max:80',
             'category_id' => 'required',
             'description' => 'required',
@@ -192,8 +192,6 @@ class BlogController extends Controller
             $filename = time() . '.png';
             $file->move($file_path, $filename);
             $blog->cover_photo = $filename;
-        } else {
-            return redirect()->back()->with('error', 'Cover photo must be upload!');
         }
 
         $blog->save();
@@ -552,8 +550,12 @@ class BlogController extends Controller
             if ($old_cover_photo && file_exists(public_path('blog_images/cover_photos/' . $old_cover_photo))) {        // FOTOĞRAF DEĞİŞİNCE ESKİ FOTOĞRAFI SİLİYORUZ
 
                 $directory = public_path('blog_images/cover_photos/').$old_cover_photo;
-                if (file_exists($directory)) {
-                    unlink(public_path('blog_images/cover_photos/') . $old_cover_photo);  // unlink ile fotoğraf silinir
+                if (is_file($directory)) {
+                    if (file_exists($directory)) {
+                        unlink($directory);
+                    } else {
+                        return redirect()->back()->with('error', 'Cover image cannot find, please contact with us!');
+                    }
                 }
             }
             $blog->cover_photo = $filename;
@@ -623,8 +625,12 @@ class BlogController extends Controller
             $blog->status = 0;
 
             $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
-            if (file_exists($directory)) {
-                unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+            if (is_file($directory)) {
+                if (file_exists($directory)) {
+                    unlink($directory);
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Cover image cannot find, please contact with us!']);
+                }
             }
 
             if (isset($blog->images)) {

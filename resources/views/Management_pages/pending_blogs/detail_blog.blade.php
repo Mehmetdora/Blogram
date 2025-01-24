@@ -109,11 +109,13 @@
 
         <div class="post-container">
             @if (isset($blog))
+
+                @if (isset($blog->cover_photo))
                 <div class="cover">
                     <img class="cover-image" src="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}"
                          alt="">
                 </div>
-
+                @endif
                 <div class="baslık">
                     <div class="post-title">{{ $blog->title }}</div>
                 </div>
