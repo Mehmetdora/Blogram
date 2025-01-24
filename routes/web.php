@@ -19,10 +19,12 @@ use App\Http\Controllers\Admin\PendingBlogsController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\MailController;
 
-// cover photo en boy 2:1
-// profil photo kare
+
 // Cropper.js paketi
 // Jodit Texteditor
+// mailgun kullanıldı
+// cache kullanıldı
+
 
 
 Route::controller(ProfileController::class)
@@ -44,6 +46,9 @@ Route::controller(HomeController::class)
     ->group(function () {
 
         Route::get('/home', 'home')->name('home');
+        Route::get('email/authenticated-user/contact','contact')->name('logined_user_contact');
+        Route::post('email/authenticated-user/contacted','contacted')->name('logined_user_contacted');
+
 
         Route::get('notifications/all', 'show_notifications')->name('show_notifications');
         Route::get('users/search-all','users_all')->name('users_all');
@@ -219,5 +224,6 @@ Route::controller(ErrorController::class)->group(function () {
 
 
 Route::controller(MailController::class)->group(function(){
-    Route::post('email/contact-support','contact')->name('contact-email');
+    Route::post('email/contact','contact')->name('contact-email');
+
 });

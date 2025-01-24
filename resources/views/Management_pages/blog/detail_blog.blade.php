@@ -1,7 +1,9 @@
 @extends('Management_pages.layouts.app')
 @section('style')
-    <link type="text/css" rel="stylesheet" href="/Jodit/jodit.min.css"/>
+    <link type="text/css" rel="stylesheet" href="{{asset('Jodit/jodit.min.css')}}"/>
     <script type="text/javascript" src="/Jodit/jodit.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('highlight/') }}/styles/monokai.css">
+
 
     <style>
         .cover-image {
@@ -189,6 +191,19 @@
 @endsection
 
 @section('script')
+    {{-- highlight.js --}}
+    <script src="{{ asset('highlight/') }}/highlight.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('code').forEach((block) => {
+                block.style.borderRadius = '3px';
+            });
+            setTimeout(() => {
+                hljs.highlightAll();
+            }, 0);
+        });
+    </script>
+
     <script>
         function delete_comment(id) {
             Swal.fire({

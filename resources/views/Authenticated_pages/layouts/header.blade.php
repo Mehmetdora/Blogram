@@ -73,6 +73,7 @@
                 <a href="{{ route('profile.show') }}">Profile</a>
                 <a href="{{ route('saved_blogs') }}">Saved Blogs</a>
                 <a href="{{ route('profile.edit') }}">Edit-Delete Profile</a>
+                <a href="{{route('logined_user_contact')}}">Contact</a>
                 <hr class="custom-hr">
                 <a class=" sign-out" href="# ">Sign Out</a>
             </div>

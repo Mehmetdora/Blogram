@@ -47,21 +47,6 @@ class OAuthController extends Controller
                     Auth::login($user_withuot_github);
                     return redirect()->route('check_profile');
 
-                } elseif (User::where('email', $user->email)->where('status', 1)->exists()) {
-
-                    // silinen hesabın tekrar kayıt olma işlemleri
-                    $deleted_user = User::where('email', $user->email)->where('status', 1)->first();
-                    $deleted_user->name = $user->name;
-                    $deleted_user->remember_token = Str::random(40);
-                    $deleted_user->save();
-
-                    $data['$oauth_user_type'] = "github";
-                    $data['user'] = $deleted_user;
-                    $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınıza bu bilgileri kullanarak ve yeni bir profil oluşturarak devam etmek istiyor musunuz?';
-                    $data['site_setting'] = SiteSetting::first();
-
-                    return view('Public_pages.auth.register', $data);
-
                 } else {
 
                     $new_user = new User();
@@ -120,22 +105,7 @@ class OAuthController extends Controller
                     Auth::login($user_withuot_google);
                     return redirect()->route('check_profile');
 
-                } elseif (User::where('email', $user->email)->where('status', 1)->exists()) {
-
-                    // silinen hesabın tekrar kayıt olma işlemleri
-                    $deleted_user = User::where('email', $user->email)->where('status', 1)->first();
-                    $deleted_user->name = $user->name;
-                    $deleted_user->remember_token = Str::random(40);
-                    $deleted_user->save();
-
-                    $data['$oauth_user_type'] = "google";
-                    $data['user'] = $deleted_user;
-                    $data['question'] = 'Bu mail adresi ile eski bir hesabınızın bağlantılı olduğunu tespit ettik.Eski hesabınıza bu bilgileri kullanarak ve yeni bir profil oluşturarak devam etmek istiyor musunuz?';
-                    $data['site_setting'] = SiteSetting::first();
-
-                    return view('Public_pages.auth.register', $data);
-
-                } else {
+                }else {
 
                     $new_user = new User();
                     $new_user->name = $user->name;

@@ -14,9 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-
     <!-- READER CSS -->
     <link rel="stylesheet" href="{{ asset('style/') }}/reader/plugins/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('style/') }}/reader/plugins/themify-icons/themify-icons.css">
@@ -25,8 +22,12 @@
     <link rel="stylesheet" href="{{ asset('style/reader/css/blogStyle.css') }}">
 
 
-    <link type="text/css" rel="stylesheet" href="/Jodit/jodit.min.css"/>
-    <script type="text/javascript" src="/Jodit/jodit.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{ asset('Jodit/jodit.min.css') }}"/>
+    <script type="text/javascript" src="{{ asset('Jodit/jodit.min.js') }}"></script>
+
+    <link rel="stylesheet" href="{{ asset('highlight/') }}/styles/monokai.css">
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
@@ -430,13 +431,14 @@
 
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" id="title" name="title" value="{{old('title')}}" required placeholder="Enter your blog title">
+            <input type="text" id="title" name="title" value="{{ old('title') }}" required
+                   placeholder="Enter your blog title">
         </div>
 
         <div class="form-group">
             <label for="summery">Summary</label>
             <textarea id="summery" maxlength="255" name="summery" rows="3" required
-                      placeholder="Write a brief summary of your blog post">{{old('summery')}}</textarea>
+                      placeholder="Write a brief summary of your blog post">{{ old('summery') }}</textarea>
             <label id="charCount" style="display:none">255 characters remaining</label>
         </div>
 
@@ -454,7 +456,8 @@
                     </li>
                     @if (isset($categories))
                         @foreach ($categories as $kategori)
-                            <li class="select-box__list-item" data-id="{{ $kategori->id }}" data-value="option1">
+                            <li class="select-box__list-item" data-id="{{ $kategori->id }}"
+                                data-value="option1">
                                 {{ $kategori->name }}</li>
                         @endforeach
                     @endif
@@ -467,7 +470,7 @@
         <div class="form-group">
             <label for="editor">Content</label>
             <textarea id="editor" name="description" required
-                      placeholder="Write your blog post content here">{{old('description')}}</textarea>
+                      placeholder="Write your blog post content here">{{ old('description') }}</textarea>
         </div>
 
         <div class="form-group">
@@ -644,6 +647,7 @@
 
 
 {{-- jodit --}}
+<script src="{{ asset('highlight/') }}/highlight.js"></script>
 <script>
     const editor = Jodit.make('#editor', {
         "uploader": {
@@ -651,9 +655,162 @@
         },
         "language": "tr",
         "height": 500,
+        "askBeforePasteHTML": false, // HTML içerik yapıştırılırken onay sormayı kapatır
+        "events": {
+            beforePaste: function (event, html) {
+                // HTML içeriği temizle ve sadece düz metin olarak yapıştır
+                return html.replace(/<[^>]+>/g, '');
+            }
+        },
+        "extraButtons": [{
+            name: 'insertCode',
+            iconURL: '{{asset('img/')}}/code.png', // Özelleştirilmiş bir simge URL'si
+            exec: function (editor) {
+
+
+                const currentSelection = editor.selection.save();
+
+
+                // Modal veya textarea ile kullanıcıdan kod alın
+                const modal = document.createElement('div');
+                modal.id = 'code-modal';
+                modal.style.position = 'fixed';
+                modal.style.top = '50%';
+                modal.style.left = '50%';
+                modal.style.transform = 'translate(-50%, -50%)';
+                modal.style.backgroundColor = 'white';
+                modal.style.padding = '20px';
+                modal.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                modal.style.zIndex = '1000';
+                modal.style.width = '350px';
+
+
+                const textarea = document.createElement('textarea');
+                textarea.style.width = '%100';
+                textarea.style.height = '150px';
+                textarea.placeholder = 'Paste your code here and select language...';
+
+                const selectBox = document.createElement('select');
+                selectBox.id = 'mySelectBox';
+
+                // Seçenekler (options) oluşturma
+                const options = [
+                    {value: 'vbscript-html', text: 'HTML'},
+                    {value: 'c', text: 'C'},
+                    {value: 'cpp', text: 'C++'},
+                    {value: 'csharp', text: 'C#'},
+                    {value: 'css', text: 'CSS'},
+                    {value: 'go', text: 'GO'},
+                    {value: 'java', text: 'Java'},
+                    {value: 'javascript', text: 'JavaScript'},
+                    {value: 'kotlin', text: 'Kotlin'},
+                    {value: 'perl', text: 'Perl'},
+                    {value: 'php', text: 'PHP'},
+                    {value: 'python', text: 'Python'},
+                    {value: 'r', text: 'R'},
+                    {value: 'ruby', text: 'Ruby'},
+                    {value: 'rust', text: 'Rust'},
+                    {value: 'sql', text: 'SQL'},
+                    {value: 'swift', text: 'Swift'},
+                    {value: 'typescript', text: 'TypeScript'}
+                ];
+
+                // Seçenekleri select box'a ekleme
+                options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option.value;
+                    optionElement.text = option.text;
+                    selectBox.appendChild(optionElement);
+                });
+
+                const buttons = document.createElement('code-buttons');
+                buttons.style.display = 'flex';
+                buttons.style.justifyContent = 'space-between';
+                buttons.style.marginTop = '5px';
+
+
+                const insertButton = document.createElement('button');
+                insertButton.textContent = 'ADD';
+                insertButton.style.padding = '6px 6px 6px 6px';
+                insertButton.style.backgroundcolor = 'red';
+
+
+                insertButton.onclick = function () {
+                    const userCode = textarea.value;
+                    if (userCode) {
+                        // İmlecin konumunu geri yükle
+                        editor.selection.restore(currentSelection);
+
+                        const language = document.getElementById('mySelectBox').value;
+
+                        // HTML kodunu olduğu gibi ekleyin (escape etmeyin)
+                        try {
+
+                            const codeBlock = document.createElement('pre');
+                            codeBlock.style.borderRadius = "3px";
+                            codeBlock.style.margin = "0";
+                            codeBlock.style.overflowX = 'auto';
+                            codeBlock.style.tabSize = '4';
+
+                            const codeElement = document.createElement('code');
+                            codeElement.className = `language-${language}`;
+                            codeElement.textContent = userCode; // XSS saldırılarına karşı escape edilmiş bir içerik
+
+                            codeBlock.appendChild(codeElement);
+
+                            editor.selection.insertHTML(codeBlock.outerHTML);
+
+                            setTimeout(() => {
+                                hljs.highlightAll();
+                            }, 0);
+
+                        } catch (error) {
+                            console.error(`Dil desteklenmiyor: ${language}`, error);
+                            alert(`Dil desteklenmiyor: ${language}`);
+                        }
+
+
+                    }
+                    document.body.removeChild(modal);
+                };
+
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Cancel';
+                cancelButton.style.marginLeft = 'auto';
+                cancelButton.style.padding = '6px 6px 6px 6px';
+                cancelButton.style.color = 'red';
+                cancelButton.style.fontWeight = 'bold';
+
+                cancelButton.onclick = function () {
+                    document.body.removeChild(modal);
+                };
+
+
+                setTimeout(() => {
+                    window.onclick = function (event) {
+                        if (!modal.contains(event.target)) { // Modal'ın dışına tıklandıysa
+                            document.body.removeChild(modal); // Modal'ı kaldır
+                            window.onclick = null; // Olay dinleyicisini kaldır
+                        }
+                    };
+                }, 0); // Kısa bir gecikme ekleyerek olayın tetiklenmesini engelleyin
+
+                buttons.appendChild(insertButton);
+                buttons.appendChild(cancelButton);
+
+                modal.appendChild(textarea);
+                modal.appendChild(selectBox);
+                modal.appendChild(buttons);
+
+                document.body.appendChild(modal);
+
+
+            }
+        }],
 
     });
 </script>
+
 
 {{-- category selection --}}
 <script>

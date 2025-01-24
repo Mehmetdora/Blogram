@@ -75,8 +75,10 @@ class BlogController extends Controller
 
 
 
+
     public function store(Request $request)
     {
+
 
         $validatedData = Validator::make($request->all(), [
             'summery' => 'required|max:255 ',

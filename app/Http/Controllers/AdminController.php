@@ -76,9 +76,6 @@ class AdminController extends Controller
         ->orderBy('created_at','desc')
         ->paginate(12);
 
-
-
-
         return view('Management_pages.blog.list',$data);
     }
 
@@ -94,7 +91,6 @@ class AdminController extends Controller
         ->orderBy('created_at','desc')
         ->paginate(12);
 
-
         return view('Management_pages.pending_blogs.list', $data);
 
     }
@@ -104,7 +100,7 @@ class AdminController extends Controller
         // admin  middleware oluşturma yap
         // admin middleware dosyası oluşturuldu
         // önce tüm projeyi profil yerine user üzerinde yürütmeyi hallet
-
+        
         $data['page'] = 'tags';
         $data['user'] = Auth::user();
         $data['count'] = Tag::all()->count();

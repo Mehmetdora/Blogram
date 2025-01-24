@@ -1,7 +1,7 @@
 @extends('Management_pages.layouts.app')
 @section('style')
-    <link type="text/css" rel="stylesheet" href="/Jodit/jodit.min.css"/>
-    <script type="text/javascript" src="/Jodit/jodit.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{ asset('Jodit/jodit.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('highlight/') }}/styles/monokai.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
@@ -180,8 +180,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Cancel
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel
                                             </button>
                                             <button type="button" class="btn btn-primary" id="crop">Crop</button>
                                         </div>
@@ -237,12 +236,169 @@
             integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous">
     </script>
 
+    {{--highlight -- jodit--}}
+    <script type="text/javascript" src="{{asset('Jodit/jodit.min.js')}}"></script>
+    <script src="{{ asset('highlight/') }}/highlight.js"></script>
     <script>
         const editor = Jodit.make('#editor', {
             "uploader": {
                 "insertImageAsBase64URI": true
             },
-            "language": "tr"
+            "language": "tr",
+            "height": 500,
+            "askBeforePasteHTML": false, // HTML içerik yapıştırılırken onay sormayı kapatır
+            "events": {
+                beforePaste: function (event, html) {
+                    // HTML içeriği temizle ve sadece düz metin olarak yapıştır
+                    return html.replace(/<[^>]+>/g, '');
+                }
+            },
+            "extraButtons": [{
+                name: 'insertCode',
+                iconURL: '{{asset('img/')}}/code.png', // Özelleştirilmiş bir simge URL'si
+                exec: function (editor) {
+
+
+                    const currentSelection = editor.selection.save();
+
+
+                    // Modal veya textarea ile kullanıcıdan kod alın
+                    const modal = document.createElement('div');
+                    modal.id = 'code-modal';
+                    modal.style.position = 'fixed';
+                    modal.style.top = '50%';
+                    modal.style.left = '50%';
+                    modal.style.transform = 'translate(-50%, -50%)';
+                    modal.style.backgroundColor = 'white';
+                    modal.style.padding = '20px';
+                    modal.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                    modal.style.zIndex = '1000';
+                    modal.style.width = '350px';
+
+
+                    const textarea = document.createElement('textarea');
+                    textarea.style.width = '%100';
+                    textarea.style.height = '150px';
+                    textarea.placeholder = 'Paste your code here and select language...';
+
+                    const selectBox = document.createElement('select');
+                    selectBox.id = 'mySelectBox';
+
+                    // Seçenekler (options) oluşturma
+                    const options = [
+                        {value: 'vbscript-html', text: 'HTML'},
+                        {value: 'c', text: 'C'},
+                        {value: 'cpp', text: 'C++'},
+                        {value: 'csharp', text: 'C#'},
+                        {value: 'css', text: 'CSS'},
+                        {value: 'go', text: 'GO'},
+                        {value: 'java', text: 'Java'},
+                        {value: 'javascript', text: 'JavaScript'},
+                        {value: 'kotlin', text: 'Kotlin'},
+                        {value: 'perl', text: 'Perl'},
+                        {value: 'php', text: 'PHP'},
+                        {value: 'python', text: 'Python'},
+                        {value: 'r', text: 'R'},
+                        {value: 'ruby', text: 'Ruby'},
+                        {value: 'rust', text: 'Rust'},
+                        {value: 'sql', text: 'SQL'},
+                        {value: 'swift', text: 'Swift'},
+                        {value: 'typescript', text: 'TypeScript'}
+                    ];
+
+                    // Seçenekleri select box'a ekleme
+                    options.forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.text = option.text;
+                        selectBox.appendChild(optionElement);
+                    });
+
+                    const buttons = document.createElement('code-buttons');
+                    buttons.style.display = 'flex';
+                    buttons.style.justifyContent = 'space-between';
+                    buttons.style.marginTop = '5px';
+
+
+                    const insertButton = document.createElement('button');
+                    insertButton.textContent = 'ADD';
+                    insertButton.style.padding = '6px 6px 6px 6px';
+                    insertButton.style.backgroundcolor = 'red';
+
+
+                    insertButton.onclick = function () {
+                        const userCode = textarea.value;
+                        if (userCode) {
+                            // İmlecin konumunu geri yükle
+                            editor.selection.restore(currentSelection);
+
+                            const language = document.getElementById('mySelectBox').value;
+
+                            // HTML kodunu olduğu gibi ekleyin (escape etmeyin)
+                            try {
+
+                                const codeBlock = document.createElement('pre');
+                                codeBlock.style.borderRadius = "3px";
+                                codeBlock.style.margin = "0";
+                                codeBlock.style.overflowX = 'auto';
+                                codeBlock.style.tabSize = '4';
+
+                                const codeElement = document.createElement('code');
+                                codeElement.className = `language-${language}`;
+                                codeElement.textContent = userCode; // XSS saldırılarına karşı escape edilmiş bir içerik
+
+                                codeBlock.appendChild(codeElement);
+
+                                editor.selection.insertHTML(codeBlock.outerHTML);
+
+                                setTimeout(() => {
+                                    hljs.highlightAll();
+                                }, 0);
+
+                            } catch (error) {
+                                console.error(`Dil desteklenmiyor: ${language}`, error);
+                                alert(`Dil desteklenmiyor: ${language}`);
+                            }
+
+
+                        }
+                        document.body.removeChild(modal);
+                    };
+
+                    const cancelButton = document.createElement('button');
+                    cancelButton.textContent = 'Cancel';
+                    cancelButton.style.marginLeft = 'auto';
+                    cancelButton.style.padding = '6px 6px 6px 6px';
+                    cancelButton.style.color = 'red';
+                    cancelButton.style.fontWeight = 'bold';
+
+                    cancelButton.onclick = function () {
+                        document.body.removeChild(modal);
+                    };
+
+
+                    setTimeout(() => {
+                        window.onclick = function (event) {
+                            if (!modal.contains(event.target)) { // Modal'ın dışına tıklandıysa
+                                document.body.removeChild(modal); // Modal'ı kaldır
+                                window.onclick = null; // Olay dinleyicisini kaldır
+                            }
+                        };
+                    }, 0); // Kısa bir gecikme ekleyerek olayın tetiklenmesini engelleyin
+
+                    buttons.appendChild(insertButton);
+                    buttons.appendChild(cancelButton);
+
+                    modal.appendChild(textarea);
+                    modal.appendChild(selectBox);
+                    modal.appendChild(buttons);
+
+                    document.body.appendChild(modal);
+
+
+                }
+            }],
+
         });
     </script>
 
@@ -329,15 +485,4 @@
         });
     </script>
 
-    {{-- <script>
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script> --}}
 @endsection

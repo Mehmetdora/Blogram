@@ -14,8 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('highlight/') }}/styles/monokai.css">
+
 
     <!-- READER CSS -->
     <link rel="stylesheet" href="{{ asset('style/') }}/reader/plugins/bootstrap/bootstrap.min.css">
@@ -30,14 +30,14 @@
 
     {{-- Tags Badge --}}
     <style>
-
-
         .tag {
             position: relative;
             margin: 10px;
             text-decoration: underline;
-            text-underline-offset: 4px; /* Çizgi ile metin arasındaki mesafe */
-            text-decoration-thickness: 2px; /* Çizgi kalınlığı */
+            text-underline-offset: 4px;
+            /* Çizgi ile metin arasındaki mesafe */
+            text-decoration-thickness: 2px;
+            /* Çizgi kalınlığı */
             border-color: rgb(255, 119, 0);
             border-width: 10px;
             color: rgb(0, 0, 0);
@@ -65,8 +65,6 @@
             right: -8px;
             transform-origin: center bottom;
         }
-
-
     </style>
 
     <style>
@@ -775,16 +773,16 @@
                                     </div>
                                 </button>
                                 {{-- <button type="button" class="reaction-item">
-                                    <div class="icon">
-                                        <svg width="24" height="24" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="1" />
-                                            <circle cx="19" cy="12" r="1" />
-                                            <circle cx="5" cy="12" r="1" />
-                                        </svg>
-                                    </div>
-                                </button> --}}
+                                <div class="icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="1" />
+                                        <circle cx="19" cy="12" r="1" />
+                                        <circle cx="5" cy="12" r="1" />
+                                    </svg>
+                                </div>
+                            </button> --}}
                             </div>
                         </div>
                         <button style="z-index: 500;" type="button" class="reaction-item comment-trigger">
@@ -894,8 +892,8 @@
                                                             </div>
                                                             <div class="comment-text">
                                                                 {{-- <b
-                                                                    style="border-radius: 5px; color:rgb(63, 146, 0); padding:0; ">${{ $comment->user->name }}
-                                                                </b> --}}{{ $reply->content }}
+                                                                style="border-radius: 5px; color:rgb(63, 146, 0); padding:0; ">${{ $comment->user->name }}
+                                                            </b> --}}{{ $reply->content }}
                                                             </div>
                                                             <button class="reply-button"
                                                                     onclick="makeReply({{ $reply->id }},{{ $blog->id }})">
@@ -941,6 +939,19 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+{{-- highlight.js --}}
+<script src="{{ asset('highlight/') }}/highlight.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('code').forEach((block) => {
+            block.style.borderRadius = '3px';
+        });
+        setTimeout(() => {
+            hljs.highlightAll();
+        }, 0);
+    });
+</script>
 
 
 {{-- comment işlemleri --}}
