@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -75,6 +76,32 @@ class OAuthController extends Controller
     //Google
     public function google_redirect()
     {
+
+        $userAgent = request()->header('User-Agent');
+
+        // iOS ve Android işletim sistemlerini tespit et
+        $isIOS = stripos($userAgent, 'iPhone') !== false || stripos($userAgent, 'iPad') !== false;
+        $isAndroid = stripos($userAgent, 'Android') !== false;
+
+        // WebView ortamını tespit et
+        $isWebView = preg_match('/FBAV|FBAN|Instagram|LinkedIn|TikTok/i', $userAgent);
+
+        $Url = Socialite::driver('google')->redirect()->getTargetUrl();
+
+
+        if ($isWebView) {
+            if ($isIOS) {
+                // iOS için Safari'ye yönlendirme
+                //return redirect()->away("x-web-search://blogram.com.tr/");
+                return response()->view('Errors.error_redirect_browser');
+            } elseif ($isAndroid) {
+                // Android için Chrome'a yönlendirme
+            return redirect()->away("intent://".$Url."#Intent;scheme=https;package=com.android.chrome;end");
+            } else {
+                return response()->view('Errors.error_redirect_browser');
+            }
+        }
+
         return Socialite::driver('google')->redirect();
     }
 
