@@ -9,9 +9,9 @@
 
 ## 🔗<a href="https://www.blogram.com.tr">Blogram</a>
 
-Blogram, insanların başkalarının paylaştığı blogları okuyabileceği, bilgilerinini veya deneyimlerini paylaşabileceği, yorumlar yapabileceği tamamen özgür bir alan. Sınırlama olmaksızın öğren-paylaş.
+Blogram is a completely free space where people can read blogs shared by others, share their knowledge or experiences, comment. Learn-share without limitation.
 
-## 🛠️Kullanılan Teknolojiler
+## 🛠️Technologies Used
 
 PHP(8.x)
 <br/>
