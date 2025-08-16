@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function delete_user()
     {
 
-        $user = auth()->user();
+        $user = Auth::user();
         // Kullanıcı oturum açmamışsa veya kimlik doğrulama başarısızsa işlem yapılmaz
         if (!$user) {
             return redirect()->route('login')->with('error', 'Please log in to delete your account.');
@@ -60,20 +60,22 @@ class AuthController extends Controller
                 $blog->tags()->detach();
             }
 
-            if (isset($blog->images)) {
+            if (!empty($blog->images)) {
                 foreach ($blog->images as $image) {
 
-                    $directory = public_path('blog_images/description_photos/').$image->image_name;
+                    $directory = public_path('blog_images/description_photos/') . $image->image_name;
                     if (file_exists($directory)) {
-                        unlink(public_path('blog_images/description_photos/').$image->image_name);
+                        unlink(public_path('blog_images/description_photos/') . $image->image_name);
                     }
                     $image->delete();
                 }
             }
+            if (!empty($blog->cover_photo)) {
 
-            $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
-            if (file_exists($directory)) {
-                unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+                $directory = public_path('blog_images/cover_photos/') . $blog->cover_photo;
+                if (file_exists($directory)) {
+                    unlink(public_path('blog_images/cover_photos/') . $blog->cover_photo);
+                }
             }
 
             $blog->delete();
@@ -114,7 +116,6 @@ class AuthController extends Controller
         $data['site_setting'] = SiteSetting::first();
 
         return view('Public_pages.auth.login', $data);
-
     }
 
     public function check_profile()
@@ -137,11 +138,9 @@ class AuthController extends Controller
             }
 
             return redirect()->route('home');
-
         }
 
         return redirect()->route('profile.create');
-
     }
 
     public function auth_login(Request $request)
@@ -171,27 +170,21 @@ class AuthController extends Controller
                 Mail::to($save->email)->send(new RegisterMail($save));
 
                 return redirect()->back()->with('error', "Please verify your email address");
-
             }
-
         } else {
             return redirect()->back()->with('error', 'Please enter correct email and password ');
-
         }
-
     }
 
     public function register()
     {
         $data['site_setting'] = SiteSetting::first();
         return view('Public_pages.auth.register', $data);
-
     }
 
     public function forgot()
     {
         return view('Public_pages.auth.forgot');
-
     }
 
     public function forgot_password(Request $request)
@@ -232,15 +225,12 @@ class AuthController extends Controller
                 $user->save();
 
                 return redirect('login')->with('success', 'Password changed successfully');
-
             } else {
                 return redirect()->back()->with('error', 'Password and Confirm Password did not match');
             }
         } else {
             return redirect()->route('error_404');
         }
-
-
     }
 
     public function create_user(Request $request)   // kullanıcı email ile hesap oluşturmak isterse
@@ -251,44 +241,43 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed|unique:users,password',
         ]);
 
+        try {
 
-        if (User::where('email', $request->email)->where('status', 0)->exists()) {
-            // Kullanıcı google ile kayıtlı iken email ile kayıt olmak isterse
+            if (User::where('email', $request->email)->where('status', 0)->exists()) {
+                // Kullanıcı google ile kayıtlı iken email ile kayıt olmak isterse
 
-            $user = User::where('email', $request->email)->where('status', 0)->first();
+                $user = User::where('email', $request->email)->where('status', 0)->first();
 
-            if($user->email_verified_at == null){
-                $user->name = $request->name;
-                $user->password = Hash::make(request()->password);
-                $user->remember_token = Str::random(40);
-                $user->save();
+                if ($user->email_verified_at == null) {
+                    $user->name = $request->name;
+                    $user->password = Hash::make(request()->password);
+                    $user->remember_token = Str::random(40);
+                    $user->save();
 
-                Mail::to($user->email)->send(new RegisterMail($user));
-                return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
+                    Mail::to($user->email)->send(new RegisterMail($user));
+                    return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
+                } else {
+                    return redirect('login')->with('error', "There is a registered user with this email address. Please try another email address that is not registered.");
+                }
+            } else {    // YENİ EMAİL KULLANIXI KAYDI
+                request()->validate([
+                    'email' => 'required|email|max:255|unique:users',
+                ]);
 
-            }else{
-                return redirect('login')->with('error', "There is a registered user with this email address. Please try another email address that is not registered.");
+                $save = new User();
+                $save->name = trim($request->name);
+                $save->email = trim($request->email);
+                $save->gender = false;
+                $save->password = Hash::make($request->password);
+                $save->remember_token = Str::random(40);
+                $save->save();
+
+                Mail::to($save->email)->send(new RegisterMail($save));
+                return redirect('login')->with('success', "One more step, verify your email address to start... 🚀");
             }
-
-
-        } else {    // YENİ EMAİL KULLANIXI KAYDI
-            request()->validate([
-                'email' => 'required|email|max:255|unique:users',
-            ]);
-
-            $save = new User();
-            $save->name = trim($request->name);
-            $save->email = trim($request->email);
-            $save->gender = false;
-            $save->password = Hash::make($request->password);
-            $save->remember_token = Str::random(40);
-            $save->save();
-
-            Mail::to($save->email)->send(new RegisterMail($save));
-            return redirect('login')->with('success', "Your account register successfully and verify your email address");
-
+        } catch (\Exception $err) {
+            return redirect()->back()->with("error", $err);
         }
-
     }
 
 
@@ -304,11 +293,9 @@ class AuthController extends Controller
             $user->save();
 
             return redirect('login')->with('success', "Your account successfully verified");
-
         } else {
             return redirect()->route('error_404');
         }
-
     }
 
     public function logout()
@@ -317,5 +304,4 @@ class AuthController extends Controller
         session(['url.intended' => null]);  // tekrar giriş yapacağı zaman eski url adresinin sessiondan kaldırma
         return redirect()->route('welcome');
     }
-
 }

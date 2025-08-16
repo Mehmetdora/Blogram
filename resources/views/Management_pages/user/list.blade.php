@@ -12,47 +12,52 @@
                         <h5 class="card-title">
                             Users List
                             <a href="{{ route('add-user') }}" class="btn btn-primary"
-                               style="float: right;margin-top: -10px">Add New User</a>
+                                style="float: right;margin-top: -10px">Add New User</a>
                         </h5>
 
                         <!-- Table with hoverable rows -->
                         <table class="table table-hover">
                             <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Email Verified</th>
-                                <th scope="col">Rank</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Created Date</th>
-                                <th scope="col">Action</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Email Verified</th>
+                                    <th scope="col">Rank</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Created Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            @forelse($users as $value)
-                                <tr>
-                                    <th scope="row"> {{ $value->id }}</th>
-                                    <td> {{ $value->name }}</td>
-                                    <td> {{ $value->email }}</td>
-                                    <td> {{ !empty($value->email_verified_at) ? 'Yes' : 'No' }}</td>
-                                    <td style="color: red"> {{ !empty($value->is_admin) ? 'ADMİN' : 'Non-Admin' }}</td>
-                                    <td> {{ !empty($value->status) ? 'Deleted' : 'Active' }}</td>
-                                    <td> {{ $value->created_at }}</td>
-                                    <td>
-                                        <a href="{{ route('edit-user', $value->id) }}"
-                                           class="btn btn-primary btn-sm">Edit</a>
-                                        <a onclick="delete_user({{ $value->id }}, '{{ route('delete-user') }}')"
-                                           id="user-delete-btn" class="btn btn-danger btn-sm">Delete</a>
+                                @forelse($users as $user)
+                                    <tr>
+                                        <th scope="row"> {{ $user->id }}</th>
+                                        <td> {{ $user->name }}</td>
+                                        <td> {{ $user->email }}</td>
+                                        <td> {{ !empty($user->email_verified_at) ? 'Yes' : 'No' }}</td>
+                                        <td style="color: red"> {{ !empty($user->is_admin) ? 'ADMİN' : 'Non-Admin' }}</td>
+                                        <td> {{ $user->status == 0 ? 'Active' : 'Passive' }}</td>
+                                        <td> {{ $user->created_at }}</td>
+                                        <td>
+                                            <a href="{{ route('edit-user', $user->id) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a onclick="
+                                                    delete_user(
+                                                        {{ $user->id }},
+                                                        `{{ route('delete-user') }}`
+                                                    );
+                                                "
+                                                id="user-delete-btn" class="btn btn-danger btn-sm">Delete</a>
 
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
 
-                            @empty
-                                <tr>
-                                    <td colspan="100%">Record not found.</td>
-                                </tr>
-                            @endforelse
+                                @empty
+                                    <tr>
+                                        <td colspan="100%">Record not found.</td>
+                                    </tr>
+                                @endforelse
 
                             </tbody>
                         </table>

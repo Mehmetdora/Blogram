@@ -7,9 +7,13 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Error;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
+use function Laravel\Prompts\error;
 
 class UserController extends Controller
 {
@@ -20,8 +24,8 @@ class UserController extends Controller
     {
         $data['page'] = 'users';
         $data['user'] = Auth::user();
-        $data['pending_blogs_count'] = Blog::where('status',1)
-        ->where('is_confirmed',0)->count();
+        $data['pending_blogs_count'] = Blog::where('status', 1)
+            ->where('is_confirmed', 0)->count();
 
         return view('Management_pages.user.add', $data);
     }
@@ -63,8 +67,8 @@ class UserController extends Controller
 
         $data['page'] = 'users';
         $data['user'] = Auth::user();
-        $data['pending_blogs_count'] = Blog::where('status',1)
-        ->where('is_confirmed',0)->count();
+        $data['pending_blogs_count'] = Blog::where('status', 1)
+            ->where('is_confirmed', 0)->count();
 
         $data['getRecord'] = User::getSingle($id);
         return view('Management_pages.user.edit', $data);
@@ -72,44 +76,52 @@ class UserController extends Controller
 
     public function update_user(Request $request, $id)
     {
-        $validatedData = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|max:255|unique:users,email,' . $id,
-        ]);
-        if ($validatedData->fails()) {
-            // Hata mesajlarını alın
-            $errors = $validatedData->errors()->all(); // istersek laravelin kendi hatam mesajını da gönderebiliriz
-            // E-posta veya şifrenin hatalı olduğunu belirten özel bir hata mesajı oluşturun
-            $errorMessage = 'Girilen email veya şifre formatı hatalı!';
-            // Hata mesajlarını kullanıcıya gösterin
-            return redirect()->back()->with('error', $errors);
-        }
+        try {
+            $validatedData = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email|max:255|unique:users,email,' . $id,
+            ]);
+            if ($validatedData->fails()) {
+                // Hata mesajlarını alın
+                $errors = $validatedData->errors()->all(); // istersek laravelin kendi hatam mesajını da gönderebiliriz
+                // E-posta veya şifrenin hatalı olduğunu belirten özel bir hata mesajı oluşturun
+                $errorMessage = 'Girilen email veya şifre formatı hatalı!';
+                // Hata mesajlarını kullanıcıya gösterin
+                return redirect()->back()->with('error', $errors);
+            }
+            $user_name = $request->name;
+            $user_email = $request->email;
+            $user_is_active = (int)$request->status;
+            $user_id = (int)$id;
 
-        // eğer şifre verisi gelirse değiştir gelmezse aynı kalsın
-        $save = User::getSingle($id);
-        $save->name = trim($request->name);
-        $save->email = trim($request->email);
-        if (!empty($request->password)) {
-            $save->password = Hash::make($request->password);
-        }
-        $save->status = trim($request->status);
-        $is_saved = $save->save();
+            // eğer şifre verisi gelirse değiştir gelmezse aynı kalsın
+            $user = User::getSingle($user_id);
+            $user->name = trim($user_name);
+            $user->email = trim($user_email);
+            if (!empty($request->password)) {
+                $user->password = Hash::make($request->password);
+            }
 
-        if ($is_saved) {
+            $user->status = $user_is_active;
+            $user->save();
+
             return redirect()->route('users')->with('success', 'User updates successfully!');
-        } else {
-            return redirect()->back()->with('error', 'User could not updated!');
+        } catch (\Throwable $err) {
+            return redirect()->back()->with("error", "Kullanıcı güncellemesi sırasında hata oluştu: " . $err);
         }
     }
 
     public function delete_user(Request $request)
     {
+        request()->validate([
+            "user_id" =>  "required"
+        ]);
 
         try {
             $user = User::find($request->user_id);
 
             if (!$user) {
-                return response()->json(['success' => false, 'message' => 'Kullanıcı Bulunamadı!'], 500);
+                return response()->json(['success' => false, 'message' => 'Kullanıcı Bulunamadı! Lütfen sayfayı yenileyin veya verileri kontrol ediniz.'], 500);
             }
 
             $blogs = $user->blogs;
@@ -144,22 +156,27 @@ class UserController extends Controller
                     $blog->tags()->detach();
                 }
 
-                if (isset($blog->images)) {
+                // blog resimleri varsa sil
+                if (!empty($blog->images)) {
                     foreach ($blog->images as $image) {
 
-                        $directory = public_path('blog_images/description_photos/').$image->image_name;
+                        $directory = public_path('blog_images/description_photos/') . $image->image_name;
                         if (file_exists($directory)) {
-                            unlink(public_path('blog_images/description_photos/').$image->image_name);
+                            unlink(public_path('blog_images/description_photos/') . $image->image_name);
                         }
                         $image->delete();
                     }
                 }
 
-                $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
-                if (file_exists($directory)) {
-                    unlink(public_path('blog_images/cover_photos/').$blog->cover_photo);
+                // cover photo varsa sil
+                if (!empty($blog->cover_photo)) {
+                    $directory = public_path('blog_images/cover_photos/') . $blog->cover_photo;
+                    if (file_exists($directory)) {
+                        unlink(public_path('blog_images/cover_photos/') . $blog->cover_photo);
+                    }
                 }
 
+                // blog u sil
                 $blog->delete();
             }
 
@@ -173,7 +190,10 @@ class UserController extends Controller
                 $user->categories()->detach();
             }
 
-            $profile->delete();
+            if ($profile) {
+                $profile->delete();
+            }
+
 
             if (isset($liked_blogs)) {
                 $user->liked_blogs()->detach();
@@ -183,9 +203,10 @@ class UserController extends Controller
                 $user->saved_blogs()->detach();
             }
 
+            $username = $user->name;
             $user->delete();
 
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'message' => $username], 200);
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
         }
@@ -197,8 +218,8 @@ class UserController extends Controller
 
         $data['page'] = 'users';
         $data['user'] = Auth::user();
-        $data['pending_blogs_count'] = Blog::where('status',1)
-        ->where('is_confirmed',0)->count();
+        $data['pending_blogs_count'] = Blog::where('status', 1)
+            ->where('is_confirmed', 0)->count();
 
         $data['getUser'] = User::getSingle(Auth::user()->id);
         return view('Management_pages.profile.account_settings', $data);

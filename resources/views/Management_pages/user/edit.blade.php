@@ -12,19 +12,19 @@
                         <h5 class="card-title">Edit User</h5>
 
                         <!-- Vertical Form -->
-                        <form class="row g-3" action="{{route('edited-user',$getRecord->id)}}" method="post">
+                        <form class="row g-3" action="{{ route('edited-user', $getRecord->id) }}" method="post">
                             @csrf
 
                             <div class="col-12">
                                 <label for="inputNanme4" class="form-label">Name</label>
                                 <input type="text" value="{{ $getRecord->name }}" class="form-control" name="name"
-                                       required id="inputNanme4">
+                                    required id="inputNanme4">
                                 <div style="color: red"> {{ $errors->first('name') }}</div>
                             </div>
                             <div class="col-12">
                                 <label for="inputEmail4" class="form-label">Email</label>
                                 <input type="email" value="{{ $getRecord->email }}" class="form-control" name="email"
-                                       required id="inputEmail4">
+                                    required id="inputEmail4">
                                 <div style="color: red"> {{ $errors->first('email') }}</div>
                             </div>
                             <div class="col-12">
@@ -36,10 +36,9 @@
                             <div class="col-12">
                                 <label for="inputPassword4" class="form-label">Status</label>
                                 <select class="form-control" name="status">
-                                    <option {{ ($getRecord->status ==0) ? 'selected' : '' }} value="1">Active</option>
-                                    <option {{ ($getRecord->status ==1) ? 'selected' : '' }} value="0">Inactive</option>
+                                    <option {{ $getRecord->status == 0 ? 'selected' : '' }} value="0">Active</option>
+                                    <option {{ $getRecord->status == 1 ? 'selected' : '' }} value="1">Passive</option>
                                 </select>
-
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -52,9 +51,7 @@
             </div>
         </div>
     </section>
-
 @endsection
 
 @section('script')
 @endsection
-
