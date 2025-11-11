@@ -10,8 +10,10 @@ use App\Models\SiteSetting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\ForgotPasswordMail;
+use App\Mail\TestMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
@@ -194,8 +196,14 @@ class AuthController extends Controller
             $user->remember_token = Str::random(40);
             $user->save();
 
-            Mail::to($user->email)->send(new ForgotPasswordMail($user));
-            return redirect()->back()->with('success', 'Please check your email to reset your password.');
+            try {
+                Mail::to($user->email)->send(new ForgotPasswordMail($user));
+
+                Log::info("Mail gönderildi!");
+            } catch (\Exception $e) {
+                Log::error("Mail gönderilemedi: " . $e->getMessage());
+            }
+            return redirect()->back()->with('success', 'Now check your email to reset your password.');
         } else {
             return redirect()->back()->with('error', 'This email is not registered.');
         }
@@ -254,7 +262,13 @@ class AuthController extends Controller
                     $user->remember_token = Str::random(40);
                     $user->save();
 
-                    Mail::to($user->email)->send(new RegisterMail($user));
+                    try {
+                        $register_url = route('verify', $user->remember_token);
+                        Mail::to($user->email)->send(new RegisterMail($user, $register_url));
+                        Log::info("Mail gönderildi!");
+                    } catch (\Exception $e) {
+                        Log::error("Mail gönderilemedi: " . $e->getMessage());
+                    }
                     return redirect('login')->with('success', "Your registration with email is done successfully , now verify your email address and start learning");
                 } else {
                     return redirect('login')->with('error', "There is a registered user with this email address. Please try another email address that is not registered.");
@@ -272,7 +286,13 @@ class AuthController extends Controller
                 $save->remember_token = Str::random(40);
                 $save->save();
 
-                Mail::to($save->email)->send(new RegisterMail($save));
+                try {
+                    $register_url = route('verify', $save->remember_token);
+                    Mail::to($save->email)->send(new RegisterMail($save, $register_url));
+                    Log::info("Mail gönderildi!");
+                } catch (\Exception $e) {
+                    Log::error("Mail gönderilemedi: " . $e->getMessage());
+                }
                 return redirect('login')->with('success', "One more step, verify your email address to start... 🚀");
             }
         } catch (\Exception $err) {

@@ -35,7 +35,7 @@ class BlogController extends Controller
     protected $profanityService;
     protected $total_word_count;
     // Controller yapıcısında ProfanityService'i enjekte etme
-    public function __construct(ProfanityService $profanityService,WordCounterService $wordcounter)
+    public function __construct(ProfanityService $profanityService, WordCounterService $wordcounter)
     {
         $this->profanityService = $profanityService;
         $this->total_word_count = $wordcounter;
@@ -53,12 +53,12 @@ class BlogController extends Controller
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
 
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
         $tags = Tag::all();
         $tag_names = [];
@@ -99,7 +99,7 @@ class BlogController extends Controller
         }
 
 
-        if($request->tags){
+        if ($request->tags) {
             // Parse Tags
             $jsonData = $request->input('tags');
             // JSON verisini diziye çeviriyoruz
@@ -111,7 +111,7 @@ class BlogController extends Controller
             // Şimdi $values dizisinde ["css", "html", "javascript", "ABSYS", "A# .NET", "ACC"] değerleri bulunur
 
             $saved_tags_id = [];
-            foreach($values as $tag_name){
+            foreach ($values as $tag_name) {
                 $tag = Tag::where('name', $tag_name)->firstOrNew();
                 $tag->name = $tag_name;
                 $tag->save();
@@ -123,8 +123,8 @@ class BlogController extends Controller
         $word_counter = new WordCounterService;
         $total_word_count = $word_counter->countWordsInParagraphs($request->description);
         $wordsPerMinute = 250; // Ortalama okuma hızı
-        $minToRead = ($total_word_count != 0) ? ($total_word_count/$wordsPerMinute) : 0 ;
-        $minToRead = ($minToRead<1) ? 0 : $minToRead; //eğer mintoread 0 dan az ise 0, büyükse kendi değeri
+        $minToRead = ($total_word_count != 0) ? ($total_word_count / $wordsPerMinute) : 0;
+        $minToRead = ($minToRead < 1) ? 0 : $minToRead; //eğer mintoread 0 dan az ise 0, büyükse kendi değeri
 
 
 
@@ -164,7 +164,7 @@ class BlogController extends Controller
 
             // Eğer resim boyutu limitten büyükse hata döndür
             if ($image_size_in_bytes > $max_image_size_in_bytes) {
-                return back()->with('error','Resim boyutu çok büyük. Maksimum ' . $max_image_size_in_mb . ' MB olabilir.');
+                return back()->with('error', 'Resim boyutu çok büyük. Maksimum ' . $max_image_size_in_mb . ' MB olabilir.');
             }
 
             $data = base64_decode($base64_str);
@@ -206,7 +206,7 @@ class BlogController extends Controller
 
         $user = Auth::user();
         $user->blogs()->save($blog);
-        $request->tags && $blog->tags()->syncWithoutDetaching($saved_tags_id);// verilen array içindeki id'ler ile eğer ye
+        $request->tags && $blog->tags()->syncWithoutDetaching($saved_tags_id); // verilen array içindeki id'ler ile eğer ye
 
 
 
@@ -225,34 +225,34 @@ class BlogController extends Controller
         if ($sonuc) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error','İçerikte bazı istenmeyen kullanımlar tespit edildi.Admin tarafından incelenmek içn beklemeye alındı!');
+            return redirect()->back()->with('error', 'İçerikte bazı istenmeyen kullanımlar tespit edildi.Admin tarafından incelenmek içn beklemeye alındı!');
         }
 
 
         if ($this->profanityService->containsProfanity($description_text)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->route('home')->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('home')->with('error', 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->summery)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->route('home')->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('home')->with('error', 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->title)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->route('home')->with('error' , 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('home')->with('error', 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
 
         // Eğer her şey doğru olursa cache blog verilerini sil
 
-        $total_blog_count = Blog::where('status',1)
-        ->where('is_confirmed',1)
-        ->count();
-        $page_count = ceil($total_blog_count/8); // Her sayfa 8 blog içerdiği için
+        $total_blog_count = Blog::where('status', 1)
+            ->where('is_confirmed', 1)
+            ->count();
+        $page_count = ceil($total_blog_count / 8); // Her sayfa 8 blog içerdiği için
 
-        for ($i=1; $i<=$page_count ; $i++) {
+        for ($i = 1; $i <= $page_count; $i++) {
             Cache::forget("blogs_page_{$i}");
         }
 
@@ -266,9 +266,9 @@ class BlogController extends Controller
     {
 
         $blog = Blog::where('id', $blog_id)
-        ->where('status', 1)
-        ->where('is_confirmed',1)
-        ->first();
+            ->where('status', 1)
+            ->where('is_confirmed', 1)
+            ->first();
 
         //dd($blog->description);
 
@@ -285,7 +285,7 @@ class BlogController extends Controller
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
@@ -309,7 +309,7 @@ class BlogController extends Controller
             ->where('status', 1)
             ->orderBy('created_at', 'desc')->get();
 
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
         $data['notifications_count'] = $user->notifications->whereNull('read_at')->count();
         $data['site_setting'] = SiteSetting::first();
 
@@ -323,7 +323,8 @@ class BlogController extends Controller
 
 
     public function edit($blog_id)
-    {   $blog = Blog::find($blog_id);
+    {
+        $blog = Blog::find($blog_id);
         $data['blog'] = $blog;
         $data['selected_category'] = Category::find($data['blog']->category_id);
 
@@ -335,17 +336,17 @@ class BlogController extends Controller
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
 
         $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
         $data['notifications_count'] = Auth::user()->notifications()->whereNull('read_at')->count();
 
         $selected_tags = [];    // Seçilmiş tagler
-        foreach($blog->tags as $tag){
+        foreach ($blog->tags as $tag) {
             $selected_tags[] = $tag->name;
         }
 
@@ -384,7 +385,7 @@ class BlogController extends Controller
         $jsonData = $request->input('tags');
         $saved_tags_id = [];
         $blog = Blog::find($request->blog_id);
-        if(isset($jsonData)){// eğer tag eklenmişse kaydetme
+        if (isset($jsonData)) { // eğer tag eklenmişse kaydetme
             // JSON verisini diziye çeviriyoruz
             $parsedData = json_decode($jsonData, true);
             $values = array_map(function ($item) {
@@ -396,13 +397,12 @@ class BlogController extends Controller
             $saved_tags = $blog->tags->pluck('name')->toArray();
 
             if ($values === $saved_tags) {
-
-            }else{
+            } else {
                 $blog->tags()->detach();
 
-                foreach($values as $tag_name){
+                foreach ($values as $tag_name) {
                     if ($this->profanityService->containsProfanity($tag_name)) {
-                        return redirect()->back()->with('error' , 'Eklediğiniz tag ismi uygunsuz! Lütfen uygun bir tag ismi kullanınız.');
+                        return redirect()->back()->with('error', 'Eklediğiniz tag ismi uygunsuz! Lütfen uygun bir tag ismi kullanınız.');
                     }
 
                     $tag = Tag::where('name', $tag_name)->firstOrNew();
@@ -415,8 +415,8 @@ class BlogController extends Controller
         $word_counter = new WordCounterService;
         $total_word_count = $word_counter->countWordsInParagraphs($request->description);
         $wordsPerMinute = 250; // Ortalama okuma hızı
-        $minToRead = ($total_word_count != 0) ? ($total_word_count/$wordsPerMinute) : 0 ;
-        $minToRead = ($minToRead<1) ? 0 : (int)$minToRead; //eğer mintoread 0 dan az ise 0, büyükse kendi değeri
+        $minToRead = ($total_word_count != 0) ? ($total_word_count / $wordsPerMinute) : 0;
+        $minToRead = ($minToRead < 1) ? 0 : (int)$minToRead; //eğer mintoread 0 dan az ise 0, büyükse kendi değeri
 
 
         $blog->min_to_read = $minToRead;
@@ -429,7 +429,7 @@ class BlogController extends Controller
         $description = $request->input('description');
 
         $dom = new DOMDocument();
-        $dom->loadHTML( $description, 9);
+        $dom->loadHTML($description, 9);
 
         $body = $dom->getElementsByTagName('body')->item(0);
         $description_text = $body ? $body->textContent : '';
@@ -456,7 +456,7 @@ class BlogController extends Controller
 
                     // Eğer resim boyutu limitten büyükse hata döndür
                     if ($image_size_in_bytes > $max_image_size_in_bytes) {
-                        return back()->with('error','Yeni yüklenen resim boyutu çok büyük. Maksimum ' . $max_image_size_in_mb . ' MB olabilir.');
+                        return back()->with('error', 'Yeni yüklenen resim boyutu çok büyük. Maksimum ' . $max_image_size_in_mb . ' MB olabilir.');
                     }
 
                     $data = base64_decode($src_parts[1]);
@@ -475,7 +475,7 @@ class BlogController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    return redirect()->back()->with('error','This images are not suitable! Please try with another photos!');
+                    return redirect()->back()->with('error', 'This images are not suitable! Please try with another photos!');
                 }
             } // URL olup olmadığını kontrol et
             elseif (dirname($src) == '/blog_images/description_photos') {
@@ -489,7 +489,7 @@ class BlogController extends Controller
                     $img->removeAttribute('src');
                     $img->setAttribute('src', $file_path . $image_name);
                 } else {
-                    return redirect()->back()->with('error','This images are not suitable! Please try with another photos!');
+                    return redirect()->back()->with('error', 'This images are not suitable! Please try with another photos!');
                 }
                 continue;
             }
@@ -501,7 +501,7 @@ class BlogController extends Controller
                 //dd(basename($src));
                 continue;
             } else {
-                return redirect()->back()->with('error','This images are not suitable! Please try with another photos!');
+                return redirect()->back()->with('error', 'This images are not suitable! Please try with another photos!');
             }
         }
 
@@ -549,7 +549,7 @@ class BlogController extends Controller
 
             if ($old_cover_photo && file_exists(public_path('blog_images/cover_photos/' . $old_cover_photo))) {        // FOTOĞRAF DEĞİŞİNCE ESKİ FOTOĞRAFI SİLİYORUZ
 
-                $directory = public_path('blog_images/cover_photos/').$old_cover_photo;
+                $directory = public_path('blog_images/cover_photos/') . $old_cover_photo;
                 if (is_file($directory)) {
                     if (file_exists($directory)) {
                         unlink($directory);
@@ -580,32 +580,32 @@ class BlogController extends Controller
         if ($sonuc) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->back()->with('error','İçerikte bazı istenmeyen kullanımlar tespit edildi.Admin tarafından incelenmek içn beklemeye alındı!');
+            return redirect()->back()->with('error', 'İçerikte bazı istenmeyen kullanımlar tespit edildi.Admin tarafından incelenmek içn beklemeye alındı!');
         }
 
         // Blogların içeriğini kontrol etme
         if ($this->profanityService->containsProfanity($description_text)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->route('profile.show')->with('error' , ' description Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('profile.show')->with('error', 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->summery)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->route('profile.show')->with('error' , 'summery Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('profile.show')->with('error', 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
         if ($this->profanityService->containsProfanity($blog->title)) {
             $blog->is_confirmed = false;
             $blog->save();
-            return redirect()->route('profile.show')->with('error' , 'title Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
+            return redirect()->route('profile.show')->with('error', 'Uygunsuz kelimeler tespit edildi! Admin tarafından onaylanması için beklemeye alınmıştır. Onaylandıktan sonra paylaşıma alınacaktı.');
         }
 
-        $total_blog_count = Blog::where('status',1)
-        ->where('is_confirmed',1)
-        ->count();
-        $page_count = ceil($total_blog_count/8); // Her sayfa 8 blog içerdiği için
+        $total_blog_count = Blog::where('status', 1)
+            ->where('is_confirmed', 1)
+            ->count();
+        $page_count = ceil($total_blog_count / 8); // Her sayfa 8 blog içerdiği için
 
-        for ($i=1; $i<=$page_count ; $i++) {
+        for ($i = 1; $i <= $page_count; $i++) {
             Cache::forget("blogs_page_{$i}");
         }
 
@@ -624,7 +624,7 @@ class BlogController extends Controller
             $blog = Blog::find($request->blog_id);
             $blog->status = 0;
 
-            $directory = public_path('blog_images/cover_photos/').$blog->cover_photo;
+            $directory = public_path('blog_images/cover_photos/') . $blog->cover_photo;
             if (is_file($directory)) {
                 if (file_exists($directory)) {
                     unlink($directory);
@@ -636,20 +636,20 @@ class BlogController extends Controller
             if (isset($blog->images)) {
                 foreach ($blog->images as $image) {
 
-                    $directory = public_path('blog_images/description_photos/').$image->image_name;
+                    $directory = public_path('blog_images/description_photos/') . $image->image_name;
                     if (file_exists($directory)) {
-                        unlink(public_path('blog_images/description_photos/').$image->image_name);
+                        unlink(public_path('blog_images/description_photos/') . $image->image_name);
                     }
                     $image->delete();
                 }
             }
-            foreach($blog->comments as $comment) {
+            foreach ($blog->comments as $comment) {
                 $comment->delete();
             }
             $isSaved = $blog->save();
             $notifications = Notification::where('mentioned_id', $blog->id)
-            ->where('type','like')
-            ->get();
+                ->where('type', 'like')
+                ->get();
             foreach ($notifications as $notification) {
                 $notification->status = false;
                 $notification->save();
@@ -667,7 +667,7 @@ class BlogController extends Controller
 
     public function liked(Request $request)
     {
-        try{
+        try {
             $blogId = $request->input('blog_id');
             $isLike = $request->input('is_like');
 
@@ -711,16 +711,15 @@ class BlogController extends Controller
             $blog->save();
 
             return response()->json(['success' => true]);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-
     }
 
 
     public function saved(Request $request)
     {
-        try{
+        try {
 
             $blogId = $request->input('blog_id');
             $isSaved = $request->input('is_saved');
@@ -729,9 +728,9 @@ class BlogController extends Controller
 
 
             $blog = Blog::with('user')
-            ->where('id', $blogId)
-            ->where('status', 1)
-            ->first();
+                ->where('id', $blogId)
+                ->where('status', 1)
+                ->first();
 
             if (!$blog) {
                 return response()->json(['success' => false, 'message' => 'Blog not found']);
@@ -769,11 +768,8 @@ class BlogController extends Controller
             $blog->save();
 
             return response()->json(['success' => true]);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
-
     }
-
-
 }

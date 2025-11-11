@@ -257,7 +257,7 @@
                                         <h5 class="mb-1"><a class="post-title"
                                                 href="{{ route('profile.other.show', $p_user->id) }}">{{ $p_user->name }}</a>
                                         </h5>
-                                        <span>User Bio Here</span>
+                                        <span>{{$p_user->bio}}</span>
                                     </div>
                                 </div>
                             @endforeach

@@ -14,13 +14,15 @@ class RegisterMail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $register_url;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($user)
+    public function __construct($user,$register_url)
     {
         $this->user = $user;
+        $this->register_url = $register_url;
     }
 
     /**
@@ -29,7 +31,7 @@ class RegisterMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Email Validation',
+            subject: 'Email Verification',
         );
     }
 
@@ -39,7 +41,11 @@ class RegisterMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'Authenticated_pages.emails.register',
+            view: 'Authenticated_pages.emails.register',
+            with: [
+                'user' => $this->user,
+                'register_url' => $this->register_url,
+            ]
         );
     }
 

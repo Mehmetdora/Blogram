@@ -1,4 +1,3 @@
-<!-- resources/views/emails/reset-password.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 

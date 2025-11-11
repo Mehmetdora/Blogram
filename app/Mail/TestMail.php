@@ -9,21 +9,19 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ForgotPasswordMail extends Mailable
+class TestMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public $user;
+    public $name;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($user)
+
+    public function __construct($name)
     {
-        $this->user = $user;
+        $this->name = $name;
     }
 
     /**
@@ -32,7 +30,8 @@ class ForgotPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Forgot Password',
+            from: 'support@blogram.com.tr',
+            subject: "HTML Mehmet dora"
         );
     }
 
@@ -44,7 +43,7 @@ class ForgotPasswordMail extends Mailable
         return new Content(
             view: 'Authenticated_pages.emails.forgot',
             with: [
-                'user' => $this->user,
+                'name' => $this->name
             ]
         );
     }
