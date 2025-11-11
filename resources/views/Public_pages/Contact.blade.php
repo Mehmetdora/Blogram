@@ -2,23 +2,14 @@
 @section('style')
 @endsection
 @section('content')
-    <!-- Header Start -->
-    <div class="container-fluid bg-primary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
-            <h3 class="display-3 font-weight-bold text-white">Contact Us</h3>
-            
-        </div>
-    </div>
-    <!-- Header End -->
-
     <!-- Contact Start -->
     <div class="container-fluid pt-5">
         <div class="container">
             <div class="text-center pb-2">
-                <p class="section-title px-5">
+                <p class=" px-5">
                     <span class="px-2">Get In Touch</span>
                 </p>
-                <h1 class="mb-4">Contact Us For Any Query</h1>
+                <h1 class="mb-4">Contact Me For Any Query</h1>
                 @include('Public_pages.layouts._message')
             </div>
             <div class="row">
@@ -29,17 +20,20 @@
                             novalidate="novalidate">
                             @csrf
                             <div class="control-group">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Your Name" required
+                                <input type="text" class="form-control" name="name" id="name"
+                                    placeholder="Your Name" required
                                     data-validation-required-message="Please enter your name" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required
+                                <input type="email" class="form-control" name="email" id="email"
+                                    placeholder="Your Email" required
                                     data-validation-required-message="Please enter your email" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required
+                                <input type="text" class="form-control" name="subject" id="subject"
+                                    placeholder="Subject" required
                                     data-validation-required-message="Please enter a subject" />
                                 <p class="help-block text-danger"></p>
                             </div>
@@ -62,25 +56,23 @@
                         suggestions, please feel free to share your thoughts with us.
                     </p>
                     <div class="d-flex">
-                        <i class="fa fa-map-marker-alt d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle"
-                            style="width: 45px; height: 45px"></i>
                         <div class="pl-3">
                             <h5>Address</h5>
-                            <p>Toroslar, Mersin, TURKİYE</p>
+                            <p>Mersin, Türkiye 🇹🇷</p>
                         </div>
                     </div>
+                    <hr style="margin: 0" class="mb-2">
                     <div class="d-flex">
-                        <i class="fa fa-envelope d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle"
-                            style="width: 45px; height: 45px"></i>
                         <div class="pl-3">
                             <h5>Email</h5>
                             <p>{{ $site_setting->contact_email }}</p>
                         </div>
                     </div>
 
+                    <hr style="margin: 0" class="mb-2">
+
+
                     <div class="d-flex">
-                        <i class="far fa-clock d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle"
-                            style="width: 45px; height: 45px"></i>
                         <div class="pl-3">
                             <h5>Opening Hours</h5>
                             <strong>7 Days, 24 Hours</strong>

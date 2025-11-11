@@ -9,10 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="This is meta description">
     <meta name="author" content="Themefisher">
-    <meta name="generator" content="Hugo 0.74.3"/>
+    <meta name="generator" content="Hugo 0.74.3" />
 
     <!-- theme meta -->
-    <meta name="theme-name" content="reader"/>
+    <meta name="theme-name" content="reader" />
 
     <link rel="stylesheet" href="{{ asset('style/reader/') }}/plugins/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('style/reader/') }}/plugins/themify-icons/themify-icons.css">
@@ -132,8 +132,7 @@
             }
         }
 
-        .selected {
-        }
+        .selected {}
     </style>
 
     {{-- spinner --}}
@@ -256,89 +255,86 @@
 <title>{{ $site_setting->site_name }}</title>
 
 <body>
-<header>
-    <div class="logo">
-        <a href="#"> <img src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}"
-                          alt="Logo" class="logo-img">
-        </a>
+    <header>
+        <div class="logo">
+            <a href="#"> <img src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}"
+                    alt="Logo" class="logo-img">
+            </a>
+        </div>
+    </header>
+
+    @include('Public_pages.layouts._message')
+
+    @include('Authenticated_pages.layouts.spinner')
+
+
+    <div class="container">
+        <h1>KATEGORILER</h1>
+        <div class="categories">
+            @if (isset($categories))
+                @foreach ($categories as $category)
+                    <button class="category-btn" id="{{ $category->id }}">{{ $category->name }}</button>
+                @endforeach
+            @endif
+        </div>
+        <form action="{{ route('category.selected') }}" method="post">
+            @csrf
+            <input type="hidden" name="selectedCategories" id="selectedCategories" value="">
+            <button type="submit" class="save-btn">KAYDET</button>
+        </form>
+
     </div>
-</header>
-
-@include('Public_pages.layouts._message')
-
-@include('Authenticated_pages.layouts.spinner')
 
 
-<div class="container" >
-    <h1>KATEGORILER</h1>
-    <div class="categories">
-        @if (isset($categories))
-            @foreach ($categories as $category)
-                <button class="category-btn" id="{{ $category->id }}">{{ $category->name }}</button>
-            @endforeach
-        @endif
-    </div>
-    <form action="{{ route('category.selected') }}" method="post">
-        @csrf
-        <input type="hidden" name="selectedCategories" id="selectedCategories" value="">
-        <button type="submit" class="save-btn">KAYDET</button>
-    </form>
+    <!-- Kendi JS dosyalarım -->
+    <script src="{{ asset('style/reader/JS/') }}/header.js"></script>
+    <script src="{{ asset('style/reader/') }}/plugins/jQuery/jquery.min.js"></script>
+    <script src="{{ asset('style/reader/') }}/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="{{ asset('style/reader/') }}/plugins/slick/slick.min.js"></script>
+    <script src="{{ asset('style/reader/') }}/plugins/instafeed/instafeed.min.js"></script>
 
-</div>
+    <!-- Main Script -->
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    {{-- category seçme --}}
+    <script>
+        const input_selecteds_catg = document.getElementById('selectedCategories');
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
 
-<!-- Kendi JS dosyalarım -->
-<script src="{{ asset('style/reader/JS/') }}/header.js"></script>
-<script src="{{ asset('style/reader/') }}/plugins/jQuery/jquery.min.js"></script>
-<script src="{{ asset('style/reader/') }}/plugins/bootstrap/bootstrap.min.js"></script>
-<script src="{{ asset('style/reader/') }}/plugins/slick/slick.min.js"></script>
-<script src="{{ asset('style/reader/') }}/plugins/instafeed/instafeed.min.js"></script>
-
-<!-- Main Script -->
-<script src="js/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-{{-- category seçme --}}
-<script>
-
-    const input_selecteds_catg = document.getElementById('selectedCategories');
-    document.querySelectorAll('.category-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            this.classList.toggle('active');
-
-            const selectedCategories = Array.from(document.querySelectorAll('.category-btn.active'))
-                .map(btn => btn.id);
-            input_selecteds_catg.value = selectedCategories;
+                const selectedCategories = Array.from(document.querySelectorAll('.category-btn.active'))
+                    .map(btn => btn.id);
+                input_selecteds_catg.value = selectedCategories;
 
 
-            // Add subtle animation
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 100);
+                // Add subtle animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
         });
-    });
+    </script>
 
+    {{-- spinner --}}
+    <script>
+        // public/js/loader.js
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("loader").style.display = "none";
+        });
 
-</script>
+        // Sayfa yüklendiğinde spinner'ı gizle
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("loader").style.display = "none";
+        });
 
-{{-- spinner --}}
-<script>
-    // public/js/loader.js
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("loader").style.display = "none";
-    });
-
-    // Sayfa yüklendiğinde spinner'ı gizle
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("loader").style.display = "none";
-    });
-
-    // Sayfalar arası geçişlerde ve form gönderimlerinde spinner'ı göster
-    window.addEventListener("beforeunload", function () {
-        document.getElementById("loader").style.display = "flex";
-    });
-</script>
+        // Sayfalar arası geçişlerde ve form gönderimlerinde spinner'ı göster
+        window.addEventListener("beforeunload", function() {
+            document.getElementById("loader").style.display = "flex";
+        });
+    </script>
 </body>
 
 </html>

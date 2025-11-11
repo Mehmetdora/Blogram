@@ -1,39 +1,44 @@
 @extends('Public_pages/layouts.app')
 @section('style')
 @endsection
+
 @section('content')
-    <!-- Header Start -->
+    <section class="section-sm">
+        <div class="container">
+            <div class="content-wrapper"> <!-- <-- EKLEDİM -->
 
+                <div class="row align-items-center justify-content-center">
 
-    <div class="container-fluid bg-primary px-0 px-md-5 mb-5">
-        <div class="row align-items-center px-3">
-            <div class="col-lg-6 mt-5 text-center text-lg-left">
-                <div class="alert col-8 justify-content-center">
-                    @include('Public_pages.layouts._message')
+                    <div class="alert col-8 justify-content-center">
+                        @include('Public_pages.layouts._message')
+                    </div>
+                    <div class="col-lg-5 col-md-6 order-2 order-md-1">
+                        <div class="pr-lg-4 pr-0">
+                            <h2 class="mb-3">Open to Learning, Ready to Share </h2>
+                            <label style="font-weight:bolder">Welcome!</label>
+                            <br><br>
+
+                            This platform is a source of knowledge where everyone open to learning and sharing comes
+                            together.
+                            Students and eager learners can share blogs based on their interests, bringing their knowledge
+                            and
+                            experiences to a community here. Whether you write about a current topic or offer tips from your
+                            area of
+                            expertise, this platform is your space to share.
+                            <br><br>
+                            You can read other users' posts, share your thoughts by commenting, and broaden your perspective
+                            with
+                            different viewpoints. Join now and take the first step on your journey of knowledge!
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-md-6 mb-4 mb-md-0 order-1 order-md-2">
+                        <img class="img-fluid w-100" src="{{ asset(path: 'img/library2.webp') }}">
+                    </div>
                 </div>
-                <h4 class="text-white mb-4 mt-5 mt-lg-0">Interest-Based Knowledge Sharing</h4>
-                <h1 class="display-3 font-weight-bold text-white">
-                    Open to Learning, Ready to Share! </h1>
-                <p class="text-white mb-4">
-                    <label style="font-weight:bolder">Welcome!</label>
-                    <br><br>
-
-                    This platform is a source of knowledge where everyone open to learning and sharing comes together.
-                    Students and eager learners can share blogs based on their interests, bringing their knowledge and
-                    experiences to a community here. Whether you write about a current topic or offer tips from your area of
-                    expertise, this platform is your space to share.
-                    <br><br>
-                    You can read other users' posts, share your thoughts by commenting, and broaden your perspective with
-                    different viewpoints. Join now and take the first step on your journey of knowledge!
-                </p>
-            </div>
-            <div class="col-lg-6 text-center text-lg-right">
-                <img class="img-fluid mt-5"  src="{{ asset('img/library2.png') }}" alt="" />
             </div>
         </div>
-    </div>
+    </section>
     <!-- Header End -->
-
 @endsection
 @section('script')
 @endsection

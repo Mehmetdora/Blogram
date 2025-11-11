@@ -2,22 +2,12 @@
 @section('style')
 @endsection
 @section('content')
-    <!-- Header Start -->
-    <div class="container-fluid bg-primary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
-            <h3 class="display-3 font-weight-bold text-white">About Us</h3>
-            
-        </div>
-    </div>
-    <!-- Header End -->
-
     <!-- About Start -->
     <div class="container-fluid py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-5">
-                    <img class="img-fluid rounded mb-5 mb-lg-0" src="{{ asset('img/about.jpg') }}"
-                        alt="" />
+                    <img class="img-fluid rounded mb-5 mb-lg-0" src="{{ asset('img/about.jpg') }}" alt="" />
                 </div>
                 <div class="col-lg-7">
                     <p class="section-title pr-5">

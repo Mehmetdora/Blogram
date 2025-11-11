@@ -2,53 +2,68 @@
 @section('style')
 @endsection
 @section('content')
-    <!-- Header Start -->
-    <div class="container-fluid bg-primary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 400px">
-            <h3 class="display-3 font-weight-bold text-white">Users Blogs</h3>
-
-        </div>
-    </div>
-    <!-- Header End -->
-
     <!-- Blog Start -->
-    <div class="container-fluid pt-5">
+    <section class="section">
         <div class="container">
-            <div class="text-center pb-2">
-                <p class="section-title px-5">
-                    <span class="px-2">Latest Blogs</span>
-                </p>
-                <h1 class="mb-4">Some Articles From Users</h1>
-            </div>
-            <div class="row pb-3 col-sm-12">
-                @foreach ($blogs as $blog)
-                    <div class="col-lg-4 mb-4">
-                        <div class="card border-0 shadow-sm mb-2">
-                            @if (isset($blog->cover_photo))
-                                <img class="card-img-top mb-2"  src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}" alt="" />
-                            @endif
-                            <div class="card-body bg-light text-center p-4">
-                                <h4 class="">{{$blog->title}}</h4>
-                                <div class="d-flex justify-content-center mb-3">
-                                    <small class="mr-3"><i class="fa fa-user text-primary"></i> {{$blog->user->name}}</small>
-                                    <small class="mr-3"><i class="fa fa-folder text-primary"></i> {{$blog->get_category($blog)}}</small>
-                                    <small class="mr-3"><i class="fa fa-comments text-primary"></i> {{$blog->comment_count}}</small>
-                                </div>
-                                <p>
-                                    {{  $blog->summery }}
-                                </p>
-                                <a href="{{route('blogs.show',$blog->id)}}" class="btn btn-primary px-4 mx-auto my-2">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-                {{-- <div class="col-md-12 mb-4" style="margin-left:40%">
-                    {{ $blogs->links() }}
+            <div class="row justify-content-center">
+                <div class="mb-4">
+                    <h3 class="h2 mb-4">Latest Blogs
+                    </h3>
+                </div>
+                <div class="col-lg-10">
 
-                </div> --}}
+
+
+                    @foreach ($blogs as $blog)
+                        <article class="card mb-4">
+                            <div class="row card-body">
+                                @if (isset($blog->cover_photo))
+                                    <div class="col-md-4 mb-4 mb-md-0">
+                                        <div class="post-slider slider-sm">
+                                            <img src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
+                                                class="card-img" alt="post-thumb" style="height:200px; object-fit: cover;">
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="col-md-8">
+                                    <h3 class="h4 mb-3"><a class="post-title"
+                                            href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a></h3>
+                                    <ul class="card-meta list-inline">
+                                        <li class="list-inline-item">
+                                            <a href="{{ route('login') }}" class="card-meta-author">
+                                                <img src="{{ asset('uploads/' . $blog->user->photo) }}"
+                                                    alt="{{ $blog->user->name }}">
+                                                <span>{{ $blog->user->name }}</span>
+                                            </a>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="ti-timer"></i>{{ $blog->min_to_read }} min. to read
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <ul class="card-meta-tag list-inline">
+                                                @if (count($blog->tags) != 0)
+                                                    @foreach ($blog->tags as $tag)
+                                                        <li class="list-inline-item"><a
+                                                                href="{{ route('login') }}">{{ $tag->name }}</a>
+                                                        </li>
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <p>{{ $blog->summery }}</p>
+                                    <a href="{{ route('blogs.show', $blog->id) }}" class="btn btn-outline-primary">Read
+                                        More</a>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+
+
+                </div>
             </div>
         </div>
-    </div>
+    </section>
     <!-- Blog End -->
 @endsection
 @section('script')

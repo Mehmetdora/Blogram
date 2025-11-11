@@ -1,4 +1,4 @@
-<footer class="footer" >
+<footer class="footer">
     <svg class="footer-border" height="214" viewBox="0 0 2204 214" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M2203 213C2136.58 157.994 1942.77 -33.1996 1633.1 53.0486C1414.13 114.038 1200.92 188.208 967.765 118.127C820.12 73.7483 263.977 -143.754 0.999958 158.899"
@@ -11,13 +11,14 @@
         <div class="row align-items-center">
             <div class="col-md-5 text-center text-md-left mb-4">
                 <ul class="list-inline footer-list mb-0">
-                    <li class="list-inline-item"><a href="{{route('privacy-policy')}}">Privacy Policy</a></li>
-                    <li class="list-inline-item"><a href="{{route('terms-conditions')}}">Terms Conditions</a></li>
+                    <li class="list-inline-item"><a href="{{ route('privacy-policy') }}">Privacy Policy</a></li>
+                    <li class="list-inline-item"><a href="{{ route('terms-conditions') }}">Terms Conditions</a></li>
                 </ul>
             </div>
             <div class="col-md-2 text-center mb-4">
-                <a href="{{route('home')}}"> <img src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}"
-                        alt="Logo" class="logo-img">
+                <a href="{{ route('home') }}"> <img
+                        src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}" alt="Logo"
+                        class="logo-img">
                 </a>
             </div>
             {{-- <div class="col-md-5 text-md-right text-center mb-4">
@@ -50,8 +51,9 @@
 <!-- Main Script -->
 <script src="{{ asset('style/') }}/reader/jsn/script.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.3/dist/sweetalert2.all.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+<script src="{{ asset('js/jquery.min.js') }}"></script>
+
 
 {{-- logout alert --}}
 <script>

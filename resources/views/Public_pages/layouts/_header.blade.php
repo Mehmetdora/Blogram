@@ -1,31 +1,36 @@
 <!-- Navbar Start -->
-<div class="container-fluid bg-light position-relative shadow">
-    <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0 px-lg-5">
-        <a href="" class="navbar-brand font-weight-bold text-secondary" style="font-size: 50px">
-            <a href="{{ route('welcome') }}"> <img
-                    src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}" alt="Logo"
-                    class="logo-img">
-            </a>
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-white">
+        <a class="navbar-brand order-1" href="{{ route('welcome') }}">
+            <img class="img-fluid" width="100px"
+                src="{{ asset('site_settings/site_logo/') }}/{{ $site_setting->logo_url }}" alt="Blogram" />
         </a>
-        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-            <div class="navbar-nav font-weight-bold mx-auto py-0">
-                <a href="{{ route('welcome') }}"
-                    class="nav-item nav-link @if ($title == 'welcome') active @endif">Home</a>
-                <a href="{{ route('blogs') }}"
-                    class="nav-item nav-link @if ($title == 'blogs') active @endif">Blogs</a>
-                <a href="{{ route('about') }}"
-                    class="nav-item nav-link @if ($title == 'about') active @endif">About</a>
-                {{-- <a href="{{route('teams')}}" class="nav-item nav-link @if ($title == 'teams') active @endif">Teams</a>
-                <a href="{{route('gallery')}}" class="nav-item nav-link @if ($title == 'gallery') active @endif">Gallery</a> --}}
-                <a href="{{ route('contact') }}"
-                    class="nav-item nav-link @if ($title == 'contact') active @endif">Contact</a>
+        <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
+            <ul class="navbar-nav mx-auto">
 
-            </div>
-            <a href="{{ url('login') }}" class="btn btn-primary px-4">Login</a>
-            <a href="{{ url('register') }}" class="btn btn-primary px-4" style="margin-left: 10px">Register</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('welcome') }}"><b>Home</b></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('blogs') }}"><b>Blogs</b></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('about') }}"><b>About</b></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('contact') }}"><b>Contact</b></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="order-2 order-lg-3 d-flex align-items-center">
+
+            <a href="{{ url('login') }}" class="px-4 btn btn-dark">Login</a>
+            <a href="{{ url('register') }}" class="btn btn-dark px-4" style="margin-left: 10px">Register</a>
+            <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"
+                data-target="#navigation">
+                <i class="ti-menu"></i>
+            </button>
         </div>
     </nav>
 </div>

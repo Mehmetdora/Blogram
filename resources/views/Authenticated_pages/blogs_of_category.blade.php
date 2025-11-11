@@ -142,12 +142,12 @@
                                         </div>
                                         <div class="col-md-8">
                                             <h3 class="h4 mb-3"><a class="post-title"
-                                                                href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
+                                                    href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
                                             </h3>
                                             <ul class="card-meta list-inline">
                                                 <li class="list-inline-item">
                                                     <a href="{{ route('profile.other.show', $blog->user_id) }}"
-                                                    class="card-meta-author">
+                                                        class="card-meta-author">
                                                         @if ($blog->user->photo)
                                                             <img src="{{ asset('uploads/' . $blog->user->photo) }}"
                                                                 alt="Author Image">
@@ -166,7 +166,8 @@
                                                     @endif
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
+                                                    <i
+                                                        class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
                                                 </li>
                                                 <li class="list-inline-item">
                                                     <ul class="card-meta-tag list-inline">
@@ -185,40 +186,44 @@
                                 <article class="card mb-4">
                                     <div class="row card-body">
                                         <div class="col-12">
-                                            <h3 class="h4 mb-3"><a class="post-title" href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a></h3>
+                                            <h3 class="h4 mb-3"><a class="post-title"
+                                                    href="{{ route('blogs.show', $blog->id) }}">{{ $blog->title }}</a>
+                                            </h3>
                                             <ul class="card-meta list-inline">
-                                            <li class="list-inline-item">
-                                                <a href="{{ route('profile.other.show', $blog->user_id) }}" class="card-meta-author">
-                                                    <img src="{{ asset('uploads/' . $blog->user->photo) }}"
-                                                    alt="Author Image">
-                                                    <span>{{$blog->user->name}}</span>
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <i class="ti-timer"></i>
-                                                @if ($blog->min_to_read < 1)
-                                                    Less Then 1 Min To Read
-                                                @else
-                                                    {{ $blog->min_to_read }} Min To Read
-                                                @endif
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <i class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <ul class="card-meta-tag list-inline">
-                                                    <li class="list-inline-item"><a
-                                                        href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
+                                                <li class="list-inline-item">
+                                                    <a href="{{ route('profile.other.show', $blog->user_id) }}"
+                                                        class="card-meta-author">
+                                                        <img src="{{ asset('uploads/' . $blog->user->photo) }}"
+                                                            alt="Author Image">
+                                                        <span>{{ $blog->user->name }}</span>
+                                                    </a>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <i class="ti-timer"></i>
+                                                    @if ($blog->min_to_read < 1)
+                                                        Less Then 1 Min To Read
+                                                    @else
+                                                        {{ $blog->min_to_read }} Min To Read
+                                                    @endif
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <i
+                                                        class="ti-calendar"></i>{{ $blog->created_at->format('d-m-Y') }}
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <ul class="card-meta-tag list-inline">
+                                                        <li class="list-inline-item"><a
+                                                                href="{{ route('show.blogs', $blog->category_id) }}">{{ $blog->get_category($blog) }}</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
                                             </ul>
                                             <p>{{ $blog->summery }}</p>
                                         </div>
                                     </div>
                                 </article>
                             @endif
-                         @endforeach
+                        @endforeach
                     @endif
 
                     <ul class="pagination justify-content-center">
@@ -257,7 +262,7 @@
                                         <h5 class="mb-1"><a class="post-title"
                                                 href="{{ route('profile.other.show', $p_user->id) }}">{{ $p_user->name }}</a>
                                         </h5>
-                                        <span>{{$p_user->bio}}</span>
+                                        <span>{{ $p_user->bio }}</span>
                                     </div>
                                 </div>
                             @endforeach
@@ -280,8 +285,8 @@
     @include('Authenticated_pages.layouts.footer')
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
 
     <script>
         $(document).ready(function() {
