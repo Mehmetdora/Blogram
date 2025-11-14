@@ -48,49 +48,41 @@ class HomeController extends Controller
 
 
 
-        $data['categories'] = Cache::remember('categories',now()->addSeconds(30), function() {
-            return Category::where('is_delete',0)->where('status',1)->get();
+        $data['categories'] = Cache::remember('categories', now()->addSeconds(30), function () {
+            return Category::where('is_delete', 0)->where('status', 1)->get();
         });
 
 
-        if($site_set->editors_pick_blog_id){
-            $data['editors_blog'] = Blog::where('status',1)
-            ->where('is_confirmed',1)
-            ->where('id',$site_set->editors_pick_blog_id)
-            ->first();
-        }else{
-            $data['editors_blog'] = Blog::where('status',1)
-        ->where('is_confirmed',1)
-        ->inRandomOrder()
-        ->first();
+        if ($site_set->editors_pick_blog_id) {
+            $data['editors_blog'] = Blog::where('status', 1)
+                ->where('is_confirmed', 1)
+                ->where('id', $site_set->editors_pick_blog_id)
+                ->first();
+        } else {
+            $data['editors_blog'] = Blog::where('status', 1)
+                ->where('is_confirmed', 1)
+                ->inRandomOrder()
+                ->first();
         }
 
 
 
-        $data['trend_blogs'] = Cache::remember('trend_blogs',now()->addSeconds(30), function() {
-            return Blog::where('status',1)
-            ->where('is_confirmed',1)
-            ->orderBy('like_count','desc')
-            ->take(3)
-            ->get();
+        $data['trend_blogs'] = Cache::remember('trend_blogs', now()->addSeconds(30), function () {
+            return Blog::where('status', 1)
+                ->where('is_confirmed', 1)
+                ->orderBy('like_count', 'desc')
+                ->take(3)
+                ->get();
         });
 
 
-        $data['populer_post'] = Cache::remember('populer_post',now()->addSeconds(30), function() {
-            return Blog::where('status',1)
-            ->where('is_confirmed',1)
-            ->orderBy('comment_count','desc')
-            ->first();
+        $data['populer_post'] = Cache::remember('populer_post', now()->addSeconds(30), function () {
+            return Blog::where('status', 1)
+                ->where('is_confirmed', 1)
+                ->orderBy('comment_count', 'desc')
+                ->first();
         });
 
-
-        $data['populer_users'] = Cache::remember('populer_users',now()->addSeconds(30), function() {
-            return User::where('status',0)
-            ->where('is_delete',0)
-            ->inRandomOrder()
-            ->take(3)
-            ->get();  // status 0 aktif
-        });
 
         $user_id = Auth::id();
         $user = User::with('categories')->find($user_id);
@@ -101,42 +93,35 @@ class HomeController extends Controller
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
 
 
 
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
-        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
+        $data['notifications_count'] = $user->notifications->where('status', 1)->whereNull('read_at')->count();
 
 
         $data['user_categories'] = $user_categories;
 
 
-        return view('Authenticated_pages.home',$data);
+        return view('Authenticated_pages.home', $data);
     }
 
     public function show_blogs($id)
     {
         $data['site_setting'] = SiteSetting::first();
 
-        $data['blogs'] = Blog::where('category_id',$id)
-        ->where('is_confirmed',1)
-        ->where('status',1)
-        ->orderby('created_at','desc')
-        ->paginate(6);
+        $data['blogs'] = Blog::where('category_id', $id)
+            ->where('is_confirmed', 1)
+            ->where('status', 1)
+            ->orderby('created_at', 'desc')
+            ->paginate(6);
 
-        $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
+        $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
         $selected = Category::find($id);
-
-
-
-        $data['populer_users'] = User::where('status',0)
-        ->inRandomOrder()
-        ->take(3)
-        ->get();  // status 0 aktif
 
 
         $user_id = Auth::user()->id;
@@ -147,41 +132,41 @@ class HomeController extends Controller
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
         $data['selectedCategory'] = $selected;
         $user_categories_ids[] = $user->categories->pluck('id')->toArray();
         $buttonText = "";
-        if (in_array($selected->id,$user_categories_ids[0])){
+        if (in_array($selected->id, $user_categories_ids[0])) {
             $buttonText = '✓';
-        }else{
+        } else {
             $buttonText  = 'ADD';
         }
         $data['buttonText'] = $buttonText;
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
-        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
+        $data['notifications_count'] = $user->notifications->where('status', 1)->whereNull('read_at')->count();
 
 
-        return view('Authenticated_pages.blogs_of_category',$data);
+        return view('Authenticated_pages.blogs_of_category', $data);
     }
 
     public function create_profile()
     {
         $data['site_setting'] = SiteSetting::first();
 
-        return view('Authenticated_pages.createProfile',$data);
+        return view('Authenticated_pages.createProfile', $data);
     }
 
     public function store_profile(Request $request)
     {
 
         $validatedData = Validator::make($request->all(), [
-            'profile_name'=>'required | max:20',
+            'profile_name' => 'required | max:20',
             'skills' => 'nullable | max:100',
             'photo' => 'image|mimes:jpeg,png,JPEG,JPG,jpg,gif,svg|max:10000|nullable',
-            'gender'=>'required',
+            'gender' => 'required',
         ]);
 
 
@@ -193,12 +178,12 @@ class HomeController extends Controller
             $errorMessage = 'Girilen email veya şifre formatı hatalı!';
 
             // Hata mesajlarını kullanıcıya gösterin
-            return redirect()->back()->with('error',$errors);
+            return redirect()->back()->with('error', $errors);
         }
 
 
         $user = Auth::user();
-        $profile = New Profile;
+        $profile = new Profile;
         $profile->profile_name = $request->profile_name;
         $user->gender = $request->gender;
         $profile->status = true;
@@ -214,8 +199,8 @@ class HomeController extends Controller
             $filename = time() . '.' . $file->getClientOriginalName();
             $file->move($file_path, $filename);
             $user->photo = $filename;
-        }else{// gender 1 : kadın, 0:erkek
-            $user->photo = $request->gender ? 'Default_pfp_women.png':'Default_pfp.jpg';
+        } else { // gender 1 : kadın, 0:erkek
+            $user->photo = $request->gender ? 'Default_pfp_women.png' : 'Default_pfp.jpg';
         }
         $user->save();
         $profile->save();
@@ -227,18 +212,19 @@ class HomeController extends Controller
 
 
 
-    public function select_category(){
+    public function select_category()
+    {
         $data['site_setting'] = SiteSetting::first();
-        $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
-        return view('Authenticated_pages.selectCategory',$data);
+        $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
+        return view('Authenticated_pages.selectCategory', $data);
     }
     public function selected_category(Request $request)
     {
         $categories = $request->selectedCategories;
         $categories = array_map('intval', explode(',', $categories)); // string parçalama
 
-        if (count($categories) < 3){
-            return redirect()->back()->with('error','En az 3 kategori seçmeniz gerekli');
+        if (count($categories) < 3) {
+            return redirect()->back()->with('error', 'En az 3 kategori seçmeniz gerekli');
         }
         $user = Auth::user();
         $user->categories()->syncWithoutDetaching($categories);
@@ -252,7 +238,7 @@ class HomeController extends Controller
             $user = Auth::user();
             $user->categories()->detach($category->id);
             return response()->json(['success' => true]);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => $exception->getMessage()], 500);
         }
     }
@@ -269,44 +255,47 @@ class HomeController extends Controller
         }
     }
 
-    public function add_more_categories(){
+    public function add_more_categories()
+    {
         $user = Auth::user();
         $user = User::with('categories')->find($user->id);
         $user_categories = $user->categories;
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
         $data['site_setting'] = SiteSetting::first();
 
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
-        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
-        $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
-        return view('Authenticated_pages.Add_category',$data);
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
+        $data['notifications_count'] = $user->notifications->where('status', 1)->whereNull('read_at')->count();
+        $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
+        return view('Authenticated_pages.Add_category', $data);
     }
 
-    public function added_more_categories(Request $request){
+    public function added_more_categories(Request $request)
+    {
 
         $categories = array_map('intval', explode(',', $request->selectedCategories)); // string parçalama
         $user = Auth::user();
 
-        foreach ($user->categories as $category){
-            if(!in_array($category->id, $categories)){
+        foreach ($user->categories as $category) {
+            if (!in_array($category->id, $categories)) {
                 $user->categories()->detach($category->id);
             }
         }
 
-        if(!is_null($request->selectedCategories)){
+        if (!is_null($request->selectedCategories)) {
             $user->categories()->syncWithoutDetaching($categories);
         }
 
         return redirect()->route('home');
     }
 
-    public function show_notifications(){
+    public function show_notifications()
+    {
 
         $user_id = Auth::user()->id;
         $user = User::with('categories')->find($user_id);
@@ -314,73 +303,47 @@ class HomeController extends Controller
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
         $data['site_setting'] = SiteSetting::first();
 
-        $data['categories'] = Category::where('is_delete',0)->where('status',1)->get();
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
-        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
-        $all_notifications = $user->notifications()->where('status',true)->orderBy('created_at','desc')->paginate(15);
+        $data['categories'] = Category::where('is_delete', 0)->where('status', 1)->get();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
+        $data['notifications_count'] = $user->notifications->where('status', 1)->whereNull('read_at')->count();
+        $all_notifications = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->paginate(15);
 
         $data['all_notifications'] = $all_notifications;
 
-        return view('Authenticated_pages.notifications',$data);
+        return view('Authenticated_pages.notifications', $data);
     }
 
-    public function users_all(){
+
+
+
+    public function contact()
+    {
         $user_id = Auth::user()->id;
         $user = User::with('categories')->find($user_id);
         $user_categories = $user->categories;
         foreach ($user_categories as $category) {
             $category->blogs_count = Blog::where('category_id', $category->id)
                 ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
+                ->where('is_confirmed', 1)
                 ->count();
         }
         $data['user_categories'] = $user_categories;
         $data['site_setting'] = SiteSetting::first();
 
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
-        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
-        $data['users_all'] = User::where('is_admin',false)
-        ->where('status',false)
-        ->where('is_delete',false)
-        ->whereHas('profile')   // profil oluşturmuş kullanıcıları listele
-        ->orderBy('created_at','desc')
-        ->take(12)
-        ->get();
+        $data['notifications'] = $user->notifications()->where('status', true)->orderBy('created_at', 'desc')->take(10)->get();
+        $data['notifications_count'] = $user->notifications->where('status', 1)->whereNull('read_at')->count();
 
-
-        return view('Authenticated_pages.users_all',$data);
-
-
+        return view('Authenticated_pages.contact', $data);
     }
 
-
-    public function contact(){
-        $user_id = Auth::user()->id;
-        $user = User::with('categories')->find($user_id);
-        $user_categories = $user->categories;
-        foreach ($user_categories as $category) {
-            $category->blogs_count = Blog::where('category_id', $category->id)
-                ->where('status', 1) // Sadece aktif olanlar
-                ->where('is_confirmed',1)
-                ->count();
-        }
-        $data['user_categories'] = $user_categories;
-        $data['site_setting'] = SiteSetting::first();
-
-        $data['notifications'] = $user->notifications()->where('status',true)->orderBy('created_at','desc')->take(10)->get();
-        $data['notifications_count'] = $user->notifications->where('status',1)->whereNull('read_at')->count();
-
-        return view('Authenticated_pages.contact',$data);
-
-    }
-
-    public function contacted(Request $request){
+    public function contacted(Request $request)
+    {
 
 
         // Validasyon
@@ -404,11 +367,8 @@ class HomeController extends Controller
 
 
             return back()->with('success', 'Your message has been sent successfully!');
-
         } catch (\Exception $err) {
-            return redirect()->back()->with('error',$err);
+            return redirect()->back()->with('error', $err);
         }
     }
-
-
 }

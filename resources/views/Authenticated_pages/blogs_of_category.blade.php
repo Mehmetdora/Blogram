@@ -245,34 +245,6 @@
 
                     </div>
 
-                    <!-- authors -->
-                    <div class="widget widget-author">
-                        <h4 class="widget-title">Authors</h4>
-                        @if (isset($populer_users))
-                            @foreach ($populer_users as $p_user)
-                                <div class="media align-items-center">
-                                    <div class="mr-3">
-                                        @if ($p_user->photo)
-                                            <img src="{{ asset('uploads/' . $p_user->photo) }}" alt="Author Image">
-                                        @else
-                                            <img src="/img/Default_pfp.jpg" alt="Author Image">
-                                        @endif
-                                    </div>
-                                    <div class="media-body">
-                                        <h5 class="mb-1"><a class="post-title"
-                                                href="{{ route('profile.other.show', $p_user->id) }}">{{ $p_user->name }}</a>
-                                        </h5>
-                                        <span>{{ $p_user->bio }}</span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @endif
-                        <a href="{{ route('users_all') }}">
-                            <h6 class="widget-title ">All Users</h6>
-                        </a>
-
-
-                    </div>
 
 
 
