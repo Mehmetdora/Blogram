@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\ErrorController;
-use App\Http\Controllers\OAuthController;
-use App\Http\Controllers\TermsConditionsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ErrorController;
+use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\CheckProfileCreated;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\UnsignedPagesController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\TermsConditionsController;
 use App\Http\Controllers\Admin\BlogCommentController;
 use App\Http\Controllers\Admin\PendingBlogsController;
-use App\Http\Controllers\Admin\TagController;
-use App\Http\Controllers\MailController;
 
 
 // Cropper.js paketi
@@ -207,6 +208,9 @@ Route::get('blogs', [UnsignedPagesController::class, 'blogs'])->name('blogs');
 //Route::get('gallery', [UnsignedPagesController::class, 'gallery'])->name('gallery');
 Route::get('contact', [UnsignedPagesController::class, 'contact'])->name('contact');
 
+// Sadece paylaşım/preview için public route
+Route::get('/share/blog/{blog_id}', [ShareController::class, 'blog_share'])
+    ->name('blog_share');
 
 Route::controller(TermsConditionsController::class)->group(function () {
     Route::get('terms-conditions', 'terms')->name('terms-conditions');

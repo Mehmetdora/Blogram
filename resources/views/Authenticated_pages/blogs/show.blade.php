@@ -3,14 +3,21 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Untree.co">
-    <link rel="shortcut icon" href="favicon.png">
-    <meta name="description" content="" />
-    <meta name="keywords" content="bootstrap, bootstrap5" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta property="og:title" content="{{ $blog->title }}" />
+    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->description), 160) }}" />
+    @if (isset($blog->cover_photo))
+        <meta property="og:image" content="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}" />
+        <meta name="twitter:image" content="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}">
+    @endif
+    <meta property="og:url" content="{{ route('blogs.show', $blog->id) }}" />
+    <meta property="og:type" content="article" />
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $blog->title }}">
+    <meta name="twitter:description"
+        content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->description), 160) }}">
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
 
@@ -763,28 +770,60 @@
                                         <span id="save_count_span"
                                             class="save-count col-1 pl-0 ">{{ $blog->save_count }}</span>
                                     </button>
-                                    <button type="button" class="reaction-item">
-                                        <div class="icon">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                                                <polyline points="16 6 12 2 8 6" />
-                                                <line x1="12" y1="2" x2="12" y2="15" />
-                                            </svg>
-                                        </div>
-                                    </button>
-                                    {{-- <button type="button" class="reaction-item">
-                                <div class="icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </div>
-                            </button> --}}
+
+
+                                    <div class="btn-group dropup">
+                                        <button type="button" class="reaction-item dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                                    <polyline points="16 6 12 2 8 6" />
+                                                    <line x1="12" y1="2" x2="12"
+                                                        y2="15" />
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="#"
+                                                    onclick="copyBlogLink('{{ route('blog_share', $blog->id) }}')">
+                                                    Bağlantıyı Kopyala
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="https://wa.me/?text={{ urlencode($blog->title . ' - ' . route('blog_share', $blog->id)) }}"
+                                                    target="_blank" rel="noopener">
+                                                    WhatsApp
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="https://twitter.com/intent/tweet?url={{ urlencode(route('blog_share', $blog->id)) }}&text={{ urlencode($blog->title) }}"
+                                                    target="_blank" rel="noopener">
+                                                    X (Twitter)
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(route('blog_share', $blog->id)) }}"
+                                                    target="_blank" rel="noopener">
+                                                    LinkedIn
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
                                 </div>
                             </div>
                             <button style="z-index: 500;" type="button" class="reaction-item comment-trigger">
@@ -951,6 +990,19 @@
                 hljs.highlightAll();
             }, 0);
         });
+    </script>
+
+
+    {{-- link kopyalama --}}
+    <script>
+        function copyBlogLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                // Kullanıcıya bildirim göstermek istersen:
+                alert("Bağlantı kopyalandı!");
+            }).catch(err => {
+                console.error("Kopyalanamadı:", err);
+            });
+        }
     </script>
 
 

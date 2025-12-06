@@ -21,7 +21,7 @@
                                     <div class="col-md-4 mb-4 mb-md-0">
                                         <div class="post-slider slider-sm">
                                             <img src="{{ asset('blog_images/cover_photos/' . $blog->cover_photo) }}"
-                                                class="card-img" alt="post-thumb" style="height:200px; object-fit: cover;">
+                                                class="card-img" alt="post-thumb" style="width: 100%; height:100%;">
                                         </div>
                                     </div>
                                 @endif
