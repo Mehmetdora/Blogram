@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta property="og:title" content="{{ $blog->title }}" />
-    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->description), 160) }}" />
+    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->summery), 160) }}" />
     @if (isset($blog->cover_photo))
         <meta property="og:image" content="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}" />
         <meta name="twitter:image" content="{{ asset('blog_images/cover_photos/') }}/{{ $blog->cover_photo }}">
@@ -16,8 +17,7 @@
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $blog->title }}">
-    <meta name="twitter:description"
-        content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->description), 160) }}">
+    <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->summery), 160) }}">
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
 
@@ -789,9 +789,8 @@
 
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="#"
-                                                    onclick="copyBlogLink('{{ route('blog_share', $blog->id) }}')">
-                                                    Bağlantıyı Kopyala
+                                                <a class="dropdown-item" id="shareBtn" href="#">
+                                                    Share
                                                 </a>
                                             </li>
 
@@ -1003,6 +1002,26 @@
                 console.error("Kopyalanamadı:", err);
             });
         }
+
+
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            const shareData = {
+                title: "{{ $blog->title }}",
+                text: "{{ $blog->summery }}",
+                url: "{{ route('blog_share', $blog->id) }}"
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.error('Paylaşma iptal edildi veya hata oluştu:', err);
+                }
+            } else {
+                // Desteklenmiyorsa normal link butonları kullanılmaya devam
+                alert('This browser does not suppurt native sharing, please try with another browser.');
+            }
+        });
     </script>
 
 
